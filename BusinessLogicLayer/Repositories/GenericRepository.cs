@@ -1,44 +1,53 @@
 ﻿using BusinessLogicLayer.Interfaces;
 using System.Linq.Expressions;
+using DataAccessLayerEF.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogicLayer.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
-
-    public Task<IQueryable<T>> GetAll()
+    private readonly EtammenDbContext _context;
+    public GenericRepository(EtammenDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
+    }
+    public async Task<IEnumerable<T>> GetAll(string[] includes = null)
+    {
+        IQueryable<T> query = _context.Set<T>();
+        if (includes != null)
+            foreach (var include in includes)
+                  query = query.Include(include);
+        return await query.ToListAsync();
     }
 
-    public Task<T> GetById(int id)
+    public async Task<T> FindBy(Expression<Func<T, bool>> criteria, string[] includes = null)
     {
-        throw new NotImplementedException();
+        IQueryable<T> query = _context.Set<T>();
+        if (includes != null)
+            foreach (var include in includes)
+                query = query.Include(include);
+        return await query.FirstOrDefaultAsync(criteria);
     }
-    public Task<T> FindBy(Expression<Func<T, bool>> criteria)
+    public async Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes=null)
     {
-        throw new NotImplementedException();
+        IQueryable<T> query = _context.Set<T>();
+        if (includes != null)
+            foreach (var include in includes)
+                query = query.Include(include);
+        return await query.Where(criteria).ToListAsync();
     }
-
-    public Task<IQueryable<T>> FindAllBy(Expression<Func<T, bool>> criteria)
+    public async Task Add(T entity)
     {
-        throw new NotImplementedException();
-    }
-
-
-    public void Add(T entity)
-    {
-        throw new NotImplementedException();
+       await _context.Set<T>().AddAsync(entity);
     }
 
     public void Delete(T entity)
     {
-        throw new NotImplementedException();
+        _context.Set<T>().Remove(entity);
     }
-
-
     public void Update(T entity)
     {
-        throw new NotImplementedException();
+        _context.Set<T>().Update(entity);
     }
 }
