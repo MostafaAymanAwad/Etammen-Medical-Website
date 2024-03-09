@@ -1,0 +1,31 @@
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\BusinessLogicLayer.deps.json
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\BusinessLogicLayer.dll
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\BusinessLogicLayer.pdb
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\DataAccessLayerEF.dll
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\DataAccessLayerEF.pdb
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.csproj.AssemblyReference.cache
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.AssemblyInfoInputs.cache
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.AssemblyInfo.cs
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.csproj.CoreCompileInputs.cache
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.csproj.CopyComplete
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.dll
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\refint\BusinessLogicLayer.dll
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.pdb
+C:\Users\ahmed\source\repos\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\ref\BusinessLogicLayer.dll
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\BusinessLogicLayer.deps.json
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\BusinessLogicLayer.dll
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\BusinessLogicLayer.pdb
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\DataAccessLayerEF.dll
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\bin\Debug\net8.0\DataAccessLayerEF.pdb
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.csproj.AssemblyReference.cache
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.AssemblyInfoInputs.cache
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.AssemblyInfo.cs
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.csproj.CoreCompileInputs.cache
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.sourcelink.json
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.csproj.CopyComplete
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.dll
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\refint\BusinessLogicLayer.dll
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\BusinessLogicLayer.pdb
+C:\Users\mostafa\Desktop\WORK\ITI\ASP.NET MVC\Vezeeta\Vezeeta\BusinessLogicLayer\obj\Debug\net8.0\ref\BusinessLogicLayer.dll
