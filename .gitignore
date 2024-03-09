@@ -1,5 +1,5 @@
-./Etammen/bin/
-./Etammen/obj/
-./.vs/
-./BusinessLogicLayer/obj/
-./DataAccessLayerEF/obj/
+/Etammen/bin
+/Etammen/obj
+/.vs
+/BusinessLogicLayer/obj
+/DataAccessLayerEF/obj
