@@ -13,13 +13,13 @@ public class EtammenDbContext:IdentityDbContext<ApplicationUser>
     public virtual DbSet<DoctorReviews> DoctorReviews { get; set;}
     public virtual DbSet<Appointment> Appointments { get; set;}
 
-    public EtammenDbContext(DbContextOptions options):base(options)
+    public EtammenDbContext(DbContextOptions<EtammenDbContext> options):base(options)
     {
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.ApplyConfiguration(new DoctorConfigurtion());
-        builder.ApplyConfiguration(new PatientConfiguration());
+       // builder.ApplyConfiguration(new DoctorConfigurtion());
+        //builder.ApplyConfiguration(new PatientConfiguration());
         builder.ApplyConfiguration(new DoctorReviewsConfiguration());
         base.OnModelCreating(builder);
     }
