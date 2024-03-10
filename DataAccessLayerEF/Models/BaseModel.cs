@@ -11,8 +11,8 @@ namespace DataAccessLayerEF.Models
     public abstract class BaseModel
     {
         public DateOnly LastUpdate { get; set;}
-        public DateOnly CreationDate { get; set;}
-        public DateOnly DeletionDate { get; set;}
+        public DateOnly CreationDate { get; set;} = DateOnly.FromDateTime(DateTime.Now);
+        public DateOnly DeletionDate { get; set; } 
         public bool IsDeleted { get; set;} 
     }
 }

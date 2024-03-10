@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayerEF.Models;
 
 public class Patient:BaseModel
 {
-    [Required]
-    public string ApplicationUserId { get; set; } 
+    [Key]
+    public int Id { get; set; }
+    
+    [ForeignKey("ApplicationUser")]
+    public string? ApplicationUserId { get; set; } 
 
     public virtual ApplicationUser? ApplicationUser { get; set;}
 
