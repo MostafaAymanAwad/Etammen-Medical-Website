@@ -28,14 +28,18 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
                 query = query.Include(include);
         return await query.FirstOrDefaultAsync(criteria);
     }
-    public async Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes=null)
+
+    public async Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null)
     {
         IQueryable<T> query = _context.Set<T>();
+
         if (includes != null)
             foreach (var include in includes)
                 query = query.Include(include);
+
         return await query.Where(criteria).ToListAsync();
     }
+  
     public async Task Add(T entity)
     {
        await _context.Set<T>().AddAsync(entity);
@@ -43,5 +47,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public void Update(T entity)
     {
         _context.Set<T>().Update(entity);
+    }
+
+    public async Task Delete(int id) 
+    { 
+        var entity = await _context.Set<T>().FindAsync(id);
+
+       _context.Update(entity);
     }
 }

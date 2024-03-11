@@ -2,6 +2,7 @@ using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Models;
+using Etammen.Mapping.DoctorForAdmin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews(options =>
 {
-    options.Filters.Add(new AuthorizeFilter());
+    //options.Filters.Add(new AuthorizeFilter());
 });
 
 builder.Services.AddDbContext<EtammenDbContext>(options =>
@@ -35,6 +36,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+//Admin Services
+builder.Services.AddScoped<DoctorsAdminMapper>();
+
 
 var app = builder.Build();
 
@@ -53,6 +57,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Admin}/{action=Home}/{id?}");
 
 app.Run();
