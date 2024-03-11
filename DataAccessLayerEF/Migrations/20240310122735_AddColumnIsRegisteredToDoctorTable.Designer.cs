@@ -5,6 +5,7 @@ using DataAccessLayerEF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayerEF.Migrations
 {
     [DbContext(typeof(EtammenDbContext))]
-    partial class EtammenDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240310122735_AddColumnIsRegisteredToDoctorTable")]
+    partial class AddColumnIsRegisteredToDoctorTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,6 +127,10 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("PatientApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("ReservtionPeriodNumber")
                         .HasColumnType("int");
 
@@ -134,7 +141,7 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasIndex("ClinicId");
 
-                    b.HasIndex("patientId");
+                    b.HasIndex("PatientApplicationUserId");
 
                     b.ToTable("Appointments");
                 });
@@ -155,6 +162,10 @@ namespace DataAccessLayerEF.Migrations
 
                     b.Property<DateOnly>("DeletionDate")
                         .HasColumnType("date");
+
+                    b.Property<string>("DoctorApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
@@ -204,18 +215,15 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("DoctorApplicationUserId");
 
                     b.ToTable("Clinics");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Doctor", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AboutTheDoctor")
                         .IsRequired()
@@ -223,9 +231,6 @@ namespace DataAccessLayerEF.Migrations
 
                     b.Property<decimal?>("ActualRting")
                         .HasColumnType("money");
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Certificate")
                         .IsRequired()
@@ -271,11 +276,7 @@ namespace DataAccessLayerEF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique()
-                        .HasFilter("[ApplicationUserId] IS NOT NULL");
+                    b.HasKey("ApplicationUserId");
 
                     b.ToTable("Doctors");
                 });
@@ -291,24 +292,28 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DoctorApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PatientApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("Rate")
                         .HasColumnType("int");
 
                     b.HasKey("PatientId", "DoctorId");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("DoctorApplicationUserId");
+
+                    b.HasIndex("PatientApplicationUserId");
 
                     b.ToTable("DoctorReviews");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Patient", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -344,11 +349,7 @@ namespace DataAccessLayerEF.Migrations
                                 .HasColumnType("nvarchar(80)");
                         });
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique()
-                        .HasFilter("[ApplicationUserId] IS NOT NULL");
+                    b.HasKey("ApplicationUserId");
 
                     b.ToTable("Patients");
                 });
@@ -486,6 +487,25 @@ namespace DataAccessLayerEF.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DataAccessLayerEF.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("DataAccessLayerEF.Models.Doctor", "Doctor")
+                        .WithOne("ApplicationUser")
+                        .HasForeignKey("DataAccessLayerEF.Models.ApplicationUser", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccessLayerEF.Models.Patient", "Patient")
+                        .WithOne("ApplicationUser")
+                        .HasForeignKey("DataAccessLayerEF.Models.ApplicationUser", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("DataAccessLayerEF.Models.Appointment", b =>
                 {
                     b.HasOne("DataAccessLayerEF.Models.Clinic", "Clinic")
@@ -496,7 +516,7 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasOne("DataAccessLayerEF.Models.Patient", "Patient")
                         .WithMany("Appointments")
-                        .HasForeignKey("patientId")
+                        .HasForeignKey("PatientApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -509,48 +529,30 @@ namespace DataAccessLayerEF.Migrations
                 {
                     b.HasOne("DataAccessLayerEF.Models.Doctor", "Doctor")
                         .WithMany("Clinics")
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("DoctorApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Doctor");
-                });
-
-            modelBuilder.Entity("DataAccessLayerEF.Models.Doctor", b =>
-                {
-                    b.HasOne("DataAccessLayerEF.Models.ApplicationUser", "ApplicationUser")
-                        .WithOne("Doctor")
-                        .HasForeignKey("DataAccessLayerEF.Models.Doctor", "ApplicationUserId");
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.DoctorReviews", b =>
                 {
                     b.HasOne("DataAccessLayerEF.Models.Doctor", "Doctor")
                         .WithMany("DoctorReviews")
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("DoctorApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataAccessLayerEF.Models.Patient", "Patient")
                         .WithMany("DoctorReviews")
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("PatientApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Doctor");
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("DataAccessLayerEF.Models.Patient", b =>
-                {
-                    b.HasOne("DataAccessLayerEF.Models.ApplicationUser", "ApplicationUser")
-                        .WithOne("Patient")
-                        .HasForeignKey("DataAccessLayerEF.Models.Patient", "ApplicationUserId");
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -604,13 +606,6 @@ namespace DataAccessLayerEF.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataAccessLayerEF.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
             modelBuilder.Entity("DataAccessLayerEF.Models.Clinic", b =>
                 {
                     b.Navigation("Appointments");
@@ -618,6 +613,9 @@ namespace DataAccessLayerEF.Migrations
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Doctor", b =>
                 {
+                    b.Navigation("ApplicationUser")
+                        .IsRequired();
+
                     b.Navigation("Clinics");
 
                     b.Navigation("DoctorReviews");
@@ -625,6 +623,8 @@ namespace DataAccessLayerEF.Migrations
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Patient", b =>
                 {
+                    b.Navigation("ApplicationUser");
+
                     b.Navigation("Appointments");
 
                     b.Navigation("DoctorReviews");

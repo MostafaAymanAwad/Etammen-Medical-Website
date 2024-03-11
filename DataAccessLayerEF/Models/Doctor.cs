@@ -6,14 +6,21 @@ namespace DataAccessLayerEF.Models;
 
 public class Doctor:BaseModel
 {
-    [Required]
-    public string ApplicationUserId { get; set; }
+    [Key]
+    public int Id { get; set; }
+   
+    [ForeignKey("ApplicationUser")]
+    public string? ApplicationUserId { get; set; }
 
     [Required]
     public string AboutTheDoctor { get; set; }
 
     [Required]
     public string ProfilePicture {  get; set; }
+
+    [Required]
+    public string Certificate {  get; set; }
+
     [Required]
     public string Speciality {  get; set; }
 
@@ -32,7 +39,9 @@ public class Doctor:BaseModel
 
     [Required]
     public bool IsVisitHome { get; set; }
+    
+    public bool IsRegistered { get; set; }
     public virtual ICollection<Clinic>? Clinics { get; set; } = new HashSet<Clinic>();
-    public virtual ApplicationUser ApplicationUser { get; set; }
+    public virtual ApplicationUser? ApplicationUser { get; set; }
     public virtual ICollection<DoctorReviews>? DoctorReviews { get; set; } = new HashSet<DoctorReviews>();
 }

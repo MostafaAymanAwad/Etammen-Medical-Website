@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using DataAccessLayerEF.Context;
 using Microsoft.EntityFrameworkCore;
-
 namespace BusinessLogicLayer.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
@@ -40,11 +39,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task Add(T entity)
     {
        await _context.Set<T>().AddAsync(entity);
-    }
-
-    public void Delete(T entity)
-    {
-        _context.Set<T>().Remove(entity);
     }
     public void Update(T entity)
     {
