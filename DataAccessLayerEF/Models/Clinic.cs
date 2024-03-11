@@ -30,7 +30,7 @@ public class Clinic:BaseModel
     public TimeOnly ClosingHour { get; set; }
 
     [Required]
-    public  OpeningDays OpeningDays { get; set; }
+    public OpeningDays OpeningDays { get; set; }
 
     public virtual ICollection<Appointment>? Appointments { get; set; } = new HashSet<Appointment>();
 }
