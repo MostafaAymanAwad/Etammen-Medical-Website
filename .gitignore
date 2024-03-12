@@ -2,4 +2,6 @@
 /Etammen/obj
 /.vs
 /BusinessLogicLayer/obj
+/BusinessLogicLayer/bin
 /DataAccessLayerEF/obj
+/DataAccessLayerEF/bin
