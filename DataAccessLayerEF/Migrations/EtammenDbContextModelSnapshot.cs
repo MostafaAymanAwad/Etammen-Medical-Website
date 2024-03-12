@@ -118,6 +118,9 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsAttended")
                         .HasColumnType("bit");
 

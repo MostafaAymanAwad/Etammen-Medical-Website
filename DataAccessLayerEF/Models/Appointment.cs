@@ -12,13 +12,13 @@ namespace DataAccessLayerEF.Models
     {
         [Key]
         public int Id {  get; set; }
-
         public int ClinicId { get; set; }
         public int patientId { get; set; }
         public virtual Clinic? Clinic { get; set; }
         public virtual Patient? Patient { get; set; }
         public DateOnly Date { get; set; }
         public int ReservtionPeriodNumber { get; set; }
+        public bool IsAccepted { get; set; }
         public bool IsAttended { get; set; }
         public bool IsDeleted { get; set; }
     }
