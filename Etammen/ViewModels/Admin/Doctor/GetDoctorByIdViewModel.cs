@@ -30,7 +30,7 @@ namespace Etammen.ViewModels.Admin.Doctor
 
         public int? TotalRatings { get; set; }
         public string? YearsOfExperience { get; set; }
-        public IEnumerable<Clinic>? Clinics { get; set; } = new HashSet<Clinic>();
+        public IEnumerable<DataAccessLayerEF.Models.Clinic>? Clinics { get; set; } = new HashSet<DataAccessLayerEF.Models.Clinic>();
 
         public ApplicationUser? ApplicationUser { get; set; }
 

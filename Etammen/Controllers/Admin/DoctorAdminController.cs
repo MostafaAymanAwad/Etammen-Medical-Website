@@ -5,7 +5,7 @@ using Etammen.ViewModels.Admin.Doctor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Etammen.Controllers
+namespace Etammen.Controllers.Admin
 {
     public class DoctorAdminController : Controller
     {

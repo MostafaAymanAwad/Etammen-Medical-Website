@@ -1,13 +1,11 @@
-﻿using BusinessLogicLayer.Interfaces;
-using DataAccessLayerEF.Enums;
+﻿using DataAccessLayerEF.Enums;
 using DataAccessLayerEF.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Etammen.ViewModels.Admin.Doctor
+namespace Etammen.ViewModels.Admin.Patient
 {
-    public class GetAllDoctorsViewModel
+    public class GetAllPatientViewModel
     {
-
         public int Id { get; set; }
         public string? ApplicationUserId { get; set; }
 
@@ -19,8 +17,5 @@ namespace Etammen.ViewModels.Admin.Doctor
 
         public Gender Gender { get; set; }
 
-        public string Speciality { get; set; }
-
-        public ApplicationUser? ApplicationUser { get; set; }
     }
 }

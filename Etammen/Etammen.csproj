@@ -20,9 +20,4 @@
     <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\Admin\Clinic\" />
-    <Folder Include="ViewModels\Admin\Patient\" />
-  </ItemGroup>
-
 </Project>
