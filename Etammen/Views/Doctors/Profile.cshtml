@@ -1,0 +1,103 @@
+﻿@model Etammen.ViewModels.DoctorViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "_Layout";
+}
+
+<h1>Edit</h1>
+
+<h4>Doctor Profile</h4>
+<hr />
+<form asp-action="Profile" asp-controller="Doctors">
+    <div class="container-xl px-4 mt-4">
+        <hr class="mt-0 mb-4">
+        <div class="row">
+            <div class="col-xl-4">
+
+                <div class="card mb-4 mb-xl-0">
+                    <div class="card-header">Profile Picture</div>
+                    <div class="card-body text-center">
+
+                        <img class="img-account-profile rounded-circle mb-2" src="/files/Images/@Model.ProfilePicture" style="width:250px;height:300px"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8">
+
+                <div class="card mb-4">
+                    <div class="card-header">Account Details</div>
+                    <div class="card-body">
+
+
+                        @*   <div class="mb-3">
+                        <label class="small mb-1" asp-for="ApplicationUser.UserName">Username (how your name will appear to other users on the site)</label>
+                        <input class="form-control" asp-for="ApplicationUser.UserName" placeholder="Enter your username" value="@Model.ApplicationUser.UserName">
+                        </div> *@
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ApplicationUserId" />
+                        <div class="row gx-3 mb-3">
+
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="FirstName"></label>
+                                <input class="form-control" asp-for="FirstName" placeholder="Enter your first name" value="@Model.FirstName" readonly>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="LastName"></label>
+                                <input class="form-control" asp-for="LastName" placeholder="Enter your last name" value="@Model.LastName" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row gx-3 mb-3">
+
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="Age"></label>
+                                <input class="form-control" asp-for="Age" placeholder="Enter your age" value="@Model.Age" readonly>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <label class="small mb-1" asp-for="YearsOfExperience"></label>
+                                <input class="form-control" asp-for="YearsOfExperience" placeholder="Enter your first name" value="@Model.YearsOfExperience Years" readonly>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small mb-1" asp-for="AboutTheDoctor"></label>
+                            <input class="form-control" asp-for="AboutTheDoctor" placeholder="Enter your first name" value="@Model.AboutTheDoctor" readonly>
+                        </div>
+
+                        <div class="row gx-3 mb-3">
+
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="HomeVisitFees"></label>
+                                <input class="form-control" asp-for="HomeVisitFees" placeholder="Enter your first name" value="@Model.HomeVisitFees $" readonly>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="IsVisitHome"></label>
+                                <input asp-for="IsVisitHome" value="@Model.IsVisitHome" disabled checked value="0">
+                            </div>
+                        </div>
+
+                        <a asp-action="ProfileEdit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</form>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -22,12 +22,14 @@ namespace BusinessLogicLayer.Repositories
         public IGenericRepository<Appointment> Appointments { get; private set; }
 
         public IGenericRepository<DoctorReviews> DoctorReviews { get; private set; }
+
+
         public UnitOfWork(EtammenDbContext context)
         {
             _context = context;
             Clinics = new GenericRepository<Clinic>(_context);
             Doctors = new GenericRepository<Doctor>(_context);
-            Patients= new GenericRepository<Patient>(_context);
+            Patients = new GenericRepository<Patient>(_context);
             Appointments = new GenericRepository<Appointment>(_context);
             DoctorReviews = new GenericRepository<DoctorReviews>(_context);
         }

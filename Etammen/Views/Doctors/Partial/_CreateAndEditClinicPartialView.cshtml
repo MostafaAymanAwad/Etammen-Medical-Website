@@ -1,0 +1,47 @@
+﻿@using DataAccessLayerEF.Enums
+@model Etammen.ViewModels.ClinicViewModel
+
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="form-group">
+    <label asp-for="Name" class="control-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="StreetAddress" class="control-label"></label>
+    <input asp-for="StreetAddress" class="form-control" />
+    <span asp-validation-for="StreetAddress" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="governorate" class="control-label"></label>
+    <input asp-for="governorate" class="form-control" />
+    <span asp-validation-for="governorate" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="City" class="control-label"></label>
+    <input asp-for="City" class="form-control" />
+    <span asp-validation-for="City" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Fees" class="control-label"></label>
+    <input asp-for="Fees" class="form-control" />
+    <span asp-validation-for="Fees" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ExmainationDuration" class="control-label"></label>
+    <input asp-for="ExmainationDuration" class="form-control" />
+    <span asp-validation-for="ExmainationDuration" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="OpeningHour" class="control-label"></label>
+    <input asp-for="OpeningHour" class="form-control" />
+    <span asp-validation-for="OpeningHour" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ClosingHour" class="control-label"></label>
+    <input asp-for="ClosingHour" class="form-control" />
+    <span asp-validation-for="ClosingHour" class="text-danger"></span>
+</div>
+    <span asp-validation-for="OpeningDays" class="text-danger"></span>
