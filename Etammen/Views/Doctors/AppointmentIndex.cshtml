@@ -1,0 +1,67 @@
+﻿@using Etammen.ViewModels
+
+@model IEnumerable<AppointmentViewModel>
+
+@{
+    ViewData["Title"] = "AppointmentIndex";
+}
+
+<h1>AppointmentIndex</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+   
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Clinic)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Patient)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReservtionPeriodNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsAttended)
+            </th>
+            <th>
+                @* @Html.DisplayNameFor(model => model.IsDeleted) *@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+             <input type="hidden" asp-for="@item.Id"/>
+            <td>
+                @Html.DisplayFor(modelItem => item.Clinic.Name)
+            </td>
+            <td>
+                    Dr. @Html.DisplayFor(modelItem => item.Clinic.Doctor.ApplicationUser.FirstName) @Html.DisplayFor(model => item.Clinic.Doctor.ApplicationUser.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReservtionPeriodNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsAttended)
+            </td>
+            <td>
+                @* @Html.DisplayFor(modelItem => item.IsDeleted) *@
+            </td>
+            <td>
+                    <a asp-action="CancelAppointment" asp-route-id="@item.Id" class="btn btn-outline-danger">Cancel Request</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

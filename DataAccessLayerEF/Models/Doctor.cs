@@ -18,14 +18,11 @@ public class Doctor:BaseModel
     [Required]
     public string ProfilePicture {  get; set; }
 
-    [Required]
-    public string Certificate {  get; set; }
+    public string? Certificate {  get; set; }
 
-    [Required]
-    public string Speciality {  get; set; }
+    public string? Speciality {  get; set; }
 
-    [Required]
-    public string Degree {  get; set; }
+    public string? Degree {  get; set; }
 
     public int? TotalRatings { get; set; }
 
@@ -40,7 +37,7 @@ public class Doctor:BaseModel
     [Required]
     public bool IsVisitHome { get; set; }
     
-    public bool IsRegistered { get; set; }
+    public bool? IsRegistered { get; set; }
     public virtual ICollection<Clinic>? Clinics { get; set; } = new HashSet<Clinic>();
     public virtual ApplicationUser? ApplicationUser { get; set; }
     public virtual ICollection<DoctorReviews>? DoctorReviews { get; set; } = new HashSet<DoctorReviews>();

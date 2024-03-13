@@ -2,6 +2,9 @@ using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Models;
+using Etammen.Helpers;
+using Etammen.Mapping_Profiles;
+using Etammen.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -9,16 +12,19 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add(new AuthorizeFilter());
-});
+builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<EtammenDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
-        ,b=>b.MigrationsAssembly(typeof(EtammenDbContext).Assembly.FullName));
-});
+//options =>
+//{
+//    options.Filters.Add(new AuthorizeFilter());
+//}
+builder.Services.AddDbContext<EtammenDbContext>();
+
+/*options =>*/
+//{
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+    //    ,b=>b.MigrationsAssembly(typeof(EtammenDbContext).Assembly.FullName));
+//}
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -35,6 +41,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddAutoMapper(M => M.AddProfile(new DoctorProfile()));
+
+builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+builder.Services.AddTransient<ISmsService, SmsService>();
 
 var app = builder.Build();
 

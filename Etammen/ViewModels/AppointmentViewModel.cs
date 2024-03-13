@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DataAccessLayerEF.Models;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DataAccessLayerEF.Models
+namespace Etammen.ViewModels
 {
-    public class Appointment
+    public class AppointmentViewModel
     {
-        [Key]
-        public int Id {  get; set; }
+        public int Id { get; set; }
+        
+        public string ClinicName { get; set; }
+        public string DoctorFirstName { get; set; }
+        public string DoctorLastName { get; set; }
 
         public int ClinicId { get; set; }
         public int patientId { get; set; }
@@ -20,6 +18,5 @@ namespace DataAccessLayerEF.Models
         public DateOnly Date { get; set; }
         public int ReservtionPeriodNumber { get; set; }
         public bool IsAttended { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

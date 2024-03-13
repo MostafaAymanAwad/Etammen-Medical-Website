@@ -1,0 +1,141 @@
+﻿@model IEnumerable<Etammen.ViewModels.ClinicViewModel>
+
+@{
+    ViewData["Title"] = "ClincIndex";
+}
+
+@if (TempData["CreateMessage"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Success!</strong> @TempData["CreateMessage"]
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@if (TempData["DeleteMessage"] is not null)
+{
+    <div class="alert alert-danger alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Success!</strong> @TempData["DeleteMessage"]
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+@if (TempData["EditedMessage"] is not null)
+{
+    <div class="alert alert-warning alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Success!</strong> @TempData["EditedMessage"]
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+
+<h1>ClincIndex</h1>
+@* @inject BusinessLogicLayer.Interfaces.IUnitOfWork _unitOfWork
+@{
+    string[] includes = {""};
+    _unitOfWork.Doctors.ge
+} *@
+<p>
+    <a asp-action="CreateClinic" class="btn btn-outline-primary">Create New</a>
+</p>
+@if (Model.Count() > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DoctorName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StreetAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.governorate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.City)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Fees)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExmainationDuration)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OpeningHour)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClosingHour)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OpeningDays)
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        Dr. @Html.DisplayFor(modelItem => item.Doctor.ApplicationUser.FirstName) @Html.DisplayFor(modelItem => item.Doctor.ApplicationUser.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StreetAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.governorate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(momodelItemdel => item.City)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Fees)$
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExmainationDuration)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OpeningHour)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClosingHour)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OpeningDays)
+                    </td>
+                    <td>
+                        <a asp-action="EditClinic" asp-route-id="@item.Id" class="btn btn-outline-success">Edit</a> |
+                        <a asp-action="ClinicDetails" asp-route-id="@item.Id" class="btn btn-outline-warning">Details</a> |
+                        <a asp-action="ClinicDelete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <div class="mt-4 alert alert-danger">
+        <h2>NO Clinics Found</h2>
+    </div>
+}
+<script>
+    function dismissAlert() {
+        var alert = document.getElementById('alertMessage');
+        alert.style.display = 'none';
+    }
+</script>
