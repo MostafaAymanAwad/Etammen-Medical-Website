@@ -12,6 +12,6 @@ public interface IGenericRepository<T> where T : class
     Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null);
     Task Add(T entity);
     void Update(T entity);
-
+    Task Delete(int id, bool isHardDeleted);
     Task Delete(int id);
 }
