@@ -30,7 +30,7 @@ namespace Etammen.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Profile(int id = 3)
+        public async Task<IActionResult> Profile(int id)
         {
             string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
 
@@ -40,10 +40,8 @@ namespace Etammen.Controllers
                 return NotFound();
             }
             var mappedDoctor = _mapper.Map<Doctor,DoctorViewModel>(doctor);
-         
             return View(mappedDoctor);
         }
-
         public async Task<IActionResult> ProfileEdit(int id)
         {
             string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
