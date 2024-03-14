@@ -1,0 +1,116 @@
+﻿@model Etammen.ViewModels.ExternalLoginViewModel
+
+@section Head
+{
+    <head>
+        <link rel="stylesheet" href="/assets/css/styles.min.css" />
+    </head>
+}
+
+<body>
+    @{
+        SelectList Governerates = new SelectList(Model.GovCitiesDict.Keys.ToList());
+    }
+
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+         data-sidebar-position="fixed" data-header-position="fixed">
+        <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+            <div class="d-flex align-items-center justify-content-center w-100">
+                <div class="row justify-content-center w-100">
+                    <div class="col-md-12 col-lg-12 col-xxl-6">
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="bg-white mb-3">
+                                <p class="text-center text-blue header mb-0">welcome to Etammen, we are pleased to have you!</p>
+                                <p class="text-center text-blue header mb-0">since this is your First time to log in, just a couple of questions to finish your registeration.</p>
+                                <form asp-action="ExternalLoginConfirmation" asp-controller="Account" method="post">
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="UserName" class="control-label"></label>
+                                                <input asp-for="UserName" class="form-control" />
+                                                <span asp-validation-for="UserName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="Age" class="control-label"></label>
+                                                <input asp-for="Age" min="18" max="100" value="18" class="form-control" />
+                                                <span asp-validation-for="Age" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label asp-for="StreetAddress" class="control-label"></label>
+                                                <input asp-for="StreetAddress" class="form-control" />
+                                                <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="governorate" class="control-label"></label>
+                                                <select asp-for="governorate" asp-items="Governerates" id="govList" class="form-control"></select>
+                                                <span asp-validation-for="governorate" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label asp-for="City" class="control-label"></label>
+                                                <select name="City" id="cityList" class="form-control"></select>
+                                                <span asp-validation-for="City" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br /> 
+                                    <div class="form-group d-flex justify-content-center">
+                                        <input type="submit" value="Register" class="btn btn-primary col-md-4" />
+                                    </div>
+                                    <br />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script>
+            const govList = document.getElementById("govList");
+            const cityList = document.getElementById("cityList");
+
+            const cities = {};
+            @foreach(var pair in Model.GovCitiesDict)
+            {
+                <text>
+                    cities["@pair.Key"] = [];
+                </text>
+                @foreach(string city in pair.Value)
+                {
+                   <text>
+                       cities["@pair.Key"].push("@city")
+                   </text>
+                }
+            }
+            govList.addEventListener("change", function () {
+
+                let selectedGovIndex = this.selectedIndex;
+                let selectGovName = this.options[selectedGovIndex].text;
+                let selectedGovCities = cities[selectGovName];
+                cityList.innerHTML = '';
+
+
+                for (const city of selectedGovCities) {
+                    const option = document.createElement("option");
+                    option.value = city;
+                    option.text = city;
+                    cityList.appendChild(option);
+                }
+            });
+        </script>
+</body>

@@ -22,4 +22,8 @@
     <ProjectReference Include="..\DataAccessLayerEF\DataAccessLayerEF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\DoctorImages\" />
+  </ItemGroup>
+
 </Project>
