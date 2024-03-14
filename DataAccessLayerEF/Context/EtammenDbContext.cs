@@ -14,15 +14,8 @@ public class EtammenDbContext:IdentityDbContext<ApplicationUser>
     public virtual DbSet<DoctorReviews> DoctorReviews { get; set;}
     public virtual DbSet<Appointment> Appointments { get; set;}
 
-    public EtammenDbContext()
+    public EtammenDbContext(DbContextOptions<EtammenDbContext> options):base(options)
     {
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=EtammenDb;Integrated Security=true;Encrypt=false; Trust Server Certificate=true");
-        }
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {

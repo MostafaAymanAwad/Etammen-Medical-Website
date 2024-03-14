@@ -1,0 +1,12 @@
+﻿@model GetDoctorByIdViewModel
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
+}
+
+
+<div class="doctor-profile-card">
+    @{
+        Html.RenderPartial("_PartialViewDoctorCard");
+    }
+</div>

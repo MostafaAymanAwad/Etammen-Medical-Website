@@ -1,0 +1,46 @@
+﻿@model GetOneClinicViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
+}
+
+<h2>Are you sure you want to delete this clinic</h2>
+
+<form asp-action="Delete">
+    <div class="card shadow">
+        <div class="card-body">
+            <h2 class="card-title">@Model.Name</h2>
+            <p class="card-text">Doctor: @Model.DoctorFirstName @Model.DoctorLastName</p>
+            <p class="card-text">Doctor ID: @Model.DoctorId</p>
+            <p class="card-text">Address: @Model.Address.City, @Model.Address.StreetAddress, @Model.Address.governorate</p>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="card-text"><strong>Closed at:</strong> @Model.ClosingHour</p>
+                    <p class="card-text"><strong>Days:</strong> @Model.OpeningDays per week</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="card-text"><strong>Fees:</strong> $@Model.Fees</p>
+                    <div class="text-md-end">
+                        <a asp-action="Index" class="btn btn-primary">Back to list</a>
+                        <input type="submit" class="btn btn-primary" value="Delete" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="Name" type="hidden" />
+        <input asp-for="Address.StreetAddress" type="hidden" />
+        <input asp-for="Address.City" type="hidden" />
+        <input asp-for="Address.governorate" type="hidden" />
+        <input asp-for="Address" type="hidden" />
+        <input asp-for="OpeningDays" type="hidden" />
+        <input asp-for="OpeningHour" type="hidden" />
+        <input asp-for="DoctorLastName" type="hidden" />
+        <input asp-for="DoctorFirstName" type="hidden" />
+        <input asp-for="DoctorId" type="hidden" />
+        <input asp-for="ClosingHour" type="hidden" />
+    </div>
+</form>

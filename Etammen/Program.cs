@@ -2,6 +2,9 @@ using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Models;
+using Etammen.Mapping.ClinicForAdmin;
+using Etammen.Mapping.DoctorForAdmin;
+using Etammen.Mapping.PatientForAdmin;
 using Etammen.Helpers;
 using Etammen.Mapping_Profiles;
 using Etammen.Settings;
@@ -13,6 +16,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    //options.Filters.Add(new AuthorizeFilter());
+});
 
 //options =>
 //{
@@ -40,11 +47,17 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
   .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
+//Admin Services
+builder.Services.AddScoped<DoctorsAdminMapper>();
+builder.Services.AddScoped<ClinicAdminMapper>();
+builder.Services.AddScoped<PatientForAdminMapper>();
 builder.Services.AddAutoMapper(M => M.AddProfile(new DoctorProfile()));
 
 builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
 builder.Services.AddTransient<ISmsService, SmsService>();
+
 
 var app = builder.Build();
 
@@ -63,6 +76,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Patient}/{action=Index}/{id?}");
 
 app.Run();

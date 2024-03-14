@@ -1,0 +1,56 @@
+﻿@{
+    Layout = null;
+}
+<div class="doctor-profile-image">
+    <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENTf0767c/Profile/150/doctor-ahmed-abd-el-bary-urology_20190125212459768.jpg" alt="Doctor Ahmed Abdelbary">
+</div>
+<div class="doctor-profile-details">
+    <h2 class="doctor-name">Doctor: @Model.FirstName @Model.LastName</h2>
+    <h3 class="doctor-title">Professor of @Model.Speciality</h3>
+    <p class="doctor-specialties">
+        Specialized in
+        <a href="#">@Model.Speciality</a>
+
+    </p>
+    <p class="doctor-rating">
+        Degree:
+        <span class="rating-value">@Model.Degree</span>
+    </p>
+    <p class="doctor-reviews">@Model.AboutTheDoctor</p>
+    <p class="doctor-reviews">@Model.Certificate</p>
+    <p>Years of experience: @Model.YearsOfExperience</p>
+
+    <div class="doctor-recommendation">
+        <p>Age: @Model.Age</p>
+        <p>Phone number: @Model.ApplicationUser.PhoneNumber</p>
+        <p>Gender: @Model.Gender</p>
+        <p>Total rating: @Model.TotalRatings</p>
+
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="clinicDropdown" style="background-color: #5D87FF; color:white;">Doctor's Clinics:</label>
+                    </div>
+                    <select class="custom-select" id="clinicDropdown" onchange="location = this.value;">
+                        <option selected value="#">Choose...</option>
+                        @foreach (var clinic in Model.Clinics)
+                        {
+                            <option value="@clinic.Id">@clinic.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 mt-3 mt-md-0">
+                <div class="text-md-right">
+                    <a asp-controller="DoctorAdmin" asp-action="Index" class="btn btn-primary" style="background-color: #5D87FF;">Back to list</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

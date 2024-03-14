@@ -1,0 +1,50 @@
+﻿@model List<GetAllDoctorsViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
+}
+
+<table id="myTable" class="display">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Specialty</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doctor in Model)
+        {
+            <tr>
+                <td>@doctor.Id</td>
+                <td>@doctor.ApplicationUser.FirstName</td>
+                <td>@doctor.ApplicationUser.LastName</td>
+                <td>@doctor.ApplicationUser.Age</td>
+                <td>@doctor.ApplicationUser.Gender</td>
+                <td>@doctor.Speciality</td>
+
+                <td class="dropdown">
+                    <button class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-sharp fa-solid fa-bars"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" asp-action="Details" asp-controller="DoctorAdmin" asp-route-id="@doctor.Id">Details</a></li>
+                        <li><a class="dropdown-item" asp-action="Delete" asp-controller="DoctorAdmin" asp-route-id="@doctor.Id">Delete</a></li>
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        })
+    </script>
+}

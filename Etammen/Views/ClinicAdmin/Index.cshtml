@@ -1,0 +1,52 @@
+﻿
+@model IEnumerable<GetAllClinicsViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
+}
+
+<table id="myTable" class="display">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Clinic Name</th>
+            <th>Doctor Id</th>
+            <th>Governorate</th>
+            <th>City</th>
+            <th>Street</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var clinic in Model)
+        {
+            <tr>
+                <td>@clinic.Id</td>
+                <td>@clinic.Name</td>
+                <td>@clinic.DoctorId</td>
+                <td>@clinic.Address.governorate</td>
+                <td>@clinic.Address.City</td>
+                <td>@clinic.Address.StreetAddress</td>
+
+                <td class="dropdown">
+                    <button class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-sharp fa-solid fa-bars"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" asp-action="Details" asp-controller="ClinicAdmin" asp-route-id="@clinic.Id">Details</a></li>
+                        <li><a class="dropdown-item" asp-action="Delete" asp-controller="ClinicAdmin" asp-route-id="@clinic.Id">Delete</a></li>
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section JS {
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        })
+    </script>
+}
