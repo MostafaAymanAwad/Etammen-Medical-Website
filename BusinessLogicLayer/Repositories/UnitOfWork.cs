@@ -15,7 +15,7 @@ namespace BusinessLogicLayer.Repositories
         private bool _isDisposed;
         private readonly EtammenDbContext _context;
         public IGenericRepository<Clinic> Clinics { get; private set; }
-        public IGenericRepository<Doctor> Doctors { get; private set; }
+        public IDoctorRepository Doctors {  get; private set; }
 
         public IGenericRepository<Patient> Patients { get; private set; }
 
@@ -28,8 +28,12 @@ namespace BusinessLogicLayer.Repositories
         {
             _context = context;
             Clinics = new GenericRepository<Clinic>(_context);
-            Doctors = new GenericRepository<Doctor>(_context);
+
+            Doctors = new DoctorRepository(_context);
+           
+
             Patients = new GenericRepository<Patient>(_context);
+
             Appointments = new GenericRepository<Appointment>(_context);
             DoctorReviews = new GenericRepository<DoctorReviews>(_context);
         }

@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Interfaces;
+
 using Etammen.Mapping.DoctorForAdmin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Etammen.Controllers
     public class PatientController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+         private readonly IMapper _mapper;
         private readonly IPatientRepository _patientRepository;
         private readonly DoctorsAdminMapper _doctorsMapper;
 
@@ -17,10 +19,19 @@ namespace Etammen.Controllers
             _unitOfWork = unitOfWork;
             _doctorsMapper = getAllDoctorsMapper;
             _patientRepository = patientRepository;
+            
         }
-
-
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
+        public IActionResult Search()
+    {
+           return View(new SerachViewModel());
+    }
+		public async Task<IActionResult> Index(string specialty, string city, string area,string doctorName,string clinicName)
+		{
+			 var searchedDoctors= await _unitOfWork.Doctors.Search(specialty, city, area, doctorName, clinicName);
+			 var mappedDoctors=_mapper.Map<IEnumerable<Doctor>, IEnumerable<DoctorWithNameViewModel>>(searchedDoctors);
+			 return View(mappedDoctors);
+		}
+        public async Task<IActionResult> pagination(int pageNumber = 1, int pageSize = 10)
         {
             try
             {
@@ -119,4 +130,5 @@ namespace Etammen.Controllers
             }
         }
     }
+
 }
