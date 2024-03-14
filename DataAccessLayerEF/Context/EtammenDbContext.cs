@@ -26,8 +26,6 @@ public class EtammenDbContext:IdentityDbContext<ApplicationUser>
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
-       // builder.ApplyConfiguration(new DoctorConfigurtion());
-        //builder.ApplyConfiguration(new PatientConfiguration());
         builder.ApplyConfiguration(new DoctorReviewsConfiguration());
         base.OnModelCreating(builder);
     }
