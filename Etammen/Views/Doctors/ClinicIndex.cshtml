@@ -34,14 +34,14 @@
 }
 
 
-<h1>ClincIndex</h1>
+<h1>Your clinics</h1>
 @* @inject BusinessLogicLayer.Interfaces.IUnitOfWork _unitOfWork
 @{
     string[] includes = {""};
     _unitOfWork.Doctors.ge
 } *@
 <p>
-    <a asp-action="CreateClinic" class="btn btn-outline-primary">Create New</a>
+    <a asp-action="CreateClinic" class="btn btn-outline-primary">Add a clinic</a>
 </p>
 @if (Model.Count() > 0)
 {
@@ -129,13 +129,9 @@
 }
 else
 {
-    <div class="mt-4 alert alert-danger">
-        <h2>NO Clinics Found</h2>
+    <div class="alert alert-info alert-dismissible d-flex align-items-center fade show">
+        <i class="bi-info-circle-fill"></i>
+        <strong class="mx-2">You have no clinics</strong> 
+        <a asp-action="CreateClinic" class="btn btn-outline-primary">Add a clinic?</a>
     </div>
 }
-<script>
-    function dismissAlert() {
-        var alert = document.getElementById('alertMessage');
-        alert.style.display = 'none';
-    }
-</script>

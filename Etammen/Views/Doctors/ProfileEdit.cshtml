@@ -22,9 +22,16 @@
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="ProfilePicture" />
 
-                        <img class="img-account-profile rounded-circle mb-2" src="/files/Images/@Model.ProfilePicture" alt="Profile Picture" style="width:250px;height:300px">
-                        <span>Upload new image</span>
-                        <input type="file" name="ProfilePictureFormFile" class="btn btn-primary" />
+                        @if (Model.ProfilePicture != null)
+                        {
+                            <img class="img-account-profile rounded-circle mb-2" src="/files/Images/@Model.ProfilePicture" style="width:250px;height:300px" />
+                        }
+                        else
+                        {
+                            <img class="img-account-profile rounded-circle mb-2" src="/files/Images/noimage.jpg" style="width:250px;height:300px" />
+                        }
+                        <p class="font-weight-bold">Upload new image</p>
+                        <input type="file" name="ProfilePictureFormFile"/>
                     </div>
                 </div>
             </div>
