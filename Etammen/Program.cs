@@ -2,11 +2,15 @@ using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Models;
+
+using Etammen.MappingProfile;
+
 using Etammen.Mapping.ClinicForAdmin;
 using Etammen.Mapping.DoctorForAdmin;
 using Etammen.Mapping.PatientForAdmin;
 using Etammen.Mapping_Profiles;
 using Etammen.Settings;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -103,13 +107,16 @@ builder.Services.AddTransient<ISmsService, SmsService>();
 builder.Services.AddTransient<DoctorRegisterationHelper>();
 builder.Services.AddTransient<AccountMapper>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 //Admin Services
 builder.Services.AddScoped<DoctorsAdminMapper>();
 builder.Services.AddScoped<ClinicAdminMapper>();
 builder.Services.AddScoped<PatientForAdminMapper>();
-builder.Services.AddAutoMapper(M => M.AddProfile(new DoctorProfile()));
+
 
 builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
 builder.Services.AddTransient<ISmsService, SmsService>();
