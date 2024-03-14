@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> _signInManager
+@{
+    var providers = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+ }
+
+
+<style>
+    .btn-facebook {
+        color: #fff;
+        background-color: #3b5998; /
+    }
+
+    .btn-facebook:hover {
+         background-color: #2d4373; 
+         border-color: #2d4373; 
+    }
+
+    .btn-google {
+        color: #fff;
+        background-color: #db4437; 
+    }
+
+   .btn-google:hover {
+        background-color: #c13500; 
+        border-color: #c13500; 
+    }
+
+</style>
+
+<div div class="col-md-12">
+    <form asp-action="ExternalLogin"  asp-controller="Account" method="post" class="form-horizontal">
+         <div class="row">
+             <div class="form-group  d-flex justify-content-center">
+                <button type="submit" name="provider" value="@providers[0].Name" class=" btn btn-facebook btn-facebook:hover me-2">@providers[0].Name</button>
+                <button type="submit" name="provider" value="@providers[1].Name" class=" btn btn-google btn-google:hover me-2">@providers[1].Name</button>
+             </div>
+         </div>
+    </form>
+</div>
