@@ -74,7 +74,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
         return await query.Where(criteria).ToListAsync();
     }
-    public async Task AddAsync(T entity)
   
     public async Task Add(T entity)
     {

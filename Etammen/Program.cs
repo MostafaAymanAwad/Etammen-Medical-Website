@@ -25,13 +25,13 @@ builder.Services.AddControllersWithViews(options =>
 //{
 //    options.Filters.Add(new AuthorizeFilter());
 //}
-builder.Services.AddDbContext<EtammenDbContext>();
+builder.Services.AddDbContext<EtammenDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+        , b => b.MigrationsAssembly(typeof(EtammenDbContext).Assembly.FullName));
+});
 
-/*options =>*/
-//{
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
-    //    ,b=>b.MigrationsAssembly(typeof(EtammenDbContext).Assembly.FullName));
-//}
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

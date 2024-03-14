@@ -11,7 +11,7 @@ public interface IGenericRepository<T> where T : class
 
     Task<T> FindBy(Expression<Func<T, bool>> criteria, string[] includes = null);
     Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null);
-    Task AddAsync(T entity);
+    Task Add(T entity);
     void Update(T entity);
 
     Task Delete(int id);

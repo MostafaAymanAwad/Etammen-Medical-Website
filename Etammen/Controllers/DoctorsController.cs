@@ -126,7 +126,7 @@ namespace Etammen.Controllers
             if (ModelState.IsValid)
             {
                 var mappedClinic = _mapper.Map<ClinicViewModel, Clinic>(VMmodel);
-                await _unitOfWork.Clinics.AddAsync(mappedClinic);
+                await _unitOfWork.Clinics.Add(mappedClinic);
                 var count = await _unitOfWork.Commit();
                 if (count > 0)
                     TempData["CreateMessage"] = $" clinc {mappedClinic.Name} Was Added";
