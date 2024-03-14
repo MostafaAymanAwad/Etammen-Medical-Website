@@ -2,6 +2,7 @@ using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Models;
+using Etammen.MappingProfile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
   .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddAutoMapper(M => M.AddProfile(new DoctorWithNameProfile()));
 
 
 var app = builder.Build();

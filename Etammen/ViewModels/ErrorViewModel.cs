@@ -1,4 +1,4 @@
-namespace Etammen.Models
+namespace Etammen.ViewModels
 {
     public class ErrorViewModel
     {

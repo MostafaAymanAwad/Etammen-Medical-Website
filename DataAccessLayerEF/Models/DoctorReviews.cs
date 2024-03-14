@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayerEF.Models
 {
-    public class DoctorReviews
+    public class DoctorReviews:BaseModel
     {
         public int DoctorId { get; set; }
 
@@ -18,6 +18,8 @@ namespace DataAccessLayerEF.Models
         public int? Rate { get; set; }
 
         public string? Comment { get; set; }
+
+        
 
     }
 }
