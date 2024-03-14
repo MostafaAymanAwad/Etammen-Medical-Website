@@ -5,6 +5,7 @@ using DataAccessLayerEF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayerEF.Migrations
 {
     [DbContext(typeof(EtammenDbContext))]
-    partial class EtammenDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240310151623_AddingIsDelted")]
+    partial class AddingIsDelted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,7 +139,7 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasIndex("patientId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Clinic", b =>
@@ -206,7 +209,7 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Clinics", (string)null);
+                    b.ToTable("Clinics");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Doctor", b =>
@@ -277,7 +280,7 @@ namespace DataAccessLayerEF.Migrations
                         .IsUnique()
                         .HasFilter("[ApplicationUserId] IS NOT NULL");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.DoctorReviews", b =>
@@ -310,7 +313,7 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorReviews", (string)null);
+                    b.ToTable("DoctorReviews");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Patient", b =>
@@ -362,7 +365,7 @@ namespace DataAccessLayerEF.Migrations
                         .IsUnique()
                         .HasFilter("[ApplicationUserId] IS NOT NULL");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
