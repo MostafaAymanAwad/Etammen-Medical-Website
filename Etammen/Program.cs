@@ -37,6 +37,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
   .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 //Admin Services
 builder.Services.AddScoped<DoctorsAdminMapper>();
@@ -61,6 +62,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Admin}/{action=Home}/{id?}");
+    pattern: "{controller=Patient}/{action=Index}/{id?}");
 
 app.Run();

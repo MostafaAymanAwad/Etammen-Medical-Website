@@ -1,33 +1,43 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-   
+
     <title>@ViewData["Title"] - Vezeeta</title>
     <title>Vezeeta</title>
-        <meta charset="utf-8">
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="description">
-        <meta content="" name="keywords">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="description">
+    <meta content="" name="keywords">
 
-        <!-- Favicons -->
-        <link href="/assets/img/favicon.png" rel="icon">
-        <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <!-- Favicons -->
+    <link href="/assets/img/favicon.png" rel="icon">
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-        <!-- Vendor CSS Files -->
-        <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-        <link href="/assets/vendor/animate.css/animate.min.css" rel="stylesheet">
-        <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-        <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-        <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-        <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-        <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="/assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
-        <!-- Template Main CSS File -->
-        <link href="/assets/css/style.css" rel="stylesheet">
+    <!-- Template Main CSS File -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/PatientAll.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="/DataTables/datatables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+
 </head>
 <body>
 
@@ -141,17 +151,28 @@
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 
-    
+
     <!----------------scrips------------------>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    
+
     <!-- Vendor JS Files -->
     <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
     <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
+    <script src="~/AdminAssets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/AdminAssets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/AdminAssets/js/sidebarmenu.js"></script>
+    <script src="~/AdminAssets/js/app.min.js"></script>
+    <script src="~/AdminAssets/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="~/AdminAssets/libs/simplebar/dist/simplebar.js"></script>
+    <script src="~/AdminAssets/js/dashboard.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+    <script src="/DataTables/datatables.js"></script>
+
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

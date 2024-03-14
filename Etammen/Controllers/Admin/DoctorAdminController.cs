@@ -23,7 +23,6 @@ namespace Etammen.Controllers.Admin
         {
             var doctors = await _unitOfWork.Doctors.FindAllBy(e => e.IsDeleted == false, new[] { "ApplicationUser" });
             var doctorsViewModel = _doctorsMapper.MapDoctorsToViewModel(doctors);
-            var clinics = await _unitOfWork.Clinics.GetAll();
             return View(doctorsViewModel);
         }
 

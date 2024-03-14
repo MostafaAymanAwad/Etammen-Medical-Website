@@ -56,10 +56,43 @@ namespace Etammen.Mapping.DoctorForAdmin
                 ProfilePicture = doctor.ProfilePicture,
                 TotalRatings = doctor.TotalRatings,
                 YearsOfExperience = doctor.YearsOfExperience,
-              
+
             };
 
             return doctorViewModel;
+        }
+
+        public IEnumerable<GetDoctorByIdViewModel> MapDoctorEntitiesToDoctorViewModel(IEnumerable<Doctor> doctors)
+        {
+            var viewModels = new List<GetDoctorByIdViewModel>();
+
+            foreach (var doctor in doctors)
+            {
+                var doctorViewModel = new GetDoctorByIdViewModel
+                {
+                    Id = doctor.Id,
+                    ApplicationUserId = doctor.ApplicationUserId,
+                    FirstName = doctor.ApplicationUser.FirstName,
+                    LastName = doctor.ApplicationUser.LastName,
+                    Age = doctor.ApplicationUser.Age,
+                    Gender = doctor.ApplicationUser.Gender,
+                    Speciality = doctor.Speciality,
+                    ApplicationUser = doctor.ApplicationUser,
+                    Degree = doctor.Degree,
+                    AboutTheDoctor = doctor.AboutTheDoctor,
+                    Certificate = doctor.Certificate,
+                    ProfilePicture = doctor.ProfilePicture,
+                    TotalRatings = doctor.TotalRatings,
+                    YearsOfExperience = doctor.YearsOfExperience,
+
+                };
+
+                viewModels.Add(doctorViewModel);
+            }
+
+            return viewModels;
+
+
         }
 
     }
