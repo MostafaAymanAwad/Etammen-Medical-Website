@@ -121,7 +121,7 @@ builder.Services.AddScoped<PatientForAdminMapper>();
 builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
 builder.Services.AddTransient<ISmsService, SmsService>();
 
-builder.Services.AddAutoMapper(typeof(Program));
+
 
 var app = builder.Build();
 

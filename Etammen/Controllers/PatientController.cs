@@ -1,6 +1,9 @@
-﻿using BusinessLogicLayer.Interfaces;
-
+﻿using AutoMapper;
+using BusinessLogicLayer.Interfaces;
+using DataAccessLayerEF.Models;
+using Etammen.Helpers;
 using Etammen.Mapping.DoctorForAdmin;
+using Etammen.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,21 +13,24 @@ namespace Etammen.Controllers
     public class PatientController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-         private readonly IMapper _mapper;
+        private readonly IMapper _mapper;
         private readonly IPatientRepository _patientRepository;
         private readonly DoctorsAdminMapper _doctorsMapper;
-
-        public PatientController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, IPatientRepository patientRepository)
+        private readonly DoctorRegisterationHelper _doctorRegisterationHelper;
+        public PatientController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, IPatientRepository patientRepository, DoctorRegisterationHelper doctorRegisterationHelper)
         {
             _unitOfWork = unitOfWork;
             _doctorsMapper = getAllDoctorsMapper;
             _patientRepository = patientRepository;
-            
+            _doctorRegisterationHelper = doctorRegisterationHelper;
         }
         public IActionResult Search()
-    {
-           return View(new SerachViewModel());
-    }
+        {
+            var vm = new SerachViewModel();
+            vm.city_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
+            vm.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
+            return View(vm);
+        }
 		public async Task<IActionResult> Index(string specialty, string city, string area,string doctorName,string clinicName)
 		{
 			 var searchedDoctors= await _unitOfWork.Doctors.Search(specialty, city, area, doctorName, clinicName);

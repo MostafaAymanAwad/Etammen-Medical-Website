@@ -1,13 +1,12 @@
 ﻿@model Etammen.ViewModels.SerachViewModel
 
 @{
-	SelectList Specialties = new SelectList(Model.Specialties);
 	SelectList Cities = new SelectList(Model.city_areaDict.Keys);
 	var dict=@Model.city_areaDict;
 }
 <form asp-action="Index">
 	<label asp-for="Specialties"></label>
-	<select asp-items="@Specialties" class="form-select" name="specialty"></select>
+	<select asp-items="@Model.Specialties" class="form-select" name="specialty"></select>
 	<label>City</label>
 	<select asp-items="Cities" id="cityselectlist" class="form-select" name="city">	</select>
 	<label>Area</label>
