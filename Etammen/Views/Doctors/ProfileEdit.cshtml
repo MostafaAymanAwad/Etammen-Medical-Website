@@ -1,0 +1,89 @@
+﻿@model Etammen.ViewModels.DoctorViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "_Layout";
+}
+
+<h1>Edit</h1>
+
+<h4>Doctor</h4>
+<hr />
+
+<form asp-controller="Doctors" asp-action="ProfileEdit" method="post" enctype="multipart/form-data">
+    <div class="container-xl px-4 mt-4">
+        <hr class="mt-0 mb-4">
+        <div class="row">
+            <div class="col-xl-4">
+                <div class="card mb-4 mb-xl-0">
+                    <div class="card-header">Profile Picture</div>
+                    <div class="card-body text-center">
+                        <input asp-for="ApplicationUserId" type="hidden"/>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ProfilePicture" />
+
+                        @if (Model.ProfilePicture != null)
+                        {
+                            <img class="img-account-profile rounded-circle mb-2" src="/files/Images/@Model.ProfilePicture" style="width:250px;height:300px" />
+                        }
+                        else
+                        {
+                            <img class="img-account-profile rounded-circle mb-2" src="/files/Images/noimage.jpg" style="width:250px;height:300px" />
+                        }
+                        <p class="font-weight-bold">Upload new image</p>
+                        <input type="file" name="ProfilePictureFormFile"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8">
+                <div class="card mb-4">
+                    <div class="card-header">Account Details</div>
+                    <div class="card-body">
+                        <div class="row gx-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="FirstName"></label>
+                                <input class="form-control" asp-for="FirstName" placeholder="Enter your first name">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="LastName"></label>
+                                <input class="form-control" asp-for="LastName" placeholder="Enter your last name">
+                            </div>
+                        </div>
+                        <div class="row gx-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="Age"></label>
+                                <input class="form-control" asp-for="Age" placeholder="Enter your age">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="YearsOfExperience"></label>
+                                <input class="form-control" asp-for="YearsOfExperience" placeholder="Enter your Experience">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small mb-1" asp-for="AboutTheDoctor"></label>
+                            <input class="form-control" asp-for="AboutTheDoctor" placeholder="Enter your About">
+                        </div>
+                        <div class="row gx-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="HomeVisitFees"></label>
+                                <input class="form-control" asp-for="HomeVisitFees" placeholder="Enter your Home Visit Fees">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="IsVisitHome"></label>
+                                <input type="checkbox" asp-for="IsVisitHome">
+                            </div>
+                        </div>
+                        <!-- More input fields here -->
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,18 @@
+﻿@model Etammen.ViewModels.ClinicViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+
+    <partial name="Partial/_DetailsAndDeletePartialView.cshtml" />
+
+<form asp-action="ClinicDelete">
+        <input type="hidden" asp-for="Id" />
+         <input type="submit" value="Delete" class="btn btn-outline-danger" /> |
+    <a asp-action="ClinicIndex" class="btn btn-outline-primary">Back to List</a>
+    </form>
+</div>

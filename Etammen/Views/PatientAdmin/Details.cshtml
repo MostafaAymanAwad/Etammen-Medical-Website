@@ -1,0 +1,33 @@
+﻿@model GetOnePatientViewModel
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
+}
+
+
+
+<div class="doctor-profile-details">
+    <h2 class="doctor-name">Doctor: @Model.FirstName @Model.LastName</h2>
+    <h3 class="doctor-title">Id: @Model.Id</h3>
+
+    <h5>Address:</h5>
+    <p class="doctor-reviews">Government: @Model.Address.governorate</p>
+    <p class="doctor-reviews">City: @Model.Address.City</p>
+    <p class="doctor-reviews">Street: @Model.Address.StreetAddress</p>
+
+    <div class="doctor-recommendation">
+        <p>Age: @Model.Age</p>
+        <p>Gender: @Model.Gender</p>
+
+    </div>
+    <div class="container mt-5">
+        <div class="col-md-6 mt-3 mt-md-0">
+            <div class="text-md-right">
+                <a asp-controller="PatientAdmin" asp-action="Index" class="btn btn-primary" style="background-color: #5D87FF;">Back to list</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

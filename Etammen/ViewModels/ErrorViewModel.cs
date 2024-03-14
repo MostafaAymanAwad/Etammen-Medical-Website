@@ -1,9 +1,10 @@
-namespace Etammen.ViewModels
-{
-    public class ErrorViewModel
-    {
-        public string? RequestId { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-    }
+namespace Etammen.ViewModels;
+
+public class ErrorViewModel
+
+{
+    public string? RequestId { get; set; }
+
+    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }

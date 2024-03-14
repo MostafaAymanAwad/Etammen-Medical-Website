@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Email Confirmation</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f8f9fa;
+		}
+
+		.container {
+			margin-top: 50px;
+			max-width: 500px; /* Adjusted the max-width for the container */
+		}
+
+		.card {
+			border: 1px solid #007bff;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		.card-header {
+			background-color: #007bff;
+			color: #ffffff;
+			border-radius: 5px 5px 0 0;
+		}
+
+		.card-title {
+			font-size: 1.25rem;
+			margin-bottom: 0;
+		}
+
+		.card-body {
+			padding: 20px;
+		}
+
+		.card-text {
+			color: #333333;
+		}
+
+		.btn-primary {
+			background-color: #007bff;
+			color: #ffffff;
+			border: none;
+			padding: 10px 20px;
+			text-decoration: none;
+			border-radius: 5px;
+			display: inline-block;
+		}
+
+			.btn-primary:hover {
+				background-color: #0056b3;
+			}
+
+		.text-center {
+			text-align: center;
+		}
+
+		.text-muted {
+			color: #6c757d;
+		}
+
+		.signature {
+			font-family: 'Lora', serif;
+			color: #007bff;
+		}
+
+		/* Centering the button */
+		.btn-container {
+			text-align: center;
+		}
+
+		/* Centering the confirmation message */
+		.confirmation-msg {
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h5 class="card-title text-center">Welcome to Etammen!</h5>
+					</div>
+					<div class="card-body">
+						<p class="card-text confirmation-msg">Please complete the registration process by confirming your email. Thank you.</p>
+						<div class="btn-container">
+							<a href="callbackplaceholder" class="btn btn-primary">Confirm</a>
+						</div>
+						<br>
+						<div class="text-center signature">
+							<p>We wish the best for you</p>
+							<p>Etammen Team.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
