@@ -40,7 +40,7 @@ namespace Etammen.Controllers
             mainViewModel.SearchedDoctors = searchedDoctors.ToList();
 
             DoctorFilterOptions filterOptions = _mapper.Map<MainViewModel,DoctorFilterOptions>(mainViewModel);
-            mainViewModel.FilteredOrderedDoctors = await _unitOfWork.Doctors.FilterByOptions(filterOptions,
+            mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.FilterByOptions(filterOptions,
                 mainViewModel.SearchedDoctors);
             mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
@@ -73,10 +73,10 @@ namespace Etammen.Controllers
                 throw; // Rethrow the exception for further investigation
             }
         }
-        public async  Task<IActionResult> Filter(MainViewModel mainViewModel)
+        public async Task<IActionResult> Filter(MainViewModel mainViewModel)
         {
             DoctorFilterOptions filterOptions = _mapper.Map<MainViewModel, DoctorFilterOptions>(mainViewModel);
-            mainViewModel.FilteredOrderedDoctors = await _unitOfWork.Doctors.FilterByOptions(filterOptions,
+            mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.FilterByOptions(filterOptions,
                 mainViewModel.SearchedDoctors);
             mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
