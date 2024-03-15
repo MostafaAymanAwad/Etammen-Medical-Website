@@ -14,12 +14,25 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1" />
+<<<<<<< HEAD
     <PackageReference Include="Twilio" Version="7.0.1" />
+=======
+
+    <PackageReference Include="Twilio" Version="7.0.1" />
+
+>>>>>>> e6b104b1581f0b9f44bb2471e87576a7137b8974
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
     <ProjectReference Include="..\DataAccessLayerEF\DataAccessLayerEF.csproj" />
+<<<<<<< HEAD
+=======
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\DoctorImages\" />
+>>>>>>> e6b104b1581f0b9f44bb2471e87576a7137b8974
   </ItemGroup>
 
 </Project>

@@ -291,6 +291,18 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateOnly>("CreationDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("DeletionDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly>("LastUpdate")
+                        .HasColumnType("date");
+
                     b.Property<int?>("Rate")
                         .HasColumnType("int");
 

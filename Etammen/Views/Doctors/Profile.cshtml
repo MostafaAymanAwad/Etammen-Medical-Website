@@ -18,8 +18,14 @@
                 <div class="card mb-4 mb-xl-0">
                     <div class="card-header">Profile Picture</div>
                     <div class="card-body text-center">
-
-                        <img class="img-account-profile rounded-circle mb-2" src="/files/Images/@Model.ProfilePicture" style="width:250px;height:300px"/>
+                        @if (Model.ProfilePicture != null)
+                        {
+                            <img class="img-account-profile rounded-circle mb-2" src="/files/Images/@Model.ProfilePicture" style="width:250px;height:300px"/>
+                        }
+                        else
+                        {
+                            <img class="img-account-profile rounded-circle mb-2" src="/files/Images/noimage.jpg" style="width:250px;height:300px" />
+                        }
                     </div>
                 </div>
             </div>
@@ -72,12 +78,12 @@
 
                             <div class="col-md-6">
                                 <label class="small mb-1" asp-for="HomeVisitFees"></label>
-                                <input class="form-control" asp-for="HomeVisitFees" placeholder="Enter your first name" value="@Model.HomeVisitFees $" readonly>
+                                <input class="form-control" asp-for="HomeVisitFees" placeholder="Enter your first name" value="@String.Format("{0:N2}", Model.HomeVisitFees)$" readonly>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="small mb-1" asp-for="IsVisitHome"></label>
-                                <input asp-for="IsVisitHome" value="@Model.IsVisitHome" disabled checked value="0">
+                                <input asp-for="IsVisitHome" value="@Model.IsVisitHome" disabled value="0">
                             </div>
                         </div>
 
