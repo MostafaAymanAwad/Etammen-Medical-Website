@@ -54,9 +54,9 @@ public class DoctorRegisterationHelper
         new List<string>
         {
             "General Practitioner (GP)",
-            "professor",
-            "lecturer",
-            "specialist",
+            "Professor",
+            "Lecturer",
+            "Specialist",
             "Consultant",
         }
     );
