@@ -140,6 +140,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Patient}/{action=Index}/{id?}");
+    pattern: "{controller=Admin}/{action=Home}/{id?}");
 
 app.Run();
