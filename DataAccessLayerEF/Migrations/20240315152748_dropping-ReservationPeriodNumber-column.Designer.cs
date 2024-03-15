@@ -5,6 +5,7 @@ using DataAccessLayerEF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayerEF.Migrations
 {
     [DbContext(typeof(EtammenDbContext))]
-    partial class EtammenDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240315152748_dropping-ReservationPeriodNumber-column")]
+    partial class droppingReservationPeriodNumbercolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,12 +126,6 @@ namespace DataAccessLayerEF.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<bool>("IsHomeVisit")
-                        .HasColumnType("bit");
-
-                    b.Property<TimeOnly>("ReservationPeriodNumber")
-                        .HasColumnType("time");
 
                     b.Property<int>("patientId")
                         .HasColumnType("int");
