@@ -18,14 +18,11 @@ public class Doctor:BaseModel
     [Required]
     public string ProfilePicture {  get; set; }
 
-    [Required]
-    public string Certificate {  get; set; }
+    public string? Certificate {  get; set; }
 
-    [Required]
-    public string Speciality {  get; set; }
+    public string? Speciality {  get; set; }
 
-    [Required]
-    public string Degree {  get; set; }
+    public string? Degree {  get; set; }
 
     public int? TotalRatings { get; set; }
 

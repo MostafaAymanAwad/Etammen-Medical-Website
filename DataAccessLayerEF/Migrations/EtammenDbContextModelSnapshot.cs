@@ -136,7 +136,7 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasIndex("patientId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Clinic", b =>
@@ -206,7 +206,7 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Clinics");
+                    b.ToTable("Clinics", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Doctor", b =>
@@ -277,7 +277,7 @@ namespace DataAccessLayerEF.Migrations
                         .IsUnique()
                         .HasFilter("[ApplicationUserId] IS NOT NULL");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.DoctorReviews", b =>
@@ -291,6 +291,18 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateOnly>("CreationDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("DeletionDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly>("LastUpdate")
+                        .HasColumnType("date");
+
                     b.Property<int?>("Rate")
                         .HasColumnType("int");
 
@@ -298,7 +310,7 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorReviews");
+                    b.ToTable("DoctorReviews", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Patient", b =>
@@ -350,7 +362,7 @@ namespace DataAccessLayerEF.Migrations
                         .IsUnique()
                         .HasFilter("[ApplicationUserId] IS NOT NULL");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -1,0 +1,58 @@
+﻿@model Etammen.ViewModels.SerachViewModel
+
+@{
+	SelectList Cities = new SelectList(Model.city_areaDict.Keys);
+	var dict=@Model.city_areaDict;
+}
+<form asp-action="Index">
+	<label asp-for="Specialties"></label>
+	<select asp-items="@Model.Specialties" class="form-select" name="specialty"></select>
+	<label>City</label>
+	<select asp-items="Cities" id="cityselectlist" class="form-select" name="city">	</select>
+	<label>Area</label>
+	<select id="areaselectlist" class="form-select" name="area">
+		<option value="ALL">ALL</option>
+	</select>
+	<label>Doctor Name</label>
+	<br/>
+	<input type="text" value="" placeholder="EX: Ahmed Mostafa" name="doctorName" class="form-text"/>
+	<br/>
+	<label>Clinic Name</label>
+	<br />
+	<input type="text" value="" placeholder="EX: ElAml" name="clinicName" class="form-text" />
+	<br />
+	<input type="submit" value="submit" class="btn btn-primary" />
+</form>
+
+@section Scripts{
+	<script>
+		let City_Area = {};
+	
+		@foreach (var pair in Model.city_areaDict)
+		{
+			<text>
+	             City_Area["@pair.Key"]=[];
+			</text>
+			@foreach(var area in pair.Value)
+			{
+				<text>
+					City_Area["@pair.Key"].push("@area");
+				</text>
+			}
+		}
+		let areaSelect = document.getElementById("areaselectlist");
+		document.getElementById("cityselectlist").addEventListener("change", function () {
+			areaSelect.innerHTML = '';
+			let selectedIndex = this.selectedIndex;
+			let selectedValue = this.options[selectedIndex].value;
+			let areas = City_Area[selectedValue];
+			for (let area of areas) 
+			{
+				let newOption = document.createElement("option");
+				newOption.value = area;
+				newOption.text = area;
+				areaSelect.appendChild(newOption);
+			}
+		});
+	</script>
+}

@@ -1,0 +1,77 @@
+.doctor-profile-card {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.doctor-profile-image img {
+    width: 150px;
+    height: auto;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.doctor-name {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.doctor-title {
+    font-size: 1.2rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.doctor-specialties {
+    margin: 10px 0;
+}
+
+.doctor-rating {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0;
+}
+
+.doctor-reviews {
+    font-style: italic;
+    margin: 5px 0;
+}
+
+.doctor-recommendation {
+    margin-top: 10px;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    background-size: cover;
+    margin-right: 10px;
+}
+
+.facebook-icon {
+    background-image: url('path-to-facebook-icon.png');
+}
+
+.whatsapp-icon {
+    background-image: url('path-to-whatsapp-icon.png');
+}
+
+.badge {
+    display: inline-block;
+    background-color: #ffcc00;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.prostate-cancer-endorsement {
+    margin-top: 10px;
+}
+
+    .prostate-cancer-endorsement a {
+        color: #007bff;
+    }
