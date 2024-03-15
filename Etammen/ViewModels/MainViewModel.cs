@@ -10,7 +10,7 @@ namespace Etammen.ViewModels
         public bool IsLecturer { get; set; }
         public bool IsConsultant { get; set; }
         public bool IsSpecialist { get; set; }
-
+        public bool IsGP { get; set; }
         public Gender Gender { get; set; }
         public bool IsFeesLessThan100 { get; set; }
         public bool IsFees100to200 { get; set; }
