@@ -1,0 +1,74 @@
+﻿@using Etammen.ViewModels
+
+@model IEnumerable<AppointmentViewModel>
+
+@{
+    ViewData["Title"] = "AppointmentIndex";
+}
+
+@if (TempData["MessageWasSent"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Success!</strong> @TempData["MessageWasSent"]
+        <button type="button" class="btn-close" data-dismiss="alert" onclick="dismissAlert()">
+        </button>
+    </div>
+}
+
+
+<div style="margin-top:100px">
+    <stong><h3>Home Visit Requests: </h3></stong>
+    <div style="margin-left:1200px">
+        <a asp-action="AppointmentIndex" class="appointment-btn scrollto"><span class="d-none d-md-inline"></span>Return To Appointments</a>
+    </div>
+    @if (Model.Count() > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                   
+                   
+                    <th>
+                        @Html.DisplayNameFor(model => model.patientId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Patient.Address)
+                    </th>
+                    <th>
+                        @* @Html.DisplayNameFor(model => model.IsDeleted) *@
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <input type="hidden" asp-for="@item.Id" />
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Patient.ApplicationUser.FirstName) @Html.DisplayFor(model => item.Patient.ApplicationUser.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Patient.Address.StreetAddress) @Html.DisplayFor(modelItem => item.Patient.Address.City) @Html.DisplayFor(modelItem => item.Patient.Address.governorate)
+                        </td>
+                        <td>
+                            <a asp-action="CancelAppointment" asp-route-id="@item.Id" class="btn btn-outline-danger">Cancel Request</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="mt-4 alert alert-danger">
+            <h2>There is NO Appointments Request</h2>
+        </div>
+    }
+</div>
