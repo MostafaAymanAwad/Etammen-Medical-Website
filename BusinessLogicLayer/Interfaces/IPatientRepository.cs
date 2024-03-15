@@ -9,8 +9,9 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IPatientRepository
     {
-        Task<IEnumerable<Doctor>> PatientsPaginationNextAsync(int pageNumber, int pageSize);
-        Task<IEnumerable<Doctor>> PatientsPaginationPreviousAsync();
+        List<Doctor> PatientsPaginationNextAsync(List<Doctor> doctors, int pageNumber, int pageSize);
+
+
         int NumberOfRows { get; }
     }
 }

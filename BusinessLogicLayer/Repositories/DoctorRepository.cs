@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.Interfaces;
+﻿using BusinessLogicLayer.Helpers;
+using BusinessLogicLayer.Interfaces;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Models;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
@@ -108,5 +109,42 @@ namespace BusinessLogicLayer.Repositories
 			}
 			return queryDoctors;
 		}
-	}
+
+        public Task<List<Doctor>> FilterByOptions(DoctorFilterOptions doctorFilterOptions, List<Doctor> doctors)
+        {
+			IEnumerable<Doctor>query= new List<Doctor>();
+			if (doctorFilterOptions.IsLecturer)
+				query=query.Union(doctors.Where(d => d.Degree == "Lecturer").ToList(), new DoctorEquailtyComparer());
+            if (doctorFilterOptions.IsSpecialist)
+                query = query.Union(doctors.Where(d => d.Degree == "Lecturer").ToList(), new DoctorEquailtyComparer());
+            if (doctorFilterOptions.IsLecturer)
+                query = query.Union(doctors.Where(d => d.Degree == "Lecturer").ToList(), new DoctorEquailtyComparer());
+            if (doctorFilterOptions.IsLecturer)
+                query = query.Union(doctors.Where(d => d.Degree == "Lecturer").ToList(), new DoctorEquailtyComparer());
+            if (doctorFilterOptions.IsLecturer)
+                query = query.Union(doctors.Where(d => d.Degree == "Lecturer").ToList(), new DoctorEquailtyComparer());
+            if (doctorFilterOptions.IsLecturer)
+                query = query.Union(doctors.Where(d => d.Degree == "Lecturer").ToList(), new DoctorEquailtyComparer());
+            if (doctorFilterOptions.IsLecturer)
+                query = query.Union(doctors.Where(d => d.Degree == "Lecturer").ToList(), new DoctorEquailtyComparer());
+            if (doctorFilterOptions.IsLecturer)
+                query = query.Union(doctors.Where(d => d.Degree == "Lecturer").ToList(), new DoctorEquailtyComparer());
+
+        }
+
+        public List<Doctor> OrderByOption(int orderByOption, List<Doctor> doctors)
+        {
+            switch(orderByOption)
+			{
+				case 1:
+					return doctors.OrderByDescending(d => d.ActualRting).ToList();
+                case 2:
+                    return doctors.OrderBy(doctor => doctor.Clinics.Min(clinic => clinic.Fees)).ToList();
+                case 3:
+                    return doctors.OrderByDescending(doctor => doctor.Clinics.Max(clinic => clinic.Fees)).ToList();
+				default:
+					return doctors;
+            }
+        }
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessLogicLayer.Helpers;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayerEF.Models;
 using Etammen.Helpers;
@@ -31,27 +32,35 @@ namespace Etammen.Controllers
             vm.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
             return View(vm);
         }
-		public async Task<IActionResult> Index(string specialty, string city, string area,string doctorName,string clinicName)
+		public async Task<IActionResult> Index(MainViewModel mainViewModel)
 		{
-			 var searchedDoctors= await _unitOfWork.Doctors.Search(specialty, city, area, doctorName, clinicName);
-			 var mappedDoctors=_mapper.Map<IEnumerable<Doctor>, IEnumerable<DoctorWithNameViewModel>>(searchedDoctors);
-			 return View(mappedDoctors);
+			 var searchedDoctors= await _unitOfWork.Doctors.Search(mainViewModel.specialty, mainViewModel.city,
+                 mainViewModel.area, mainViewModel.doctorName, mainViewModel.clinicName);
+
+            mainViewModel.SearchedDoctors = searchedDoctors.ToList();
+
+            DoctorFilterOptions filterOptions = _mapper.Map<MainViewModel,DoctorFilterOptions>(mainViewModel);
+            mainViewModel.FilteredOrderedDoctors = await _unitOfWork.Doctors.FilterByOptions(filterOptions,
+                mainViewModel.SearchedDoctors);
+            mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
+                mainViewModel.FilteredOrderedDoctors);
+
+            return RedirectToAction("Pagination", mainViewModel);
 		}
-        public async Task<IActionResult> pagination(int pageNumber = 1, int pageSize = 10)
+        public IActionResult Pagination(MainViewModel mainViewModel, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
-                var numberOfRows = _patientRepository.NumberOfRows;
+                var numberOfRows = mainViewModel.FilteredOrderedDoctors.Count;
                 var totalPages = (int)Math.Ceiling((double)numberOfRows / pageSize);
 
                 if (pageNumber < 1 || pageNumber > totalPages)
                 {
-
-                    return RedirectToAction("Index", new { pageNumber = totalPages, pageSize });
+                    return RedirectToAction("Index", new {mainViewModel ,pageNumber = totalPages, pageSize });
                 }
 
-                var patients = await _patientRepository.PatientsPaginationNextAsync(pageNumber, pageSize);
-                var viewModel = _doctorsMapper.MapDoctorEntitiesToDoctorViewModel(patients);
+                var doctors =  _patientRepository.PatientsPaginationNextAsync(mainViewModel.FilteredOrderedDoctors,pageNumber, pageSize);
+                var viewModel = _doctorsMapper.MapDoctorEntitiesToDoctorViewModel(doctors);
 
                 ViewBag.CurrentPage = pageNumber;
                 ViewBag.TotalPages = totalPages;
@@ -64,76 +73,20 @@ namespace Etammen.Controllers
                 throw; // Rethrow the exception for further investigation
             }
         }
-
-
-
-        // GET: PatientController/Details/5
-        public ActionResult Details(int id)
+        public async  Task<IActionResult> Filter(MainViewModel mainViewModel)
         {
-            return View();
+            DoctorFilterOptions filterOptions = _mapper.Map<MainViewModel, DoctorFilterOptions>(mainViewModel);
+            mainViewModel.FilteredOrderedDoctors = await _unitOfWork.Doctors.FilterByOptions(filterOptions,
+                mainViewModel.SearchedDoctors);
+            mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
+                mainViewModel.FilteredOrderedDoctors);
+            return RedirectToAction("Pagination", mainViewModel);
         }
-
-        // GET: PatientController/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Order(MainViewModel mainViewModel)
         {
-            return View();
-        }
-
-        // POST: PatientController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: PatientController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: PatientController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: PatientController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PatientController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
+                mainViewModel.FilteredOrderedDoctors);
+            return RedirectToAction("Pagination", mainViewModel);
         }
     }
 

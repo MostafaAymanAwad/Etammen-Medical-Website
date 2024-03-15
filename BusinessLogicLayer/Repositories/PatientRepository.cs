@@ -19,31 +19,26 @@ namespace BusinessLogicLayer.Repositories
             _context = context;
             NumberOfRows = _context.Doctors.Count();
         }
-        public async Task<IEnumerable<Doctor>> PatientsPaginationNextAsync(int pageNumber, int pageSize)
+        public  List<Doctor> PatientsPaginationNextAsync(List<Doctor> doctors,int pageNumber, int pageSize)
         {
-            var numberOfRows = await _context.Doctors.CountAsync();
+           
+            var numberOfRows = doctors.Count;
             var totalPages = (int)Math.Ceiling((double)numberOfRows / pageSize);
 
             if (pageNumber < 1 || pageNumber > totalPages)
             {
                 throw new ArgumentException("Invalid page number");
             }
-            var query = _context.Doctors.Include(user => user.ApplicationUser).Include(clinic => clinic.Clinics);
-            var patients = await query
+
+
+            var Doctors =  doctors
                 .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return patients;
+                .Take(pageSize).ToList();
+            
+            return Doctors;
         }
 
 
-        public Task<IEnumerable<Doctor>> PatientsPaginationPreviousAsync()
-        {
-
-
-
-            throw new NotImplementedException();
-        }
+        
     }
 }
