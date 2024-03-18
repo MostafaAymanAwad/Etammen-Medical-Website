@@ -1,6 +1,7 @@
 ﻿using DataAccessLayerEF.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DataAccessLayerEF.Models;
 
@@ -14,6 +15,7 @@ public class Clinic:BaseModel
 
     [Required]
     public int DoctorId { get; set; }
+    [JsonIgnore]
     public Doctor? Doctor { get; set; }
     [Required]
     public required Address Address { get; set; }
