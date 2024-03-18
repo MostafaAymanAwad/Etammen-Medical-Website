@@ -40,7 +40,7 @@ public class DoctorRegisterViewModel
 
     [Required]
     public string Speciality { get; set; }
-    public SelectList SpecialityList { get; set; }
+    public List<string> SpecialityList { get; set; }
 
 
     [Required]
