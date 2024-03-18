@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessLogicLayer.Helpers;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayerEF.Models;
 using Etammen.Helpers;
@@ -7,6 +8,7 @@ using Etammen.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Etammen.Controllers
 {
@@ -17,46 +19,76 @@ namespace Etammen.Controllers
         private readonly IPatientRepository _patientRepository;
         private readonly DoctorsAdminMapper _doctorsMapper;
         private readonly DoctorRegisterationHelper _doctorRegisterationHelper;
-        public PatientController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, IPatientRepository patientRepository, DoctorRegisterationHelper doctorRegisterationHelper)
+        public PatientController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, IPatientRepository patientRepository, DoctorRegisterationHelper doctorRegisterationHelper, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _doctorsMapper = getAllDoctorsMapper;
             _patientRepository = patientRepository;
             _doctorRegisterationHelper = doctorRegisterationHelper;
+            _mapper = mapper;
         }
-        public IActionResult Search()
+        public async Task<IActionResult> Search(JSONMainViewModelHolder jSONMainViewModelHolder)
         {
-            var vm = new SerachViewModel();
-            vm.city_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
-            vm.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
-            return View(vm);
+            MainViewModel mainViewModel = new();
+            if(jSONMainViewModelHolder.JSONdata != null)
+            {
+			    mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+            }
+			populateViewModel(mainViewModel);
+
+            if (mainViewModel.SearchedDoctors == null)
+                return View((JSONMainViewModelHolder)new() { JSONdata = JsonSerializer.Serialize(mainViewModel) });
+            else
+                return await Index(new() { JSONdata = JsonSerializer.Serialize(mainViewModel)});
         }
-		public async Task<IActionResult> Index(string specialty, string city, string area,string doctorName,string clinicName)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+		public async Task<IActionResult> Index(JSONMainViewModelHolder jSONMainViewModelHolder)
 		{
-			 var searchedDoctors= await _unitOfWork.Doctors.Search(specialty, city, area, doctorName, clinicName);
-			 var mappedDoctors=_mapper.Map<IEnumerable<Doctor>, IEnumerable<DoctorWithNameViewModel>>(searchedDoctors);
-			 return View(mappedDoctors);
+			var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+			populateViewModel(mainViewModel);
+            var searchedDoctors= await _unitOfWork.Doctors.Search(mainViewModel.specialty, mainViewModel.city,
+                 mainViewModel.area, mainViewModel.doctorName, mainViewModel.clinicName);
+
+            mainViewModel.SearchedDoctors = searchedDoctors.ToList();
+            DoctorFilterOptions filterOptions = _mapper.Map<DoctorFilterOptions>(mainViewModel);
+            mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.FilterByOptions(filterOptions,
+                mainViewModel.SearchedDoctors);
+            mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
+                mainViewModel.FilteredOrderedDoctors);
+
+            jSONMainViewModelHolder = new JSONMainViewModelHolder();
+            jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
+
+            return Pagination(jSONMainViewModelHolder);
 		}
-        public async Task<IActionResult> pagination(int pageNumber = 1, int pageSize = 10)
+        public IActionResult Pagination(JSONMainViewModelHolder jSONMainViewModelHolder , int pageNumber = 1, int pageSize = 2)
         {
+            var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+
+            populateViewModel(mainViewModel);
             try
             {
-                var numberOfRows = _patientRepository.NumberOfRows;
+                var numberOfRows = mainViewModel.FilteredOrderedDoctors.Count;
                 var totalPages = (int)Math.Ceiling((double)numberOfRows / pageSize);
+                ViewBag.CurrentPageDoctors =  _patientRepository.PatientsPaginationNextAsync(mainViewModel.FilteredOrderedDoctors,pageNumber, pageSize);
 
-                if (pageNumber < 1 || pageNumber > totalPages)
+                if (totalPages == 0 || pageNumber <= 0)
                 {
-
-                    return RedirectToAction("Index", new { pageNumber = totalPages, pageSize });
+                    return View("Index", jSONMainViewModelHolder);
+                }
+                else if (pageNumber > totalPages)
+                {
+                    return Pagination(jSONMainViewModelHolder, totalPages, pageSize);
                 }
 
-                var patients = await _patientRepository.PatientsPaginationNextAsync(pageNumber, pageSize);
-                var viewModel = _doctorsMapper.MapDoctorEntitiesToDoctorViewModel(patients);
+				jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
+				//var viewModel = _doctorsMapper.MapDoctorEntitiesToDoctorViewModel(doctors);
 
-                ViewBag.CurrentPage = pageNumber;
+				ViewBag.CurrentPage = pageNumber;
                 ViewBag.TotalPages = totalPages;
 
-                return View(viewModel);
+                return View("Index",jSONMainViewModelHolder);
             }
             catch (Exception ex)
             {
@@ -64,77 +96,25 @@ namespace Etammen.Controllers
                 throw; // Rethrow the exception for further investigation
             }
         }
-
-
-
-        // GET: PatientController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Filter(MainViewModel mainViewModel)
         {
-            return View();
+            DoctorFilterOptions filterOptions = _mapper.Map<MainViewModel, DoctorFilterOptions>(mainViewModel);
+            mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.FilterByOptions(filterOptions,
+                mainViewModel.SearchedDoctors);
+            mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
+                mainViewModel.FilteredOrderedDoctors);
+            return RedirectToAction("Pagination", mainViewModel);
         }
-
-        // GET: PatientController/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Order(MainViewModel mainViewModel)
         {
-            return View();
+            mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
+                mainViewModel.FilteredOrderedDoctors);
+            return RedirectToAction("Pagination", mainViewModel);
         }
-
-        // POST: PatientController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        private void populateViewModel(MainViewModel mainViewModel)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: PatientController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: PatientController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: PatientController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PatientController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            mainViewModel.city_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
+            mainViewModel.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
         }
     }
-
 }

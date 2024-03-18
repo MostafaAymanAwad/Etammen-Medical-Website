@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessLogicLayer.Helpers;
 using DataAccessLayerEF.Models;
 using Etammen.ViewModels;
 
@@ -23,6 +24,7 @@ namespace Etammen.Mapping_Profiles
                 .ForMember(d => d.DoctorFirstName, o => o.MapFrom(s => s.Clinic.Doctor.ApplicationUser.FirstName))
                 .ForMember(d => d.DoctorLastName, o => o.MapFrom(s => s.Clinic.Doctor.ApplicationUser.LastName))
                 .ReverseMap();
+            CreateMap<MainViewModel, DoctorFilterOptions>().ReverseMap();
 
         }
     }

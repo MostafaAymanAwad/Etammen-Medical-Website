@@ -12,7 +12,9 @@
         </style>
     </head>
 }
-
+@{
+    SelectList specialitiesSL = new SelectList(Model.SpecialityList);
+}
 <body>
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
          data-sidebar-position="fixed" data-header-position="fixed">
@@ -112,7 +114,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label asp-for="Speciality" class="control-label"></label>
-                                                <select asp-for="Speciality" asp-items="Model.SpecialityList" class="form-control"></select>
+                                                <select asp-for="Speciality" asp-items="specialitiesSL" class="form-control"></select>
                                                 <span asp-validation-for="Speciality" class="text-danger"></span>
                                             </div>
                                         </div>
