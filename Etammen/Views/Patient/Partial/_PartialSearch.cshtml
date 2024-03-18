@@ -1,0 +1,30 @@
+﻿@model Etammen.ViewModels.JSONMainViewModelHolder
+@using System.Text.Json;
+
+@{
+    var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
+    SelectList Cities = new SelectList(myModel.city_areaDict.Keys);
+    SelectList specialitiesSL = new SelectList(myModel.Specialties);
+    var dict = @myModel.city_areaDict;
+}
+
+<form id="form" asp-action="Index" onsubmit="updateAndSubmit(event)">
+    <input type="hidden" name="JSONdata" />
+    <select asp-items="specialitiesSL" class="form-select" name="specialty"></select>
+    <label>City</label>
+    <select asp-items="Cities" id="cityselectlist" class="form-select" name="city"></select>
+    <label>Area</label>
+    <select id="areaselectlist" class="form-select" name="area">
+        <option value="ALL">ALL</option>
+    </select>
+    <label>Doctor Name</label>
+    <br />
+    <input type="text" value="" placeholder="EX: Ahmed Mostafa" name="doctorName" class="form-text" />
+    <br />
+    <label>Clinic Name</label>
+    <br />
+    <input type="text" value="" placeholder="EX: ElAml" name="clinicName" class="form-text" />
+    <br />
+    <input id="submit" type="submit" value="submit" class="btn btn-primary" />
+</form>
+

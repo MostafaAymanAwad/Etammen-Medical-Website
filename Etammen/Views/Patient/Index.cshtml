@@ -1,17 +1,24 @@
-﻿@model IEnumerable<GetDoctorByIdViewModel>
+﻿@model Etammen.ViewModels.JSONMainViewModelHolder
+@using System.Text.Json;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
-@foreach (var doctor in Model)
+<div>
+    <partial name="Partial/_PartialSearch.cshtml" model="@Model" />
+</div>
+<div>
+    <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
+</div>
+@foreach (var doctor in ViewBag.CurrentPageDoctors)
 {
-
     <div class="doctor-card">
         <div class="doctor-card__image">
             <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
         </div>
         <div class="doctor-card__details">
-            <h2 class="doctor-card__name">Dr: @doctor.FirstName @doctor.LastName</h2>
+            <h2 class="doctor-card__name">Dr: @doctor.ApplicationUser.FirstName @doctor.ApplicationUser.LastName</h2>
             <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
             <div class="doctor-card__ratings">
                 <div class="star-rating">
@@ -41,7 +48,6 @@
             </div>
         </div>
     </div>
-
 }
 
 <nav aria-label="Page navigation">
@@ -49,89 +55,78 @@
         @for (var i = 1; i <= ViewBag.TotalPages; i++)
         {
             <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                <form asp-action="Pagination" onsubmit="updateAndSubmit(event)">
+                    <input type="hidden" name="JSONdata" value="@Model.JSONdata"/>
+                    <input type="hidden" name="pageNumber" value="@i"/>
+                    <button type="submit" class="page-link">@i</button>
+                </form>
             </li>
         }
     </ul>
 </nav>
-
-
-
-@* href="/Patients/Index?pageNumber=@i" *@
-
-@* <table id="myTable" class="display">
-    <thead>
-        <tr>
-            <!-- Add table headers if necessary -->
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var doctor in Model)
-        {
-            <tr>
-                <td>
-                    <div class="doctor-card">
-                        <div class="doctor-card__image">
-                            <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
-                        </div>
-                        <div class="doctor-card__details">
-                            <h2 class="doctor-card__name">Dr: @doctor.FirstName @doctor.LastName</h2>
-                            <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
-                            <div class="doctor-card__ratings">
-                                <div class="star-rating">
-                                    <span class="filled-star"></span>
-                                    <span class="filled-star"></span>
-                                    <span class="filled-star"></span>
-                                    <span class="filled-star"></span>
-                                    <span class="half-filled-star"></span>
-                                </div>
-                                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
-                            </div>
-                            <div class="doctor-card__specialties">
-                                <h3 class="specialty-title">Specialized in: </h3>
-                                <ul class="specialty-list">
-                                    <li><a href="/en/doctor/gastroenterology-and-endoscopy/egypt">@doctor.Speciality</a></li>
-                                    <li><a href="/en/doctor/adult-hepatology/egypt">Adult Hepatology</a></li>
-                                    <li><a href="/en/doctor/adult-gastroenterology-and-endoscopy/egypt">Adult Gastroenterology and Endoscopy</a></li>
-                                </ul>
-                            </div>
-                            <div class="doctor-card__location">
-                                <span class="location">New Cairo: Fifth Settlement Medical Center</span>
-                                <span class="fees">Fees: 500 EGP</span>
-                                <span class="waiting-time">Waiting Time: 16 Minutes</span>
-                            </div>
-                            <div class="doctor-card__contact">
-                                <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<div id="paginationButtons">
-    <button class="btn btn-primary" id="prevPage">Previous</button>
-    <button class="btn btn-primary" id="nextPage">Next</button>
-</div>
-
-@section JS {
+@section Scripts {
     <script>
-        $(document).ready(function () {
-            var table = $('#myTable').DataTable({
-                "paging": true,
-                "pageLength": 5,
-                "lengthChange": false
-            });
 
-            $('#prevPage').on('click', function () {
-                table.page('previous').draw('page');
-            });
 
-            $('#nextPage').on('click', function () {
-                table.page('next').draw('page');
+            let City_Area = {};
+            let myModel = @Html.Raw(Json.Serialize(myModel));
+        @foreach (var pair in myModel.city_areaDict)
+        {
+            <text>
+                    City_Area["@pair.Key"]=[];
+            </text>
+            @foreach (var area in pair.Value)
+            {
+                <text>
+                        City_Area["@pair.Key"].push("@area");
+                </text>
+            }
+        }
+
+                function updateAndSubmit(event) {
+                    let specialty = document.querySelector("[name=specialty]").value;
+                    let city = document.querySelector("[name=city]").value;
+                    let area = document.querySelector("[name=area]").value;
+                    let doctorName = document.querySelector("[name=doctorName]").value;
+                    let clinicName = document.querySelector("[name=clinicName]").value;
+
+                    console.log("Specialty:", specialty);
+                    console.log("City:", city);
+                    console.log("Area:", area);
+                    console.log("Doctor Name:", doctorName);
+                    console.log("Clinic Name:", clinicName);
+
+                    // Update myModel properties here
+                    myModel.specialty = specialty;
+                    myModel.city = city;
+                    myModel.area = area;
+                    myModel.doctorName = doctorName;
+                    myModel.clinicName = clinicName;
+
+                    // Serialize updated myModel to JSON
+                    let json = JSON.stringify(myModel);
+
+                    console.log("JSON:", json);
+
+                    // Update hidden input field value
+                    document.querySelector("[name=JSONdata]").value = json;
+
+                    // Submit the form
+                    document.querySelector("form").submit();
+                }
+
+            document.getElementById("cityselectlist").addEventListener("change", function () {
+                let areaSelect = document.getElementById("areaselectlist");
+                areaSelect.innerHTML = '';
+                let selectedIndex = this.selectedIndex;
+                let selectedValue = this.options[selectedIndex].value;
+                let areas = City_Area[selectedValue];
+                for (let area of areas) {
+                    let newOption = document.createElement("option");
+                    newOption.value = area;
+                    newOption.text = area;
+                    areaSelect.appendChild(newOption);
+                }
             });
-        });
     </script>
-} *@
+}
