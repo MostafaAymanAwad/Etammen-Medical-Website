@@ -29,9 +29,9 @@ namespace BusinessLogicLayer.Repositories
 			if(specialty!="ALL")
 				query=query.Where(D=>D.Speciality==specialty);
 			List<Doctor>queryDoctors= await query.ToListAsync();
-			if(doctorName != null)
+			if(doctorName != "")
 				queryDoctors= filterDoctorName(queryDoctors, doctorName);
-			if(clinicName!=null)
+			if(clinicName!="")
 				queryDoctors = filterClinicName(queryDoctors, clinicName);
 			if (city!="ALL")
 				queryDoctors=filterCity(queryDoctors, city);
@@ -43,6 +43,7 @@ namespace BusinessLogicLayer.Repositories
 		private List<Doctor> filterClinicName(List<Doctor> queryDoctors, string clinicName)
 		{
 			clinicName = clinicName.ToLower().Trim().Replace(" ", "");
+			List<Doctor> removed =new List<Doctor>();
 			for (int i = 0; i < queryDoctors.Count; i++)
 			{
 				bool contain = false;
@@ -57,27 +58,32 @@ namespace BusinessLogicLayer.Repositories
 					}
 				}
 				if (!contain)
-					queryDoctors.Remove(queryDoctors[i]);
+					removed.Add(queryDoctors[i]);
 			}
+            foreach (var doctor in removed)
+				 queryDoctors.Remove(doctor);
 			return queryDoctors;
 		}
-
 		private List<Doctor> filterDoctorName(List<Doctor> queryDoctors, string doctorName)
         {
 			doctorName = doctorName.ToLower().Trim().Replace(" ","");
+            List<Doctor> removed = new List<Doctor>();
             for (int i = 0; i < queryDoctors.Count; i++)
 			{
 				string firstName = queryDoctors[i].ApplicationUser.FirstName.ToLower();
 				string lastName = queryDoctors[i].ApplicationUser.LastName.ToLower();
 				string fullName=firstName+lastName;
                 if (fullName.Contains(doctorName)==false)
-                    queryDoctors.Remove(queryDoctors[i]);
-			}
-			return queryDoctors;
+                    removed.Add(queryDoctors[i]);
+            }
+            foreach (var doctor in removed)
+                queryDoctors.Remove(doctor);
+            return queryDoctors;
         }
         private List<Doctor> filterCity(List<Doctor> queryDoctors,string city)
 		{
-			for (int i = 0; i < queryDoctors.Count; i++)
+            List<Doctor> removed = new List<Doctor>();
+            for (int i = 0; i < queryDoctors.Count; i++)
 			{
 				bool cityIncluded = false;
 				foreach (var clinic in queryDoctors[i].Clinics ?? [])
@@ -89,13 +95,16 @@ namespace BusinessLogicLayer.Repositories
 					}
 				}
 				if (!cityIncluded)
-					queryDoctors.Remove(queryDoctors[i]);
-			}
-			return queryDoctors;
+                    removed.Add(queryDoctors[i]);
+            }
+            foreach (var doctor in removed)
+                queryDoctors.Remove(doctor);
+            return queryDoctors;
 		}
 		private List<Doctor> filterArea(List<Doctor> queryDoctors, string area)
 		{
-			for (int i = 0; i < queryDoctors.Count; i++)
+            List<Doctor> removed = new List<Doctor>();
+            for (int i = 0; i < queryDoctors.Count; i++)
 			{
 				bool areaIncluded = false;
 				foreach (var clinic in queryDoctors[i].Clinics ?? [])
@@ -107,9 +116,11 @@ namespace BusinessLogicLayer.Repositories
 					}
 				}
 				if (!areaIncluded)
-					queryDoctors.Remove(queryDoctors[i]);
-			}
-			return queryDoctors;
+                    removed.Add(queryDoctors[i]);
+            }
+            foreach (var doctor in removed)
+                queryDoctors.Remove(doctor);
+            return queryDoctors;
 		}
 
         public List<Doctor> FilterByOptions(DoctorFilterOptions doctorFilterOptions, List<Doctor> doctors)
