@@ -1,8 +1,10 @@
-﻿using BusinessLogicLayer.Interfaces;
+﻿using AutoMapper;
+using BusinessLogicLayer.Interfaces;
 using DataAccessLayerEF.Models;
 using Etammen.Mapping.DoctorForAdmin;
 using Etammen.ViewModels.Admin.Doctor;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Etammen.Controllers
@@ -11,13 +13,14 @@ namespace Etammen.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly DoctorsAdminMapper _doctorsMapper;
-
-
-        public DoctorAdminController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper)
+        private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public DoctorAdminController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, IMapper mapper, UserManager<ApplicationUser> applicationUser)
         {
             _unitOfWork = unitOfWork;
             _doctorsMapper = getAllDoctorsMapper;
-
+            _mapper = mapper;
+            _userManager = applicationUser;
         }
         public async Task<IActionResult> Index()
         {
@@ -65,6 +68,32 @@ namespace Etammen.Controllers
             {
                 return View(doctorViewModel);
             }
+        }
+        public async Task<IActionResult> Approve()
+        {
+            string[] includes = ["ApplicationUser"];
+            IEnumerable<Doctor> Doctors = await _unitOfWork.Doctors.FindAllBy((D => D.IsRegistered == false && D.IsDeleted == false), includes);
+            IEnumerable<ApproveDoctorViewModel> mappedDoctors =
+                _mapper.Map<IEnumerable<Doctor>, IEnumerable<ApproveDoctorViewModel>>(Doctors);
+            return View(mappedDoctors);
+        }
+
+        public async Task<IActionResult> ApprovePost(int id, bool isApproved)
+        {
+            Doctor doctor = await _unitOfWork.Doctors.FindBy((D) => D.Id == id && D.IsDeleted == false, ["ApplicationUser"]);
+            if (isApproved)
+            {
+                doctor.IsRegistered = true;
+                _unitOfWork.Doctors.Update(doctor);
+            }
+            else
+            {
+                //Send Email To User tilling him that he was declined
+                _unitOfWork.Doctors.Delete(doctor.Id, true);
+                await _userManager.DeleteAsync(doctor.ApplicationUser);
+            }
+            int rows = await _unitOfWork.Commit();
+            return RedirectToAction(nameof(Approve));
         }
     }
 }

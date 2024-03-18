@@ -110,7 +110,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         _context.Set<T>().Update(entity);
     }
-
+    public async Task Delete(int id, bool isHardDeleted)
+    {
+        var entity = await _context.Set<T>().FindAsync(id);
+        if (isHardDeleted)
+            _context.Set<T>().Remove(entity);
+        else
+            _context.Set<T>().Update(entity);
+    }
     public async Task Delete(int id) 
     { 
         var entity = await _context.Set<T>().FindAsync(id);

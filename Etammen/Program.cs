@@ -68,6 +68,7 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
     options.TokenLifespan = TimeSpan.FromHours(2);
 });
 
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
@@ -120,7 +121,7 @@ builder.Services.AddScoped<PatientForAdminMapper>();
 builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
 builder.Services.AddTransient<ISmsService, SmsService>();
 
-builder.Services.AddAutoMapper(typeof(Program));
+
 
 var app = builder.Build();
 
@@ -139,6 +140,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Patient}/{action=Index}/{id?}");
+    pattern: "{controller=Patient}/{action=Search}/{id?}");
 
 app.Run();
