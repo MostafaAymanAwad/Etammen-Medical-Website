@@ -21,16 +21,6 @@ namespace BusinessLogicLayer.Repositories
         }
         public  List<Doctor> PatientsPaginationNextAsync(List<Doctor> doctors,int pageNumber, int pageSize)
         {
-           
-            var numberOfRows = doctors.Count;
-            var totalPages = (int)Math.Ceiling((double)numberOfRows / pageSize);
-
-            if (pageNumber < 1 || pageNumber > totalPages)
-            {
-                throw new ArgumentException("Invalid page number");
-            }
-
-
             var Doctors =  doctors
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize).ToList();

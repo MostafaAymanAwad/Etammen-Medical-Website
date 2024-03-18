@@ -114,10 +114,8 @@ namespace BusinessLogicLayer.Repositories
 
         public List<Doctor> FilterByOptions(DoctorFilterOptions doctorFilterOptions, List<Doctor> doctors)
         {
-            var today = DateTime.Today;
-			var tomorrow = DateTime.Today.AddDays(1);
 
-            IEnumerable<Doctor>query= new List<Doctor>();
+            IEnumerable<Doctor>query= doctors;
 			if (doctorFilterOptions.IsGP)
 				query=query.UnionBy(doctors.Where(d => d.Degree == "General Practitioner (GP)").ToList(), d=>d.ApplicationUserId);
             if (doctorFilterOptions.IsProfessor)
