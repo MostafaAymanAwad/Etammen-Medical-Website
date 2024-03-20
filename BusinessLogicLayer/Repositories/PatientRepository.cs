@@ -30,6 +30,19 @@ namespace BusinessLogicLayer.Repositories
             
             return Doctors;
         }
+        public int? GetSumOfRates(int id)
+        {
+            var doctorReviews = _context.DoctorReviews.Where(e => e.DoctorId == id).ToList();
+            var sumOfRates = doctorReviews.Select(r => r.Rate).Sum();
+            return sumOfRates;
+        }
+
+        public int NumberOfRates(int id)
+        {
+            var doctorReviews = _context.DoctorReviews.Where(e => e.DoctorId == id).ToList();
+            var sumOfRates = doctorReviews.Select(r => r.Rate).Count();
+            return sumOfRates;
+        }
         public async Task<Doctor> GetDoctorDetails(int id)
         {
             return await _context.Doctors

@@ -1,5 +1,6 @@
 ﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayerEF.Context;
+using DataAccessLayerEF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,13 @@ namespace BusinessLogicLayer.Repositories
         {
             _context = context;
         }
-        public IEnumerable<string> GetClinicsNames(int id)
+        public IEnumerable<Clinic> GetClinicsNames(int id)
         {
-            var doctorsName = _context.Clinics.Where(e => e.DoctorId == id)
-                .Select(c => c.Name)
-                .ToList();
-           return doctorsName;
+            var clinics = _context.Clinics
+                                   .Where(e => e.DoctorId == id)
+                                   .Select(c => new Clinic { Name = c.Name, Address = c.Address, Fees = c.Fees })
+                                   .ToList();
+            return clinics;
         }
     }
 }
