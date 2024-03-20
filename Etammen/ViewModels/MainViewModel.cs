@@ -1,4 +1,5 @@
-﻿using DataAccessLayerEF.Enums;
+﻿using BusinessLogicLayer.Helpers;
+using DataAccessLayerEF.Enums;
 using DataAccessLayerEF.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
@@ -23,8 +24,12 @@ namespace Etammen.ViewModels
         public int Order { get; set; } = 1;
 
         public List<Doctor> SearchedDoctors { get; set; }
+
         public List<Doctor> FilteredOrderedDoctors { get; set; }
 
+        public List<Doctor> CurrentPageDoctors { get; set; }
+
+        public List<string> DoctorFullnames {  get; set; }
         public string Specialty {  get; set; } 
         public string City {  get; set; } 
         public string Area { get; set; }
@@ -35,5 +40,6 @@ namespace Etammen.ViewModels
 
         public List<string> Specialties { get; set; }
         public Dictionary<string, List<string>> City_areaDict { get; set; }
+
     }
 }

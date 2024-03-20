@@ -14,5 +14,6 @@ namespace BusinessLogicLayer.Interfaces
 		Task<IEnumerable<Doctor>> Search(string specialty, string city, string area, string doctorName, string clinicName);
         List<Doctor> FilterByOptions(DoctorFilterOptions doctorFilterOptions, List<Doctor> doctors);
         List<Doctor> OrderByOption(int orderByOption, List<Doctor> doctors);
+
     }
 }

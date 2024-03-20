@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Repositories
 
 		public async Task<IEnumerable<Doctor>> Search(string specialty, string city, string area, string doctorName, string clinicName)
 		{
-			IQueryable<Doctor> query = _context.Doctors.Where(D => D.IsDeleted == false).Include(D=>D.Clinics).Include(D=>D.ApplicationUser);
+			IQueryable<Doctor> query = _context.Doctors.Where(D => D.IsDeleted == false).Include(D=>D.Clinics);
 			if(specialty!="ALL")
 				query=query.Where(D=>D.Speciality==specialty);
 			List<Doctor>queryDoctors= await query.ToListAsync();
@@ -39,8 +39,7 @@ namespace BusinessLogicLayer.Repositories
 				queryDoctors=filterArea(queryDoctors, area);
 			return queryDoctors;
 		}
-
-		private List<Doctor> filterClinicName(List<Doctor> queryDoctors, string clinicName)
+        private List<Doctor> filterClinicName(List<Doctor> queryDoctors, string clinicName)
 		{
 			clinicName = clinicName.ToLower().Trim().Replace(" ", "");
 			List<Doctor> removed =new List<Doctor>();
