@@ -10,26 +10,40 @@
         <meta content="" name="description">
         <meta content="" name="keywords">
 
-        <!-- Favicons -->
-        <link href="/assets/img/favicon.png" rel="icon">
-        <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <!-- Favicons -->
+    <link href="/assets/img/favicon.png" rel="icon">
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-        <!-- Vendor CSS Files -->
-        <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-        <link href="/assets/vendor/animate.css/animate.min.css" rel="stylesheet">
-        <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-        <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-        <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-        <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-        <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="/assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
         <!-- Template Main CSS File -->
         <link href="/assets/css/style.css" rel="stylesheet">
-    <link href="/assets/css/profileCSS.css" rel="stylesheet">
+        
+        <!--Views head -->
+        @RenderSection("Head", required: false)
+
+    <!-- Template Main CSS File -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/PatientAll.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="/DataTables/datatables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
 </head>
 <body>
 
@@ -38,23 +52,38 @@
     <div id="topbar" class="d-flex align-items-center">
         <div class="container d-flex justify-content-between">
             <div class="contact-info d-flex align-items-center">
-                <i class="bi bi-envelope"></i> <a href="mailto:contact@example.com">contact@example.com</a>
+                <i class="bi bi-envelope"></i> <a href="mailto:etammenwebsite@gmail.com">contact@example.com</a>
                 <i class="bi bi-phone"></i> +1 5589 55488 55
             </div>
+            <div class="d-none d-lg-flex social-links align-items-center ml-auto">
+
+            </div>
             <div class="d-none d-lg-flex social-links align-items-center">
-                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-                <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></i></a>
+                <a class="nav-link text-dark" asp-controller="Payment" asp-action="CheckoutSession" asp-route-fees="300" asp-route-clinicName="dawy clinics">Test Payment</a>
+
+                @if(!User.Identity.IsAuthenticated)
+                {
+                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Sign Up</a>
+                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Log In</a>
+                }
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <span class="nav-link text-dark">Hello, @User.Identity.Name</span>
+                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Log out</a>
+                }
+
             </div>
         </div>
     </div>
 
     <!-- ======= Header ======= -->
+
     <header id="header">
+
         <div class="container d-flex align-items-center">
 
-            <h1 class="logo me-auto"><a href="index.html">Medilab</a></h1>
+            <h1 class="logo me-auto"><a href="index.html">Etammen</a></h1>
+            <!-- Uncomment below if you prefer to use an image logo -->
             <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>
 
             <nav id="navbar" class="navbar order-last order-lg-0">
@@ -68,6 +97,7 @@
                         </ul>
                     </li>
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                    <li><a asp-action="Home" asp-controller="Admin">Admin</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>
@@ -75,8 +105,10 @@
             <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Make an</span> Appointment</a>
 
         </div>
-    </header><!-- End Header -->
+    </header><!-- End Header --> 
     <!-- ======= Hero Section ======= -->
+  
+
 
     <br />
     <br />
@@ -85,6 +117,7 @@
         <section class="container">
             @RenderBody()
         </section>
+
     </main>
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
@@ -108,6 +141,8 @@
                         <ul>
                             <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
                             <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a class="nav-link text-dark" asp-controller="Account" asp-action="RegisterDoctor">Etammen For Doctors</a></li>
+
                         </ul>
                     </div>
                 </div>
@@ -130,17 +165,30 @@
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 
-    
+
     <!----------------scrips------------------>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
     <script src="~/js/site.js" asp-append-version="true"></script>
-    
+
     <!-- Vendor JS Files -->
-    <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+    <script src="/assets/vendor/glightbox/js/glightbox.min.js"></script>
     <!-- Template Main JS File -->
+
     <script src="assets/js/main.js"></script>
+    <script src="~/AdminAssets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/AdminAssets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/AdminAssets/js/sidebarmenu.js"></script>
+    <script src="~/AdminAssets/js/app.min.js"></script>
+    <script src="~/AdminAssets/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="~/AdminAssets/libs/simplebar/dist/simplebar.js"></script>
+    <script src="~/AdminAssets/js/dashboard.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+    <script src="/DataTables/datatables.js"></script>
+
+    <script src="/assets/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

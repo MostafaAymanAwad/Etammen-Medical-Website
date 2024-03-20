@@ -37,7 +37,7 @@ public class Doctor:BaseModel
     [Required]
     public bool IsVisitHome { get; set; }
     
-    public bool? IsRegistered { get; set; }
+    public bool IsRegistered { get; set; }
     public virtual ICollection<Clinic>? Clinics { get; set; } = new HashSet<Clinic>();
     public virtual ApplicationUser? ApplicationUser { get; set; }
     public virtual ICollection<DoctorReviews>? DoctorReviews { get; set; } = new HashSet<DoctorReviews>();

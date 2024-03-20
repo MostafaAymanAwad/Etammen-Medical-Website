@@ -1,0 +1,48 @@
+﻿@model GetOnePatientViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
+}
+
+<h5>Are you sure you want to delete this patient</h5>
+<form asp-action="Delete">
+    <div class="doctor-profile-details">
+        <h2 class="doctor-name">Doctor: @Model.FirstName @Model.LastName</h2>
+        <h3 class="doctor-title">Id: @Model.Id</h3>
+
+        <h5>Address:</h5>
+        <p class="doctor-reviews">Government: @Model.Address.governorate</p>
+        <p class="doctor-reviews">City: @Model.Address.City</p>
+        <p class="doctor-reviews">Street: @Model.Address.StreetAddress</p>
+
+        <div class="doctor-recommendation">
+            <p>Age: @Model.Age</p>
+            <p>Gender: @Model.Gender</p>
+
+        </div>
+        <div class="container mt-5">
+            <div class="col-md-6 mt-3 mt-md-0">
+                <div class="text-md-right">
+                    <a asp-controller="PatientAdmin" asp-action="Index" class="btn btn-primary" style="background-color: #5D87FF;">Back to list</a>
+                    <input type="submit" class="btn btn-primary" style="background-color: #5D87FF;" value="Delete" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mt-3 mt-md-0">
+            <div class="text-md-right">
+                <input asp-for="Id" type="hidden" />
+                <input asp-for="FirstName" type="hidden" />
+                <input asp-for="LastName" type="hidden" />
+                <input asp-for="Age" type="hidden" />
+                <input asp-for="Gender" type="hidden" />
+                <input asp-for="Address" type="hidden" />
+                <input asp-for="Address.StreetAddress" type="hidden" />
+                <input asp-for="Address.City" type="hidden" />
+                <input asp-for="Address.governorate" type="hidden" />
+                <input asp-for="ApplicationUserId" type="hidden" />
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,24 @@
+﻿@model Etammen.ViewModels.ReactivateAccountViewModel
+
+<form method="post" asp-action="ReactivateAccount" asp-controller="Account">
+    <div class="card text-center">
+        <div class="card-header">
+            Featured
+        </div>
+        <div class="card-body">
+            <input type="hidden" name="ApplicationUserId" value="@Model.ApplicationUserId" />
+            <h5 class="card-title">Account Reactivation</h5>
+            <img name="ProfilePic" src="/DoctorImages/@Model.ProfilePic" />
+            <p name="Username" class="card-text" name="Username">User name: @Model.Username</p>
+            <p name="Email" class="card-text">Email: @Model.Email</p>
+
+            <div class="form-group  d-flex justify-content-center">
+                <input type="submit" value="Activate" class="btn btn-primary col-md-4" />
+                <a class="fs-4 mb-0 fw-bold" asp-action="Login" asp-controller="Account">cancel</a>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            Etammen
+        </div>
+    </div>
+</form>

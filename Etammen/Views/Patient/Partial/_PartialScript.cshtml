@@ -1,0 +1,144 @@
+﻿@model Etammen.ViewModels.JSONMainViewModelHolder
+@using System.Text.Json;
+@{
+    var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
+}
+
+<script defer>
+    let City_Area = {};
+    let myModel = @Html.Raw(Json.Serialize(myModel));
+    @foreach (var pair in myModel.City_areaDict)
+    {
+        <text>
+            City_Area["@pair.Key"]=[];
+        </text>
+        @foreach (var area in pair.Value)
+        {
+            <text>
+                City_Area["@pair.Key"].push("@area");
+            </text>
+        }
+    }
+
+        function updateAndSubmit(event, formId) {
+            if (!(formId === "paginationForm")) {
+                event.preventDefault();
+
+                myModel.Specialty = document.querySelector("[name=specialty]").value;
+                myModel.City = document.querySelector("[name=city]").value;
+                myModel.Area = document.querySelector("[name=area]").value;
+                myModel.DoctorName = document.querySelector("[name=doctorName]").value;
+                myModel.ClinicName = document.querySelector("[name=clinicName]").value;
+
+                myModel.IsProfessor = document.getElementById('title-professor').checked;
+                myModel.IsLecturer = document.getElementById('title-lecturer').checked;
+                myModel.IsConsultant = document.getElementById('title-consultant').checked;
+                myModel.IsSpecialist = document.getElementById('title-specialist').checked;
+                myModel.IsGP = document.getElementById('title-Gp').checked;
+
+                let genders = document.querySelectorAll(".gender");
+
+                if (genders[0].checked)
+                    myModel.Gender = 0;
+                else if (genders[1].checked)
+                    myModel.Gender = 1;
+                else
+                    myModel.Gender = null;
+
+                myModel.IsFeesLessThan100 = document.getElementById('title-fees-1').checked;
+                myModel.IsFees100to200 = document.getElementById('title-fees-2').checked;
+                myModel.IsFees200to300 = document.getElementById('title-fees-3').checked;
+                myModel.IsFeesMoreThan300 = document.getElementById('title-fees-4').checked;
+
+
+                let openingDaysCheckboxes = document.querySelectorAll(".OpeningDays");
+                let availableOpeningDays = 0;
+
+                for (var openDayCheckBox of openingDaysCheckboxes) {
+                    if (openDayCheckBox.checked)
+                        availableOpeningDays += parseInt(openDayCheckBox.value);
+                }
+                myModel.OpeningDays = availableOpeningDays;
+
+
+                let orderCheckboxes = document.querySelectorAll(".orderBy");
+                for (let orderCheckBox of orderCheckboxes) {
+                    if (orderCheckBox.checked)
+                        myModel.Order = parseInt(orderCheckBox.value);
+                }
+
+                let json = JSON.stringify(myModel);
+
+                let allHiddenFields = document.querySelectorAll("[name=JSONdata]");
+                for (let hiddenField of allHiddenFields) {
+                    hiddenField.setAttribute("value", json);
+                }
+
+                document.getElementById(formId).submit();
+            }
+        };
+
+
+    document.getElementById('degree').addEventListener('click', function () {
+        let content = document.getElementById('title-degree');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    });
+
+    document.getElementById('gender').addEventListener('click', function () {
+        let content = document.getElementById('title-gender');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    });
+
+    document.getElementById('fees').addEventListener('click', function () {
+        let content = document.getElementById('title-fees');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    });
+
+    document.getElementById('openingdays').addEventListener('click', function () {
+        let content = document.getElementById('title-openingdays');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    });
+
+    document.getElementById('orderOptions').addEventListener('click', function () {
+        let content = document.getElementById('title-order');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    });
+
+
+    document.getElementById("cityselectlist").addEventListener("change", function () {
+        let areaSelect = document.getElementById("areaselectlist");
+        areaSelect.innerHTML = '';
+        let selectedIndex = this.selectedIndex;
+        let selectedValue = this.options[selectedIndex].value;
+        let areas = City_Area[selectedValue];
+        for (let area of areas) {
+            let newOption = document.createElement("option");
+            newOption.value = area;
+            newOption.text = area;
+            areaSelect.appendChild(newOption);
+        }
+    });
+
+
+</script>
+}

@@ -18,8 +18,9 @@ namespace DataAccessLayerEF.Models
         public virtual Clinic? Clinic { get; set; }
         public virtual Patient? Patient { get; set; }
         public DateOnly Date { get; set; }
-        public int ReservtionPeriodNumber { get; set; }
+        public TimeOnly ReservationPeriodNumber { get; set; }
         public bool IsAttended { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsHomeVisit { get; set; }
     }
 }
