@@ -28,6 +28,8 @@ namespace Etammen.Controllers
         private readonly DoctorDetailsMapping _doctorDetailsMapping;
         private readonly ClinicDetailsForDoctorPageMapper _clinicMapper;
         private readonly DoctorRegisterationHelper _doctorRegisterationHelper;
+        private readonly ClinicDetailsMapViewModelMapper _clinicMapMapper;
+
         public PatientController(IUnitOfWork unitOfWork,
             DoctorsAdminMapper getAllDoctorsMapper,
             IPatientRepository patientRepository,
@@ -39,7 +41,8 @@ namespace Etammen.Controllers
             IMapper mapper,
             ClinicDetailsForDoctorPageMapper clinicMapper,
             DoctorDetailsMapping doctorDetailsMapping,
-            DoctorReviewMapping doctorReviewMapper
+            DoctorReviewMapping doctorReviewMapper,
+            ClinicDetailsMapViewModelMapper clinicMapMapper
             )
         {
             _unitOfWork = unitOfWork;
@@ -54,6 +57,7 @@ namespace Etammen.Controllers
             _doctorDetailsMapping = doctorDetailsMapping;
             _doctorReviewMapper = doctorReviewMapper;
             _doctorReviewsRepository = doctorReviewsRepository;
+            _clinicMapMapper = clinicMapMapper;
 
         }
         public async Task<IActionResult> Search(JSONMainViewModelHolder jSONMainViewModelHolder)
@@ -199,6 +203,7 @@ namespace Etammen.Controllers
             }
             return View(doctorViewModel);
         }
+       
         public async Task<IActionResult> Details(int id)
         {
             var doctor = await _patientRepository.GetDoctorDetails(id);
@@ -213,6 +218,16 @@ namespace Etammen.Controllers
             doctorDetailsViewModel.IsReview = _doctorReviewsRepository.IsReviewdBy(id, 5);
             return View(doctorDetailsViewModel);
         }
+
+        public async Task<IActionResult> ClinicDetails(int id)
+        {
+            var clinic = await _clinicRepository.GetClinics(id);
+            var clinicMapVm = _clinicMapMapper.ClinicMapper(clinic);
+
+            return View(clinicMapVm);
+        }
+
+
         private void populateViewModel(MainViewModel mainViewModel)
         {
             mainViewModel.City_areaDict = _doctorRegisterationHelper.CityAreasDictionary;

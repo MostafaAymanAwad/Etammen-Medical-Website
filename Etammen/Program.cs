@@ -126,6 +126,7 @@ builder.Services.AddScoped<PatientForAdminMapper>();
 builder.Services.AddScoped<DoctorReviewMapping>();
 builder.Services.AddScoped<DoctorDetailsMapping>();
 builder.Services.AddScoped<ClinicDetailsForDoctorPageMapper>();
+builder.Services.AddScoped<ClinicDetailsMapViewModelMapper>();
 
 
 builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
