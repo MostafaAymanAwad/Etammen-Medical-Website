@@ -62,6 +62,8 @@ namespace Etammen.Mapping.DoctorForAdmin
             return doctorViewModel;
         }
 
+        
+
         public IEnumerable<GetDoctorByIdViewModel> MapDoctorEntitiesToDoctorViewModel(IEnumerable<Doctor> doctors)
         {
             var viewModels = new List<GetDoctorByIdViewModel>();

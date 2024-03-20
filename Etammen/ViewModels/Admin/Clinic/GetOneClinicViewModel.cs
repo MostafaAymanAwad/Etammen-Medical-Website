@@ -10,7 +10,7 @@ namespace Etammen.ViewModels.Admin.Clinic
         public string? DoctorFirstName { get; set; }
         public string? DoctorLastName { get; set; }
         public int DoctorId { get; set; }
-        public required Address Address { get; set; }
+        public required DataAccessLayerEF.Models.Address Address { get; set; }
         public TimeOnly OpeningHour { get; set; }
 
         public TimeOnly ClosingHour { get; set; }

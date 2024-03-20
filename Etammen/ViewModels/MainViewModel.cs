@@ -1,4 +1,5 @@
-﻿using DataAccessLayerEF.Enums;
+﻿using BusinessLogicLayer.Helpers;
+using DataAccessLayerEF.Enums;
 using DataAccessLayerEF.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
@@ -19,21 +20,26 @@ namespace Etammen.ViewModels
         public bool IsFeesMoreThan300 { get; set; }
 
         [Display(Name = "Opening Days")]
-        public OpeningDays? OpeningDays { get; set; } = null;
-        public int Order { get; set; } = 0;
+        public OpeningDays OpeningDays { get; set; } = (OpeningDays) 127;
+        public int Order { get; set; } = 1;
 
         public List<Doctor> SearchedDoctors { get; set; }
+
         public List<Doctor> FilteredOrderedDoctors { get; set; }
 
-        public string specialty {  get; set; } 
-        public string city {  get; set; } 
-        public string area { get; set; }
+        public List<Doctor> CurrentPageDoctors { get; set; }
 
-        public string doctorName { get; set; }
+        public List<string> DoctorFullnames {  get; set; }
+        public string Specialty {  get; set; } 
+        public string City {  get; set; } 
+        public string Area { get; set; }
+
+        public string DoctorName { get; set; }
            
-        public string clinicName { get; set; }
+        public string ClinicName { get; set; }
 
         public List<string> Specialties { get; set; }
-        public Dictionary<string, List<string>> city_areaDict { get; set; }
+        public Dictionary<string, List<string>> City_areaDict { get; set; }
+
     }
 }

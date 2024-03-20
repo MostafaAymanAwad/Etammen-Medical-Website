@@ -1,82 +1,11 @@
-﻿<div class="filter-container">
-    <div class="filter-header">Filters</div>
-    <div class="filter-content">
-        <form id="filterForm" action="/Patient/FilteredDoctors" method="post">
+﻿@model Etammen.ViewModels.JSONMainViewModelHolder
+@using System.Text.Json;
+
+@{
+    var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
+}
 
 
-            <div class="filter-item">
-                <a id="Degree" class="collapsible-trigger" data-target="title">Degree</a>
-
-
-                <div class="filter-item">
-                    <a id="Degree" class="collapsible-trigger" data-target="title">Degree</a>
-
-                    <div style="display:none" class="collapsible-content" id="title-content">
-                        <div class="checkbox">
-                            <input type="checkbox" id="title-professor" name="degree" value="Professor">
-                            <label for="title-professor">Professor</label>
-                        </div>
-                        <div class="checkbox">
-                            <input type="checkbox" id="title-lecturer" name="degree" value="Lecturer">
-                            <label for="title-lecturer">Lecturer</label>
-                        </div>
-                        <div class="checkbox">
-                            <input type="checkbox" id="title-consultant" name="degree" value="Consultant">
-                            <label for="title-consultant">Consultant</label>
-                        </div>
-                        <div class="checkbox">
-                            <input type="checkbox" id="title-specialist" name="degree" value="Specialist">
-                            <label for="title-specialist">Specialist</label>
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <div class="filter-item">
-                    <a id="Gender" class="collapsible-trigger" data-target="title">Gender</a>
-                    <div style="display:none" class="collapsible-content-gender" id="Title-Gender">
-                        <div class="checkbox">
-                            <input type="radio" id="title-professor" name="gender" value="0">
-                            <label for="title-professor">Male</label>
-                        </div>
-                        <div class="checkbox">
-                            <input type="radio" id="title-lecturer" name="gender" value="1">
-                            <label for="title-lecturer">Female</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="filter-item">
-                    <a id="Fees" class="collapsible-trigger" data-target="title">Fees</a>
-                    <div style="display:none" class="collapsible-content-fees" id="title-Fees">
-                        <div class="checkbox">
-                            <input type="radio" id="title-professor" name="fees" value="50">
-                            <label for="title-professor">Less than 50</label>
-                        </div>
-                        <div class="checkbox">
-                            <input type="checkbox" id="title-lecturer" name="fees" value="100">
-                            <label for="title-lecturer">From 50 to 100</label>
-                        </div>
-                        <div class="checkbox">
-                            <input type="checkbox" id="title-lecturer" name="fees" value="150">
-                            <label for="title-lecturer">From 100 to 200</label>
-                        </div>
-                        <div class="checkbox">
-                            <input type="checkbox" id="title-lecturer" name="fees" value="200">
-                            <label for="title-lecturer">From 200 to 300</label>
-                        </div>
-
-                        <div class="checkbox">
-                            <input type="checkbox" id="title-lecturer" name="fees" value="250">
-                            <label for="title-lecturer">Greater than 300</label>
-                        </div>
-                    </div>
-                </div>
-                <button id="submitBtn">Filter</button>
-        </form>
-    </div>
-</div>
 <style>
     .filter-container {
         font-family: Arial, sans-serif;
@@ -128,36 +57,114 @@
     }
 </style>
 
-@section PatientHomeJS {
-    <script>
-        document.getElementById('Degree').addEventListener('click', function () {
-            var content = document.getElementById('title-content');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-            } else {
-                content.style.display = 'none';
+
+<div class="filter-container">
+    <div class="filter-header">
+        <span>
+            Filters
+        </span>
+        <br />
+    </div>
+    <div class="filter-content">
+        <form id="filterForm" asp-action="Filter" asp-controller="Patient" onsubmit="updateAndSubmit(event,'filterForm')">
+
+            <input type="hidden" name="JSONdata" />
+
+            <div class="filter-item">
+                <a id="degree" class="collapsible-trigger" data-target="title">Degree</a>
+
+                <div style="display:none" class="collapsible-content" id="title-degree">
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-professor" checked="@myModel.IsProfessor">
+                        <label for="title-professor">Professor</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-lecturer" checked="@myModel.IsLecturer">
+                        <label for="title-lecturer">Lecturer</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-consultant" checked="@myModel.IsConsultant">
+                        <label for="title-consultant">Consultant</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-specialist" checked="@myModel.IsSpecialist">
+                        <label for="title-specialist">Specialist</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-Gp" checked="@myModel.IsGP">
+                        <label for="title-Gp">General Practitioner</label>
+                    </div>
+                </div>
+            </div>
+
+
+            @{
+                var genderValues = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
             }
-        });
+            <div class="filter-item">
+                <a id="gender" class="collapsible-trigger" data-target="title">Gender</a>
+                <div style="display:none" class="collapsible-content-gender" id="title-gender">
+                    <div class="checkbox">
+                        @{
+                            bool isMale = myModel.Gender == Gender.Male;
+                        }
+                        <input type="radio" class="gender" value="@genderValues[0]" name ="gender" checked="@isMale">
+                        <label for="gender">@genderValues[0]</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="radio" class="gender" value="@genderValues[1]" name="gender"  checked="@(!isMale)">
+                        <label for="gender">@genderValues[1]</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="radio" class="gender" name="gender" checked="@(myModel.Gender == null)">
+                        <label for="gender">All</label>
+                    </div>
+                </div>
+            </div>
 
-        document.getElementById('Gender').addEventListener('click', function () {
-            var content = document.getElementById('Title-Gender');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-            } else {
-                content.style.display = 'none';
+            <div class="filter-item">
+                <a id="fees" class="collapsible-trigger" data-target="title">Fees</a>
+                <div style="display:none" class="collapsible-content-fees" id="title-fees">
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-fees-1" checked="@myModel.IsFeesLessThan100"> 
+                        <label for="title-fees-1">less than 100</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-fees-2" checked="@myModel.IsFees100to200">
+                        <label for="title-fees-2">From 100 to 200</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-fees-3" checked="@myModel.IsFees200to300">
+                        <label for="title-fees-3">From 200 to 300</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="title-fees-4" checked="@myModel.IsFeesMoreThan300">
+                        <label for="title-fees-4">Greater than 300</label>
+                    </div>
+                </div>
+            </div>
+
+            @{
+                var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
             }
-        });
 
-        document.getElementById('Fees').addEventListener('click', function () {
-            var content = document.getElementById('title-Fees');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-            } else {
-                content.style.display = 'none';
-            }
-        });
+            <div class="filter-item">
+                <a id="openingdays" class="collapsible-trigger" data-target="title">Opening Days</a>
+                <div style="display:none" class="collapsible-content-fees" id="title-openingdays">
+                    <div class="checkbox">
+                        @{
+                            foreach (var day in openingDaysValues)
+                            {
+                                 bool IsChecked = myModel.OpeningDays.HasFlag(day);
+                                <input type="checkbox" class="OpeningDays" checked="@IsChecked" name="openDay" value="@((int)day)">
+                                <label for="openDay">@day</label>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
 
-
-
-    </script>
-}
+            <input id="submitBtn" type="submit" value="Filter" class="btn btn-primary" />
+        </form>
+    </div>
+</div>

@@ -3,20 +3,30 @@
 
 @{
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
-    SelectList Cities = new SelectList(myModel.city_areaDict.Keys);
+
+    SelectList Cities = null;
+    SelectList Areas = new SelectList(new List<string>{ "ALL" });
+
+
+    if (myModel.City is null || myModel.City == "ALL")
+        Cities = new SelectList(myModel.City_areaDict.Keys);
+    else
+    {
+        Cities = new SelectList(myModel.City_areaDict.Keys, myModel.City);
+        Areas = new SelectList(myModel.City_areaDict[myModel.City], myModel.Area ?? "ALL");
+    }
     SelectList specialitiesSL = new SelectList(myModel.Specialties);
-    var dict = @myModel.city_areaDict;
+    
 }
 
-<form id="form" asp-action="Index" onsubmit="updateAndSubmit(event)">
+
+<form asp-action="Index" onsubmit="updateAndSubmit(event)">
     <input type="hidden" name="JSONdata" />
-    <select asp-items="specialitiesSL" class="form-select" name="specialty"></select>
+    <select asp-items="specialitiesSL" class="form-select" name="specialty" selected></select>
     <label>City</label>
     <select asp-items="Cities" id="cityselectlist" class="form-select" name="city"></select>
     <label>Area</label>
-    <select id="areaselectlist" class="form-select" name="area">
-        <option value="ALL">ALL</option>
-    </select>
+    <select id="areaselectlist" class="form-select" name="area" asp-items="Areas"></select>
     <label>Doctor Name</label>
     <br />
     <input type="text" value="" placeholder="EX: Ahmed Mostafa" name="doctorName" class="form-text" />
@@ -32,7 +42,7 @@
     <script>
         let City_Area = {};
         let myModel = @Html.Raw(Json.Serialize(myModel));
-        @foreach (var pair in myModel.city_areaDict)
+        @foreach (var pair in myModel.City_areaDict)
         {
             <text>
                 City_Area["@pair.Key"]=[];
@@ -46,38 +56,20 @@
         }
 
             function updateAndSubmit(event) {
-                let specialty = document.querySelector("[name=specialty]").value;
-                let city = document.querySelector("[name=city]").value;
-                let area = document.querySelector("[name=area]").value;
-                let doctorName = document.querySelector("[name=doctorName]").value;
-                let clinicName = document.querySelector("[name=clinicName]").value;
+                
+                myModel.Specialty = document.querySelector("[name=specialty]").value;
+                myModel.City = document.querySelector("[name=city]").value;
+                myModel.Area = document.querySelector("[name=area]").value;
+                myModel.DoctorName = document.querySelector("[name=doctorName]").value;
+                myModel.ClinicName = document.querySelector("[name=clinicName]").value;
 
-                console.log("Specialty:", specialty);
-                console.log("City:", city);
-                console.log("Area:", area);
-                console.log("Doctor Name:", doctorName);
-                console.log("Clinic Name:", clinicName);
-
-                // Update myModel properties here
-                myModel.specialty = specialty;
-                myModel.city = city;
-                myModel.area = area;
-                myModel.doctorName = doctorName;
-                myModel.clinicName = clinicName;
-
-                // Serialize updated myModel to JSON
                 let json = JSON.stringify(myModel);
 
-                console.log("JSON:", json);
-
-                // Update hidden input field value
                 document.querySelector("[name=JSONdata]").value = json;
 
-                // Submit the form
-                document.querySelector("form").submit();
+                document.getElementById(formId).submit();
             }
-
-        document.getElementById("cityselectlist").addEventListener("change", function () {
+            document.getElementById("cityselectlist").addEventListener("change", function () {
             let areaSelect = document.getElementById("areaselectlist");
             areaSelect.innerHTML = '';
             let selectedIndex = this.selectedIndex;

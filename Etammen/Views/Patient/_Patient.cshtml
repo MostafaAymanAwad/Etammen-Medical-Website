@@ -1,0 +1,47 @@
+﻿@model IEnumerable<GetDoctorByIdViewModel>
+
+@foreach (var doctor in Model)
+{
+
+    <div class="doctor-card">
+
+        <div class="doctor-card__image">
+            <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
+        </div>
+        <div class="doctor-card__details">
+            <a asp-controller="Patient" asp-action="Details" asp-route-id="@doctor.Id">Details</a>
+            <h2 class="doctor-card__name">Dr: @doctor.FirstName @doctor.LastName</h2>
+            <h2 class="doctor-card__name">Dr: @doctor.Degree</h2>
+            <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
+            <div class="doctor-card__ratings">
+                <div class="star-rating">
+                    <span class="filled-star"></span>
+                    <span class="filled-star"></span>
+                    <span class="filled-star"></span>
+                    <span class="filled-star"></span>
+                    <span class="half-filled-star"></span>
+                </div>
+                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
+            </div>
+            <div class="doctor-card__specialties">
+                <h3 class="specialty-title">Specialized in: </h3>
+                <ul class="specialty-list">
+                    <li><a href="/en/doctor/gastroenterology-and-endoscopy/egypt">@doctor.Speciality</a></li>
+                    <li><a href="/en/doctor/adult-hepatology/egypt">Adult Hepatology</a></li>
+                    <li><a href="/en/doctor/adult-gastroenterology-and-endoscopy/egypt">Adult Gastroenterology and Endoscopy</a></li>
+                </ul>
+            </div>
+            <div class="doctor-card__location">
+                <span class="location">New Cairo: Fifth Settlement Medical Center</span>
+                <span class="fees">Fees: 500 EGP</span>
+                <span class="waiting-time">Waiting Time: 16 Minutes</span>
+            </div>
+            <div class="doctor-card__contact">
+                <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
+            </div>
+        </div>
+    </div>
+
+}
+
+

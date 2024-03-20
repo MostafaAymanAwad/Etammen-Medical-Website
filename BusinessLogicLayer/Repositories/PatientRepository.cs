@@ -1,10 +1,13 @@
 ﻿using BusinessLogicLayer.Interfaces;
 using DataAccessLayerEF.Context;
+using DataAccessLayerEF.Enums;
 using DataAccessLayerEF.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,8 +30,23 @@ namespace BusinessLogicLayer.Repositories
             
             return Doctors;
         }
+        public int? GetSumOfRates(int id)
+        {
+            var doctorReviews = _context.DoctorReviews.Where(e => e.DoctorId == id).ToList();
+            var sumOfRates = doctorReviews.Select(r => r.Rate).Sum();
+            return sumOfRates;
+        }
 
-
-        
+        public int NumberOfRates(int id)
+        {
+            var doctorReviews = _context.DoctorReviews.Where(e => e.DoctorId == id).ToList();
+            var sumOfRates = doctorReviews.Select(r => r.Rate).Count();
+            return sumOfRates;
+        }
+        public async Task<Doctor> GetDoctorDetails(int id)
+        {
+            return await _context.Doctors
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
     }
 }
