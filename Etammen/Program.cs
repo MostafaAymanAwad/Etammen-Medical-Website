@@ -26,12 +26,13 @@ using Etammen.Helpers;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(jsonOptions =>
+{
+    jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 
-//options =>
-//{
-//    options.Filters.Add(new AuthorizeFilter());
-//}
+
+
 builder.Services.AddDbContext<EtammenDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
@@ -135,6 +136,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+
 
 app.UseAuthorization();
 
