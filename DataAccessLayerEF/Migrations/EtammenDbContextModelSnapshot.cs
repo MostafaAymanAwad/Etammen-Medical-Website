@@ -124,8 +124,11 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ReservtionPeriodNumber")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsHomeVisit")
+                        .HasColumnType("bit");
+
+                    b.Property<TimeOnly>("ReservationPeriodNumber")
+                        .HasColumnType("time");
 
                     b.Property<int>("patientId")
                         .HasColumnType("int");
@@ -228,14 +231,12 @@ namespace DataAccessLayerEF.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Certificate")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("CreationDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Degree")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("DeletionDate")
@@ -261,7 +262,6 @@ namespace DataAccessLayerEF.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Speciality")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TotalRatings")
@@ -290,6 +290,18 @@ namespace DataAccessLayerEF.Migrations
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("CreationDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("DeletionDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateOnly>("LastUpdate")
+                        .HasColumnType("date");
 
                     b.Property<int?>("Rate")
                         .HasColumnType("int");

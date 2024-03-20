@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Etammen.Models;
+using Etammen.ViewModels;
 
 namespace Etammen.Controllers
 {

@@ -1,0 +1,15 @@
+﻿@using DataAccessLayerEF.Enums
+@model Etammen.ViewModels.ClinicViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Clinic Details</h1>
+
+<partial name="Partial/_DetailsAndDeletePartialView.cshtml" />
+
+<div style="margin-left:5px">
+    <a asp-action="EditClinic" asp-route-id="@Model?.Id" class="btn btn-outline-success">Edit</a> |
+    <a asp-action="ClinicIndex" class="btn btn-outline-primary">Back to List</a>
+</div>

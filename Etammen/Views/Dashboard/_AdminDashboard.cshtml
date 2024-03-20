@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modernize Free</title>
+    <title>@ViewData["Title"] - Etammen</title>
     <link rel="shortcut icon" type="image/png" href="~/AdminAssets/images/logos/favicon.png" />
     <link rel="stylesheet" href="~/AdminAssets/css/styles.min.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -19,38 +19,38 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 
-<body>
-    <!--  Body Wrapper -->
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-         data-sidebar-position="fixed" data-header-position="fixed">
-        <!-- Sidebar Start -->
-        @{
-            Html.RenderPartial("_PartialViewSideBar");
-        }
-        <!--  Sidebar End -->
-
-        <div class="body-wrapper">
-            <!--  Header Start -->
+    <body>
+        <!--  Body Wrapper -->
+        <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+             data-sidebar-position="fixed" data-header-position="fixed">
+            <!-- Sidebar Start -->
             @{
-                Html.RenderPartial("_PartialViewHeaderStart");
+                Html.RenderPartial("_PartialViewSideBar");
             }
-            <!--  Header End -->
-            <div class="container-fluid">
-                @RenderBody()
+            <!--  Sidebar End -->
+
+            <div class="body-wrapper">
+                <!--  Header Start -->
+                @{
+                    Html.RenderPartial("_PartialViewHeaderStart");
+                }
+                <!--  Header End -->
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
             </div>
         </div>
-    </div>
-    <script src="~/AdminAssets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="~/AdminAssets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/AdminAssets/js/sidebarmenu.js"></script>
-    <script src="~/AdminAssets/js/app.min.js"></script>
-    <script src="~/AdminAssets/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="~/AdminAssets/libs/simplebar/dist/simplebar.js"></script>
-    <script src="~/AdminAssets/js/dashboard.js"></script>
-    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
-    <script src="/DataTables/datatables.js"></script>
+        <script src="~/AdminAssets/libs/jquery/dist/jquery.min.js"></script>
+        <script src="~/AdminAssets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/AdminAssets/js/sidebarmenu.js"></script>
+        <script src="~/AdminAssets/js/app.min.js"></script>
+        <script src="~/AdminAssets/libs/apexcharts/dist/apexcharts.min.js"></script>
+        <script src="~/AdminAssets/libs/simplebar/dist/simplebar.js"></script>
+        <script src="~/AdminAssets/js/dashboard.js"></script>
+        <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+        <script src="/DataTables/datatables.js"></script>
    
-    @RenderSection("JS", required: false)
-</body>
+        @RenderSection("JS", required: false)
+    </body>
 
 </html>
