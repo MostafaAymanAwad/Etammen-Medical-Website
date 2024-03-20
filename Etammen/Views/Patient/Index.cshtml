@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<GetDoctorByIdViewModel>
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,53 +7,20 @@
 
 
 
-@foreach (var doctor in Model)
-{
 
-    <div class="doctor-card">
-        <div class="doctor-card__image">
-            <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
-        </div>
-        <div class="doctor-card__details">
-            <h2 class="doctor-card__name">Dr: @doctor.FirstName @doctor.LastName</h2>
-            <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
-            <div class="doctor-card__ratings">
-                <div class="star-rating">
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="half-filled-star"></span>
-                </div>
-                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
-            </div>
-            <div class="doctor-card__specialties">
-                <h3 class="specialty-title">Specialized in: </h3>
-                <ul class="specialty-list">
-                    <li><a href="/en/doctor/gastroenterology-and-endoscopy/egypt">@doctor.Speciality</a></li>
-                    <li><a href="/en/doctor/adult-hepatology/egypt">Adult Hepatology</a></li>
-                    <li><a href="/en/doctor/adult-gastroenterology-and-endoscopy/egypt">Adult Gastroenterology and Endoscopy</a></li>
-                </ul>
-            </div>
-            <div class="doctor-card__location">
-                <span class="location">New Cairo: Fifth Settlement Medical Center</span>
-                <span class="fees">Fees: 500 EGP</span>
-                <span class="waiting-time">Waiting Time: 16 Minutes</span>
-            </div>
-            <div class="doctor-card__contact">
-                <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
-            </div>
-        </div>
-    </div>
 
-}
+<div id="paginationDiv">
+    <partial name="_Patient" model="Model" />
+
+</div>
+
 
 <nav aria-label="Page navigation">
     <ul class="pagination">
         @for (var i = 1; i <= ViewBag.TotalPages; i++)
         {
             <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                <a class="page-link" onclick="nextPage(@i)">@i</a>
             </li>
         }
     </ul>
@@ -60,81 +28,162 @@
 
 
 
-@* href="/Patients/Index?pageNumber=@i" *@
+<div class="filter-container">
+    <div class="filter-header">Filters</div>
+    <div class="filter-content">
+        <form id="filterForm" action="/Patient/FilteredDoctors" method="post">
 
-@* <table id="myTable" class="display">
-    <thead>
-        <tr>
-            <!-- Add table headers if necessary -->
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var doctor in Model)
-        {
-            <tr>
-                <td>
-                    <div class="doctor-card">
-                        <div class="doctor-card__image">
-                            <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
+
+            <div class="filter-item">
+                <a id="Degree" class="collapsible-trigger" data-target="title">Degree</a>
+
+
+                <div class="filter-item">
+                    <a id="Degree" class="collapsible-trigger" data-target="title">Degree</a>
+
+                    <div style="display:none" class="collapsible-content" id="title-content">
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-professor" name="degree" value="Professor">
+                            <label for="title-professor">Professor</label>
                         </div>
-                        <div class="doctor-card__details">
-                            <h2 class="doctor-card__name">Dr: @doctor.FirstName @doctor.LastName</h2>
-                            <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
-                            <div class="doctor-card__ratings">
-                                <div class="star-rating">
-                                    <span class="filled-star"></span>
-                                    <span class="filled-star"></span>
-                                    <span class="filled-star"></span>
-                                    <span class="filled-star"></span>
-                                    <span class="half-filled-star"></span>
-                                </div>
-                                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
-                            </div>
-                            <div class="doctor-card__specialties">
-                                <h3 class="specialty-title">Specialized in: </h3>
-                                <ul class="specialty-list">
-                                    <li><a href="/en/doctor/gastroenterology-and-endoscopy/egypt">@doctor.Speciality</a></li>
-                                    <li><a href="/en/doctor/adult-hepatology/egypt">Adult Hepatology</a></li>
-                                    <li><a href="/en/doctor/adult-gastroenterology-and-endoscopy/egypt">Adult Gastroenterology and Endoscopy</a></li>
-                                </ul>
-                            </div>
-                            <div class="doctor-card__location">
-                                <span class="location">New Cairo: Fifth Settlement Medical Center</span>
-                                <span class="fees">Fees: 500 EGP</span>
-                                <span class="waiting-time">Waiting Time: 16 Minutes</span>
-                            </div>
-                            <div class="doctor-card__contact">
-                                <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
-                            </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-lecturer" name="degree" value="Lecturer">
+                            <label for="title-lecturer">Lecturer</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-consultant" name="degree" value="Consultant">
+                            <label for="title-consultant">Consultant</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-specialist" name="degree" value="Specialist">
+                            <label for="title-specialist">Specialist</label>
                         </div>
                     </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
-<div id="paginationButtons">
-    <button class="btn btn-primary" id="prevPage">Previous</button>
-    <button class="btn btn-primary" id="nextPage">Next</button>
+
+                </div>
+
+                <div class="filter-item">
+                    <a id="Gender" class="collapsible-trigger" data-target="title">Gender</a>
+                    <div style="display:none" class="collapsible-content-gender" id="Title-Gender">
+                        <div class="checkbox">
+                            <input type="radio" id="title-professor" name="gender" value="0">
+                            <label for="title-professor">Male</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="radio" id="title-lecturer" name="gender" value="1">
+                            <label for="title-lecturer">Female</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-item">
+                    <a id="Fees" class="collapsible-trigger" data-target="title">Fees</a>
+                    <div style="display:none" class="collapsible-content-fees" id="title-Fees">
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-professor" name="fees" value="50">
+                            <label for="title-professor">Less than 50</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-lecturer" name="fees" value="100">
+                            <label for="title-lecturer">From 50 to 100</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-lecturer" name="fees" value="150">
+                            <label for="title-lecturer">From 100 to 200</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-lecturer" name="fees" value="200">
+                            <label for="title-lecturer">From 200 to 300</label>
+                        </div>
+
+                        <div class="checkbox">
+                            <input type="checkbox" id="title-lecturer" name="fees" value="250">
+                            <label for="title-lecturer">Greater than 300</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="submitBtn">Filter</button>
+        </form>
+    </div>
 </div>
 
-@section JS {
+
+
+@section PatientHomeJS {
     <script>
-        $(document).ready(function () {
-            var table = $('#myTable').DataTable({
-                "paging": true,
-                "pageLength": 5,
-                "lengthChange": false
-            });
-
-            $('#prevPage').on('click', function () {
-                table.page('previous').draw('page');
-            });
-
-            $('#nextPage').on('click', function () {
-                table.page('next').draw('page');
-            });
+        document.getElementById('Degree').addEventListener('click', function () {
+            var content = document.getElementById('title-content');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
         });
+
+        document.getElementById('Gender').addEventListener('click', function () {
+            var content = document.getElementById('Title-Gender');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        });
+
+        document.getElementById('Fees').addEventListener('click', function () {
+            var content = document.getElementById('title-Fees');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        });
+
     </script>
-} *@
+}
+
+
+<script>
+    function nextPage(pagenumber) {
+
+        let gender = $('input[name="gender"]:checked').val();
+
+        var selectedItems = [];
+        var checkboxes = document
+        .querySelectorAll('input[name="degree"]:checked');
+        checkboxes
+        .forEach(function (checkbox) {
+            selectedItems.push(checkbox.value);
+        });
+
+
+        var selectedItemsTwo = [];
+        var checkboxesTwo = document.querySelectorAll('input[name="fees"]:checked');
+        checkboxesTwo.forEach(function (checkbox) {
+            selectedItemsTwo.push(checkbox.value);
+        });
+
+
+        $.ajax({
+            url: "/Patient/GetDoctors",
+            type: 'GET',
+            data: {
+                degrees: selectedItems,
+                feess: selectedItemsTwo,
+                gender: parseInt(gender),
+                pageNumber: pagenumber
+            },
+            success: function (result) {
+
+                $('#paginationDiv').html(result);
+
+            },
+            error: function (xhr, status, error) {
+                console.log("Error:", error);
+            }
+        });
+
+
+    }
+</script>

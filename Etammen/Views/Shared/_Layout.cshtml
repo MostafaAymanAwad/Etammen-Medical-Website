@@ -36,8 +36,8 @@
     <link rel="stylesheet" href="/DataTables/datatables.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-
+    <link href="~/css/dcotorating.css" rel="stylesheet" />
+    
 </head>
 <body>
 
@@ -172,7 +172,10 @@
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.js"></script>
     <script src="/DataTables/datatables.js"></script>
 
-    
+
+   
+  
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("PatientHomeJS", required: false)
 </body>
 </html>

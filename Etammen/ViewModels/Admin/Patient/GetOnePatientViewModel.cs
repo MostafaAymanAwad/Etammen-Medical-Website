@@ -16,7 +16,7 @@ namespace Etammen.ViewModels.Admin.Patient
 
         public string? ApplicationUserId { get; set; }
 
-        public Address? Address { get; set; }
+        public DataAccessLayerEF.Models.Address? Address { get; set; }
 
     }
 }
