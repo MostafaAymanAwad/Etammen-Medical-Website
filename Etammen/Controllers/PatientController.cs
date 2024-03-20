@@ -28,13 +28,33 @@ namespace Etammen.Controllers
         private readonly DoctorDetailsMapping _doctorDetailsMapping;
         private readonly ClinicDetailsForDoctorPageMapper _clinicMapper;
         private readonly DoctorRegisterationHelper _doctorRegisterationHelper;
-        public PatientController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, IPatientRepository patientRepository, DoctorRegisterationHelper doctorRegisterationHelper, IMapper mapper)
+        public PatientController(IUnitOfWork unitOfWork,
+            DoctorsAdminMapper getAllDoctorsMapper,
+            IPatientRepository patientRepository,
+            IDoctorReviewsRepository doctorReviewsRepository,
+            IAppointmentRepository appointmentRepository,
+            IApplicationUser applicationUser,
+            IClinicRepository clinicRepository,
+            DoctorRegisterationHelper doctorRegisterationHelper,
+            IMapper mapper,
+            ClinicDetailsForDoctorPageMapper clinicMapper,
+            DoctorDetailsMapping doctorDetailsMapping,
+            DoctorReviewMapping doctorReviewMapper
+            )
         {
             _unitOfWork = unitOfWork;
             _doctorsMapper = getAllDoctorsMapper;
             _patientRepository = patientRepository;
             _doctorRegisterationHelper = doctorRegisterationHelper;
             _mapper = mapper;
+            _clinicMapper = clinicMapper;
+            _applicationUser = applicationUser;
+            _appointmentRepository = appointmentRepository;
+            _clinicRepository = clinicRepository;
+            _doctorDetailsMapping = doctorDetailsMapping;
+            _doctorReviewMapper = doctorReviewMapper;
+            _doctorReviewsRepository = doctorReviewsRepository;
+
         }
         public async Task<IActionResult> Search(JSONMainViewModelHolder jSONMainViewModelHolder)
         {

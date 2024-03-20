@@ -6,6 +6,7 @@
 @{
     var doctorReviews = new SelectList(await _unitOfWork.DoctorReviews.FindAllBy(e => e.DoctorId == Model.DoctorId), "Rate", "Comment");
 }
+
 @{
     Layout = null;
 }
@@ -272,15 +273,6 @@
 
 
 
-@*         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#form"> See Modal with Form </button>
- *@
-        @*
-        <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-        <div class="text-right cross"> <i class="fa fa-times mr-2"></i> </div>
-        <div class="card-body text-center"> *@
-
         @if (Model.IsAttended == true && Model.IsReview == false)
         {
             <form asp-action="DoctorReviews">
@@ -319,8 +311,7 @@
                 <div class="card-header">
                     @rate.Value
                     @rate.Text
-                    @*     @rate.Patient.ApplicationUser.UserName
-                @rate.Patient.ApplicationUser.Age *@
+         
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">@rate.Value/5</h5>
