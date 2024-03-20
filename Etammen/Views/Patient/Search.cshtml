@@ -3,20 +3,30 @@
 
 @{
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
-    SelectList Cities = new SelectList(myModel.City_areaDict.Keys);
+
+    SelectList Cities = null;
+    SelectList Areas = new SelectList(new List<string>{ "ALL" });
+
+
+    if (myModel.City is null || myModel.City == "ALL")
+        Cities = new SelectList(myModel.City_areaDict.Keys);
+    else
+    {
+        Cities = new SelectList(myModel.City_areaDict.Keys, myModel.City);
+        Areas = new SelectList(myModel.City_areaDict[myModel.City], myModel.Area ?? "ALL");
+    }
     SelectList specialitiesSL = new SelectList(myModel.Specialties);
-    var dict = @myModel.City_areaDict;
+    
 }
+
 
 <form asp-action="Index" onsubmit="updateAndSubmit(event)">
     <input type="hidden" name="JSONdata" />
-    <select asp-items="specialitiesSL" class="form-select" name="specialty"></select>
+    <select asp-items="specialitiesSL" class="form-select" name="specialty" selected></select>
     <label>City</label>
     <select asp-items="Cities" id="cityselectlist" class="form-select" name="city"></select>
     <label>Area</label>
-    <select id="areaselectlist" class="form-select" name="area">
-        <option value="ALL">ALL</option>
-    </select>
+    <select id="areaselectlist" class="form-select" name="area" asp-items="Areas"></select>
     <label>Doctor Name</label>
     <br />
     <input type="text" value="" placeholder="EX: Ahmed Mostafa" name="doctorName" class="form-text" />

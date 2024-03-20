@@ -8,6 +8,7 @@ using Etammen.Mapping;
 using Etammen.Mapping.DoctorForAdmin;
 using Etammen.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -28,6 +29,8 @@ namespace Etammen.Controllers
         private readonly DoctorDetailsMapping _doctorDetailsMapping;
         private readonly ClinicDetailsForDoctorPageMapper _clinicMapper;
         private readonly DoctorRegisterationHelper _doctorRegisterationHelper;
+        private readonly UserManager<ApplicationUser> _userManager;
+
         public PatientController(IUnitOfWork unitOfWork,
             DoctorsAdminMapper getAllDoctorsMapper,
             IPatientRepository patientRepository,
@@ -39,7 +42,8 @@ namespace Etammen.Controllers
             IMapper mapper,
             ClinicDetailsForDoctorPageMapper clinicMapper,
             DoctorDetailsMapping doctorDetailsMapping,
-            DoctorReviewMapping doctorReviewMapper
+            DoctorReviewMapping doctorReviewMapper,
+            UserManager<ApplicationUser> userManager
             )
         {
             _unitOfWork = unitOfWork;
@@ -47,6 +51,7 @@ namespace Etammen.Controllers
             _patientRepository = patientRepository;
             _doctorRegisterationHelper = doctorRegisterationHelper;
             _mapper = mapper;
+            _userManager = userManager;
             _clinicMapper = clinicMapper;
             _applicationUser = applicationUser;
             _appointmentRepository = appointmentRepository;
@@ -80,18 +85,21 @@ namespace Etammen.Controllers
                  mainViewModel.Area, mainViewModel.DoctorName, mainViewModel.ClinicName);
 
             mainViewModel.SearchedDoctors = searchedDoctors.ToList();
+
             DoctorFilterOptions filterOptions = _mapper.Map<DoctorFilterOptions>(mainViewModel);
             mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.FilterByOptions(filterOptions,
                 mainViewModel.SearchedDoctors);
+
             mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
+
 
             jSONMainViewModelHolder = new JSONMainViewModelHolder();
             jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
 
-            return Pagination(jSONMainViewModelHolder);
+            return await Pagination(jSONMainViewModelHolder);
 		}
-        public IActionResult Pagination(JSONMainViewModelHolder jSONMainViewModelHolder , int pageNumber = 1, int pageSize = 2)
+        public async Task<IActionResult> Pagination(JSONMainViewModelHolder jSONMainViewModelHolder , int pageNumber = 1, int pageSize = 2)
         {
             var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
 
@@ -100,15 +108,16 @@ namespace Etammen.Controllers
             {
                 var numberOfRows = mainViewModel.FilteredOrderedDoctors.Count;
                 var totalPages = (int)Math.Ceiling((double)numberOfRows / pageSize);
-                ViewBag.CurrentPageDoctors =  _patientRepository.PatientsPaginationNextAsync(mainViewModel.FilteredOrderedDoctors,pageNumber, pageSize);
+                mainViewModel.CurrentPageDoctors =  _patientRepository.PatientsPaginationNextAsync(mainViewModel.FilteredOrderedDoctors,pageNumber, pageSize);
 
+                mainViewModel.DoctorFullnames = await populateViewModel(mainViewModel.CurrentPageDoctors);
                 if (totalPages == 0 || pageNumber <= 0)
                 {
                     return View("Index", jSONMainViewModelHolder);
                 }
                 else if (pageNumber > totalPages)
                 {
-                    return Pagination(jSONMainViewModelHolder, totalPages, pageSize);
+                    return await Pagination(jSONMainViewModelHolder, totalPages, pageSize);
                 }
 
 				jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
@@ -125,6 +134,18 @@ namespace Etammen.Controllers
                 throw; // Rethrow the exception for further investigation
             }
         }
+        private async Task<List<string>> populateViewModel(List<Doctor>doctors)
+        {
+            List<string> Fullnames = new();
+            foreach(var doctor in doctors)
+            {
+                ApplicationUser Appuser = await _userManager.FindByIdAsync(doctor.ApplicationUserId);
+                string fullname = string.Join(" ", Appuser.FirstName, Appuser.LastName);
+                Fullnames.Add(fullname);
+            }
+            return Fullnames;
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Filter(JSONMainViewModelHolder jSONMainViewModelHolder)
@@ -141,7 +162,7 @@ namespace Etammen.Controllers
 
             jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
 
-            return Pagination(jSONMainViewModelHolder);
+            return await Pagination(jSONMainViewModelHolder);
         }
 
         public async Task<IActionResult> Order(JSONMainViewModelHolder jSONMainViewModelHolder)
@@ -151,7 +172,7 @@ namespace Etammen.Controllers
             mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
 
-            return Pagination(jSONMainViewModelHolder);
+            return await Pagination(jSONMainViewModelHolder);
         }
 
         [HttpPost]
