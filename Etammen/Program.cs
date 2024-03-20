@@ -1,3 +1,4 @@
+using AutoMapper;
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
@@ -112,11 +113,19 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
+builder.Services.AddScoped<IApplicationUser, ApplicationUserRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IDoctorReviewsRepository, DoctorReviewsRepository>();
+ 
 
 //Admin Services
 builder.Services.AddScoped<DoctorsAdminMapper>();
 builder.Services.AddScoped<ClinicAdminMapper>();
 builder.Services.AddScoped<PatientForAdminMapper>();
+builder.Services.AddScoped<DoctorReviewMapping>();
+builder.Services.AddScoped<DoctorDetailsMapping>();
+builder.Services.AddScoped<ClinicDetailsForDoctorPageMapper>();
 
 
 builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
@@ -136,7 +145,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
-
 
 app.UseAuthorization();
 
