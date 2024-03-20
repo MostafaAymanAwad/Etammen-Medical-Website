@@ -91,7 +91,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
         return await query.Where(criteria).ToListAsync();
     }
-        public async Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null)
+    public async Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null)
     {
         IQueryable<T> query = _context.Set<T>();
 

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.Helpers;
 using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Models;
 using Etammen.Helpers;
+using Etammen.Mapping;
 using Etammen.Mapping.DoctorForAdmin;
 using Etammen.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -18,12 +20,31 @@ namespace Etammen.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IPatientRepository _patientRepository;
+        private readonly IClinicRepository _clinicRepository;
+        private readonly IApplicationUser _applicationUser;
+        private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IDoctorReviewsRepository _doctorReviewsRepository;
         private readonly DoctorsAdminMapper _doctorsMapper;
+        private readonly DoctorReviewMapping _doctorReviewMapper;
+        private readonly DoctorDetailsMapping _doctorDetailsMapping;
+        private readonly ClinicDetailsForDoctorPageMapper _clinicMapper;
         private readonly DoctorRegisterationHelper _doctorRegisterationHelper;
-        private readonly UserManager<ApplicationUser> _userManager; 
-        public PatientController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, 
-            IPatientRepository patientRepository, DoctorRegisterationHelper doctorRegisterationHelper,
-            IMapper mapper, UserManager<ApplicationUser> userManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public PatientController(IUnitOfWork unitOfWork,
+            DoctorsAdminMapper getAllDoctorsMapper,
+            IPatientRepository patientRepository,
+            IDoctorReviewsRepository doctorReviewsRepository,
+            IAppointmentRepository appointmentRepository,
+            IApplicationUser applicationUser,
+            IClinicRepository clinicRepository,
+            DoctorRegisterationHelper doctorRegisterationHelper,
+            IMapper mapper,
+            ClinicDetailsForDoctorPageMapper clinicMapper,
+            DoctorDetailsMapping doctorDetailsMapping,
+            DoctorReviewMapping doctorReviewMapper,
+            UserManager<ApplicationUser> userManager
+            )
         {
             _unitOfWork = unitOfWork;
             _doctorsMapper = getAllDoctorsMapper;
@@ -31,6 +52,14 @@ namespace Etammen.Controllers
             _doctorRegisterationHelper = doctorRegisterationHelper;
             _mapper = mapper;
             _userManager = userManager;
+            _clinicMapper = clinicMapper;
+            _applicationUser = applicationUser;
+            _appointmentRepository = appointmentRepository;
+            _clinicRepository = clinicRepository;
+            _doctorDetailsMapping = doctorDetailsMapping;
+            _doctorReviewMapper = doctorReviewMapper;
+            _doctorReviewsRepository = doctorReviewsRepository;
+
         }
         public async Task<IActionResult> Search(JSONMainViewModelHolder jSONMainViewModelHolder)
         {
@@ -145,10 +174,71 @@ namespace Etammen.Controllers
 
             return await Pagination(jSONMainViewModelHolder);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DoctorReviews(DoctorReviewViewModel doctorViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                //1->> Get the reviewed doctor 
+                var doctor = await _unitOfWork.Doctors.FindBy(e => e.Id == doctorViewModel.DoctorId);
+
+                //2->> Check of null
+                if (doctor is not null)
+                {
+                    //3->> Mapping from doctorViewModel to Entity cuz EF methods only take Entities
+                    var doctorReview = _doctorReviewMapper.MapFromViewModelToEntity(doctorViewModel);
+                    //4->> Add Doctor Review to DB
+                    await _unitOfWork.DoctorReviews.Add(doctorReview);
+                    //5->> Save Changes
+                    await _unitOfWork.Commit();
+
+                    //6->> Now I need to update doctor's total rates and actual rate so:
+                    //6-1>> I need to ge the Sum of rates >> I made a method in the repo to get that
+                    var sumOfRates = _patientRepository.GetSumOfRates(doctorViewModel.DoctorId);
+                    //6-2>> I need to ge the Number of rates >> I made a method in the repo to get that
+                    //var numberOfRates = _patientRepository.NumberOfRates(doctorViewModel.DoctorId);
+
+                    doctor.TotalRatings += 1;
+                    decimal maxRating = 5M; // Maximum rating allowed
+
+                    // Calculate the actual rating
+                    decimal calculatedRating = ((decimal)sumOfRates / (decimal)(doctor.TotalRatings * maxRating));
+
+                    // Ensure the rating does not exceed the maximum allowed rating
+                    doctor.ActualRting = Math.Round(calculatedRating * maxRating, 1);
+                    //doctor.ActualRting = Math.Min(maxRating, Math.Round(calculatedRating * maxRating, 1));
+
+                    //10->> Update the doctor
+                    _unitOfWork.Doctors.Update(doctor);
+                    await _unitOfWork.Commit();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            return View(doctorViewModel);
+        }
+        public async Task<IActionResult> Details(int id)
+        {
+            var doctor = await _patientRepository.GetDoctorDetails(id);
+
+            var doctorDetailsViewModel = _doctorDetailsMapping.MapToDoctorDetails(doctor);
+            doctorDetailsViewModel.PatientId = 5;
+            var clinicDetails = _clinicRepository.GetClinicsNames(id);
+            doctorDetailsViewModel.Clinics = _clinicMapper.MapToClinicDetailsInDoctorPageViewModel(clinicDetails);
+            doctorDetailsViewModel.FirstName = _applicationUser.FirstName(id);
+            doctorDetailsViewModel.LastName = _applicationUser.LastName(id);
+            doctorDetailsViewModel.IsAttended = _appointmentRepository.IsAppointmentsAvailable(5);
+            doctorDetailsViewModel.IsReview = _doctorReviewsRepository.IsReviewdBy(id, 5);
+            return View(doctorDetailsViewModel);
+        }
         private void populateViewModel(MainViewModel mainViewModel)
         {
             mainViewModel.City_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
             mainViewModel.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
         }
+
     }
 }
