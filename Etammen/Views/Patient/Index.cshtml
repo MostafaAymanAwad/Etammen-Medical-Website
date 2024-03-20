@@ -5,12 +5,22 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
+
 <div>
     <partial name="Partial/_PartialSearch.cshtml" model="@Model" />
 </div>
+
+
 <div>
     <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
 </div>
+
+
+<div>
+    <partial name="Partial/_PartialOrder.cshtml" model="@Model" />
+</div>
+
+
 @foreach (var doctor in ViewBag.CurrentPageDoctors)
 {
     <div class="doctor-card">
@@ -55,78 +65,17 @@
         @for (var i = 1; i <= ViewBag.TotalPages; i++)
         {
             <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                <form asp-action="Pagination" onsubmit="updateAndSubmit(event)">
+                <form asp-action="Pagination" id="paginationForm" onsubmit="updateAndSubmit(event,'paginationForm')">
                     <input type="hidden" name="JSONdata" value="@Model.JSONdata"/>
                     <input type="hidden" name="pageNumber" value="@i"/>
                     <button type="submit" class="page-link">@i</button>
                 </form>
             </li>
-        }
     </ul>
 </nav>
-@section Scripts {
-    <script>
 
 
-            let City_Area = {};
-            let myModel = @Html.Raw(Json.Serialize(myModel));
-        @foreach (var pair in myModel.city_areaDict)
-        {
-            <text>
-                    City_Area["@pair.Key"]=[];
-            </text>
-            @foreach (var area in pair.Value)
-            {
-                <text>
-                        City_Area["@pair.Key"].push("@area");
-                </text>
-            }
-        }
 
-                function updateAndSubmit(event) {
-                    let specialty = document.querySelector("[name=specialty]").value;
-                    let city = document.querySelector("[name=city]").value;
-                    let area = document.querySelector("[name=area]").value;
-                    let doctorName = document.querySelector("[name=doctorName]").value;
-                    let clinicName = document.querySelector("[name=clinicName]").value;
-
-                    console.log("Specialty:", specialty);
-                    console.log("City:", city);
-                    console.log("Area:", area);
-                    console.log("Doctor Name:", doctorName);
-                    console.log("Clinic Name:", clinicName);
-
-                    // Update myModel properties here
-                    myModel.specialty = specialty;
-                    myModel.city = city;
-                    myModel.area = area;
-                    myModel.doctorName = doctorName;
-                    myModel.clinicName = clinicName;
-
-                    // Serialize updated myModel to JSON
-                    let json = JSON.stringify(myModel);
-
-                    console.log("JSON:", json);
-
-                    // Update hidden input field value
-                    document.querySelector("[name=JSONdata]").value = json;
-
-                    // Submit the form
-                    document.querySelector("form").submit();
-                }
-
-            document.getElementById("cityselectlist").addEventListener("change", function () {
-                let areaSelect = document.getElementById("areaselectlist");
-                areaSelect.innerHTML = '';
-                let selectedIndex = this.selectedIndex;
-                let selectedValue = this.options[selectedIndex].value;
-                let areas = City_Area[selectedValue];
-                for (let area of areas) {
-                    let newOption = document.createElement("option");
-                    newOption.value = area;
-                    newOption.text = area;
-                    areaSelect.appendChild(newOption);
-                }
-            });
-    </script>
-}
+<div>
+    <partial name="Partial/_PartialScript.cshtml" model="@Model" />
+</div>

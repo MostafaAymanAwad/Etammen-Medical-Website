@@ -50,8 +50,14 @@ namespace BusinessLogicLayer.Repositories
         }
         protected void Dispose(bool isDisposing)
         {
-            if(!_isDisposed)
+            if(_isDisposed)
+                return;
+
+            if(isDisposing)
+            {
                _context.Dispose();
+               _isDisposed = true;
+            }
         }
     }
 }

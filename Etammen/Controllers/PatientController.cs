@@ -39,7 +39,7 @@ namespace Etammen.Controllers
             if (mainViewModel.SearchedDoctors == null)
                 return View((JSONMainViewModelHolder)new() { JSONdata = JsonSerializer.Serialize(mainViewModel) });
             else
-                return await Index(new() { JSONdata = JsonSerializer.Serialize(mainViewModel)});
+                return await Index( new() { JSONdata = JsonSerializer.Serialize(mainViewModel)});
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -47,8 +47,8 @@ namespace Etammen.Controllers
 		{
 			var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
 			populateViewModel(mainViewModel);
-            var searchedDoctors= await _unitOfWork.Doctors.Search(mainViewModel.specialty, mainViewModel.city,
-                 mainViewModel.area, mainViewModel.doctorName, mainViewModel.clinicName);
+            var searchedDoctors= await _unitOfWork.Doctors.Search(mainViewModel.Specialty, mainViewModel.City,
+                 mainViewModel.Area, mainViewModel.DoctorName, mainViewModel.ClinicName);
 
             mainViewModel.SearchedDoctors = searchedDoctors.ToList();
             DoctorFilterOptions filterOptions = _mapper.Map<DoctorFilterOptions>(mainViewModel);
@@ -96,24 +96,37 @@ namespace Etammen.Controllers
                 throw; // Rethrow the exception for further investigation
             }
         }
-        public async Task<IActionResult> Filter(MainViewModel mainViewModel)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Filter(JSONMainViewModelHolder jSONMainViewModelHolder)
         {
+
+            var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+
             DoctorFilterOptions filterOptions = _mapper.Map<MainViewModel, DoctorFilterOptions>(mainViewModel);
+
             mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.FilterByOptions(filterOptions,
                 mainViewModel.SearchedDoctors);
             mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
-            return RedirectToAction("Pagination", mainViewModel);
+
+            jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
+
+            return Pagination(jSONMainViewModelHolder);
         }
-        public async Task<IActionResult> Order(MainViewModel mainViewModel)
+
+        public async Task<IActionResult> Order(JSONMainViewModelHolder jSONMainViewModelHolder)
         {
+            var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+
             mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
-            return RedirectToAction("Pagination", mainViewModel);
+
+            return Pagination(jSONMainViewModelHolder);
         }
         private void populateViewModel(MainViewModel mainViewModel)
         {
-            mainViewModel.city_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
+            mainViewModel.City_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
             mainViewModel.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
         }
     }
