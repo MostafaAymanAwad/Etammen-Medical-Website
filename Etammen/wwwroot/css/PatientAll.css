@@ -99,3 +99,51 @@
     }
 }
 
+.filter-container {
+    font-family: Arial, sans-serif;
+}
+
+.filter-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.filter-item {
+    margin-bottom: 10px;
+}
+
+.collapsible-trigger {
+    background-color: #f4f4f4;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s;
+}
+
+    .collapsible-trigger:hover {
+        background-color: #e0e0e0;
+    }
+
+.collapsible-content {
+    display: none;
+    padding: 10px;
+}
+
+    .collapsible-content a {
+        display: block;
+        padding: 5px 0;
+        color: #333;
+        text-decoration: none;
+    }
+
+        .collapsible-content a:hover {
+            background-color: #f0f0f0;
+        }
+
+.filter-item.active .collapsible-content {
+    display: block;
+}

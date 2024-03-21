@@ -8,6 +8,6 @@ namespace Etammen.ViewModels.Admin.Clinic
         public int Id { get; set; }
         public required string Name { get; set; }
         public int DoctorId { get; set; }
-        public required Address Address { get; set; }
+        public required DataAccessLayerEF.Models.Address Address { get; set; }
     }
 }

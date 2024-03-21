@@ -1,6 +1,7 @@
 ﻿using DataAccessLayerEF.Enums;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 namespace DataAccessLayerEF.Models;
 
 public class ApplicationUser:IdentityUser
@@ -16,7 +17,7 @@ public class ApplicationUser:IdentityUser
 
     [Required]
     public Gender Gender { get; set; }
-
+    [JsonIgnore]
     public Doctor? Doctor { get; set; }
     public Patient? Patient { get; set; }
 }

@@ -86,7 +86,7 @@ public class AccountController : Controller
                 List<string> imagePAths = _doctorRegisterationHelper.SaveUploadedImages(new List<IFormFile> { certificate, profilePicture }, UploadedPicturesFolder);
 
                 Doctor newDoctor = _mapper.GetDoctorFromVM(doctorRegisterViewModel, newUser.Id, imagePAths);
-                await _unitOfWork.Doctors.AddAsync(newDoctor);
+                await _unitOfWork.Doctors.Add(newDoctor);
                 await _unitOfWork.Commit();
                 return View("RegisterationSuccess");
             }
@@ -126,7 +126,7 @@ public class AccountController : Controller
                 await SendEmailConfirmation(newUser);
 
                 Patient newPatient = _mapper.GetPatientFromVM(patientRegisterViewModel, newUser.Id);
-                await _unitOfWork.Patients.AddAsync(newPatient);
+                await _unitOfWork.Patients.Add(newPatient);
                 await _unitOfWork.Commit();
 
                 return View("RegisterationSuccess");
@@ -491,7 +491,7 @@ public class AccountController : Controller
                 await _userManager.AddToRoleAsync(newUser, "Patient");
 
                 Patient newPatient = _mapper.GetPatientFromExternalLoginViewModel(externalloginViewModel, newUser.Id);
-                await _unitOfWork.Patients.AddAsync(newPatient);
+                await _unitOfWork.Patients.Add(newPatient);
                 await _unitOfWork.Commit();
 
                 return await AssociateExternalLoginProviderWithUser(newUser, info);

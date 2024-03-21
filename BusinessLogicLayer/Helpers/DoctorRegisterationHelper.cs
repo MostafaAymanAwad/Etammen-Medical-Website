@@ -12,10 +12,9 @@ public class DoctorRegisterationHelper
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public SelectList SpecialitySelectList { get; private set; } = new SelectList
-    (
-        new List<string>
+    public List<string> SpecialitySelectList { get; private set; } = new List<string>()
         {
+            "ALL",
             "Allergy and Immunology",
             "Anesthesiology",
             "Cardiology",
@@ -46,8 +45,7 @@ public class DoctorRegisterationHelper
             "Rheumatology",
             "Sports Medicine",
             "Urology"
-            }
-    );
+            };
           
     public SelectList DegreeSelectList { get; private set; } = new SelectList
     (

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.Helpers;
 using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Models;
 using DataAccessLayerEF.SettingsModel;
 using Etammen.Helpers;
+using Etammen.Mapping;
 using Etammen.Mapping.DoctorForAdmin;
 using Etammen.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +16,7 @@ using Org.BouncyCastle.Tsp;
 using System;
 using System.Globalization;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace Etammen.Controllers
 {
@@ -22,70 +25,121 @@ namespace Etammen.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IPatientRepository _patientRepository;
+        private readonly IClinicRepository _clinicRepository;
+        private readonly IApplicationUser _applicationUser;
+        private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IDoctorReviewsRepository _doctorReviewsRepository;
         private readonly DoctorsAdminMapper _doctorsMapper;
+        private readonly DoctorReviewMapping _doctorReviewMapper;
+        private readonly DoctorDetailsMapping _doctorDetailsMapping;
+        private readonly ClinicDetailsForDoctorPageMapper _clinicMapper;
         private readonly DoctorRegisterationHelper _doctorRegisterationHelper;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ClinicDetailsMapViewModelMapper _clinicMapMapper;
         private readonly ISmsService _smsService;
         List<AppointmentViewModel> totalAppointments;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public PatientController(IUnitOfWork unitOfWork,
-               DoctorsAdminMapper getAllDoctorsMapper,
-               IPatientRepository patientRepository,
-               DoctorRegisterationHelper doctorRegisterationHelper,
-               UserManager<ApplicationUser> userManager,
-               IMapper mapper,
-               ISmsService smsService)
+            DoctorsAdminMapper getAllDoctorsMapper,
+            IPatientRepository patientRepository,
+            IDoctorReviewsRepository doctorReviewsRepository,
+            IAppointmentRepository appointmentRepository,
+            IApplicationUser applicationUser,
+            IClinicRepository clinicRepository,
+            DoctorRegisterationHelper doctorRegisterationHelper,
+            IMapper mapper,
+            ClinicDetailsForDoctorPageMapper clinicMapper,
+            DoctorDetailsMapping doctorDetailsMapping,
+            DoctorReviewMapping doctorReviewMapper,
+            ClinicDetailsMapViewModelMapper clinicMapMapper,
+            UserManager<ApplicationUser> userManager,
+            ISmsService smsService
+            )
         {
             _unitOfWork = unitOfWork;
             _doctorsMapper = getAllDoctorsMapper;
             _patientRepository = patientRepository;
             _doctorRegisterationHelper = doctorRegisterationHelper;
-            _userManager = userManager;
             _mapper = mapper;
+            _userManager = userManager;
+            _clinicMapper = clinicMapper;
+            _applicationUser = applicationUser;
+            _appointmentRepository = appointmentRepository;
+            _clinicRepository = clinicRepository;
+            _doctorDetailsMapping = doctorDetailsMapping;
+            _doctorReviewMapper = doctorReviewMapper;
+            _doctorReviewsRepository = doctorReviewsRepository;
+            _clinicMapMapper = clinicMapMapper;
             _smsService = smsService;
             totalAppointments = new List<AppointmentViewModel>();
+
         }
-        public IActionResult Search()
+        public async Task<IActionResult> Search(JSONMainViewModelHolder jSONMainViewModelHolder)
         {
-            var vm = new SerachViewModel();
-            vm.city_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
-            vm.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
-            return View(vm);
+            MainViewModel mainViewModel = new();
+            if(jSONMainViewModelHolder.JSONdata != null)
+            {
+			    mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+            }
+			populateViewModel(mainViewModel);
+
+            if (mainViewModel.SearchedDoctors == null)
+                return View((JSONMainViewModelHolder)new() { JSONdata = JsonSerializer.Serialize(mainViewModel) });
+            else
+                return await Index( new() { JSONdata = JsonSerializer.Serialize(mainViewModel)});
         }
-        public async Task<IActionResult> Index(MainViewModel mainViewModel)
-        {
-            var searchedDoctors = await _unitOfWork.Doctors.Search(mainViewModel.specialty, mainViewModel.city,
-                mainViewModel.area, mainViewModel.doctorName, mainViewModel.clinicName);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+		public async Task<IActionResult> Index(JSONMainViewModelHolder jSONMainViewModelHolder)
+		{
+			var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+			populateViewModel(mainViewModel);
+            var searchedDoctors= await _unitOfWork.Doctors.Search(mainViewModel.Specialty, mainViewModel.City,
+                 mainViewModel.Area, mainViewModel.DoctorName, mainViewModel.ClinicName);
 
             mainViewModel.SearchedDoctors = searchedDoctors.ToList();
 
-            DoctorFilterOptions filterOptions = _mapper.Map<MainViewModel, DoctorFilterOptions>(mainViewModel);
+            DoctorFilterOptions filterOptions = _mapper.Map<DoctorFilterOptions>(mainViewModel);
             mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.FilterByOptions(filterOptions,
                 mainViewModel.SearchedDoctors);
-            mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
+
+            mainViewModel.FilteredOrderedDoctors =  _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
 
-            return RedirectToAction("Pagination", mainViewModel);
-        }
-        public IActionResult Pagination(MainViewModel mainViewModel, int pageNumber = 1, int pageSize = 10)
+
+            jSONMainViewModelHolder = new JSONMainViewModelHolder();
+            jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
+
+            return await Pagination(jSONMainViewModelHolder);
+		}
+        public async Task<IActionResult> Pagination(JSONMainViewModelHolder jSONMainViewModelHolder , int pageNumber = 1, int pageSize = 2)
         {
+            var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+
+            populateViewModel(mainViewModel);
             try
             {
                 var numberOfRows = mainViewModel.FilteredOrderedDoctors.Count;
                 var totalPages = (int)Math.Ceiling((double)numberOfRows / pageSize);
+                mainViewModel.CurrentPageDoctors =  _patientRepository.PatientsPaginationNextAsync(mainViewModel.FilteredOrderedDoctors,pageNumber, pageSize);
 
-                if (pageNumber < 1 || pageNumber > totalPages)
+                mainViewModel.DoctorFullnames = await populateViewModel(mainViewModel.CurrentPageDoctors);
+                if (totalPages == 0 || pageNumber <= 0)
                 {
-                    return RedirectToAction("Index", new { mainViewModel, pageNumber = totalPages, pageSize });
+                    return View("Index", jSONMainViewModelHolder);
+                }
+                else if (pageNumber > totalPages)
+                {
+                    return await Pagination(jSONMainViewModelHolder, totalPages, pageSize);
                 }
 
-                var doctors = _patientRepository.PatientsPaginationNextAsync(mainViewModel.FilteredOrderedDoctors, pageNumber, pageSize);
-                var viewModel = _doctorsMapper.MapDoctorEntitiesToDoctorViewModel(doctors);
+				jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
+				//var viewModel = _doctorsMapper.MapDoctorEntitiesToDoctorViewModel(doctors);
 
-                ViewBag.CurrentPage = pageNumber;
+				ViewBag.CurrentPage = pageNumber;
                 ViewBag.TotalPages = totalPages;
 
-                return View(viewModel);
+                return View("Index",jSONMainViewModelHolder);
             }
             catch (Exception ex)
             {
@@ -93,20 +147,114 @@ namespace Etammen.Controllers
                 throw; // Rethrow the exception for further investigation
             }
         }
-        public async Task<IActionResult> Filter(MainViewModel mainViewModel)
+        private async Task<List<string>> populateViewModel(List<Doctor>doctors)
         {
+            List<string> Fullnames = new();
+            foreach(var doctor in doctors)
+            {
+                ApplicationUser Appuser = await _userManager.FindByIdAsync(doctor.ApplicationUserId);
+                string fullname = string.Join(" ", Appuser.FirstName, Appuser.LastName);
+                Fullnames.Add(fullname);
+            }
+            return Fullnames;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Filter(JSONMainViewModelHolder jSONMainViewModelHolder)
+        {
+
+            var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+
             DoctorFilterOptions filterOptions = _mapper.Map<MainViewModel, DoctorFilterOptions>(mainViewModel);
+
             mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.FilterByOptions(filterOptions,
                 mainViewModel.SearchedDoctors);
             mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
-            return RedirectToAction("Pagination", mainViewModel);
+
+            jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
+
+            return await Pagination(jSONMainViewModelHolder);
         }
-        public async Task<IActionResult> Order(MainViewModel mainViewModel)
+
+        public async Task<IActionResult> Order(JSONMainViewModelHolder jSONMainViewModelHolder)
         {
+            var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
+
             mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
                 mainViewModel.FilteredOrderedDoctors);
-            return RedirectToAction("Pagination", mainViewModel);
+
+            return await Pagination(jSONMainViewModelHolder);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DoctorReviews(DoctorReviewViewModel doctorViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                //1->> Get the reviewed doctor 
+                var doctor = await _unitOfWork.Doctors.FindBy(e => e.Id == doctorViewModel.DoctorId);
+
+                //2->> Check of null
+                if (doctor is not null)
+                {
+                    //3->> Mapping from doctorViewModel to Entity cuz EF methods only take Entities
+                    var doctorReview = _doctorReviewMapper.MapFromViewModelToEntity(doctorViewModel);
+                    //4->> Add Doctor Review to DB
+                    await _unitOfWork.DoctorReviews.Add(doctorReview);
+                    //5->> Save Changes
+                    await _unitOfWork.Commit();
+
+                    //6->> Now I need to update doctor's total rates and actual rate so:
+                    //6-1>> I need to ge the Sum of rates >> I made a method in the repo to get that
+                    var sumOfRates = _patientRepository.GetSumOfRates(doctorViewModel.DoctorId);
+                    //6-2>> I need to ge the Number of rates >> I made a method in the repo to get that
+                    //var numberOfRates = _patientRepository.NumberOfRates(doctorViewModel.DoctorId);
+
+                    doctor.TotalRatings += 1;
+                    decimal maxRating = 5M; // Maximum rating allowed
+
+                    // Calculate the actual rating
+                    decimal calculatedRating = ((decimal)sumOfRates / (decimal)(doctor.TotalRatings * maxRating));
+
+                    // Ensure the rating does not exceed the maximum allowed rating
+                    doctor.ActualRting = Math.Round(calculatedRating * maxRating, 1);
+                    //doctor.ActualRting = Math.Min(maxRating, Math.Round(calculatedRating * maxRating, 1));
+
+                    //10->> Update the doctor
+                    _unitOfWork.Doctors.Update(doctor);
+                    await _unitOfWork.Commit();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            return View(doctorViewModel);
+        }
+       
+        public async Task<IActionResult> Details(int id)
+        {
+            var doctor = await _patientRepository.GetDoctorDetails(id);
+
+            var doctorDetailsViewModel = _doctorDetailsMapping.MapToDoctorDetails(doctor);
+            doctorDetailsViewModel.PatientId = 5;
+            var clinicDetails = _clinicRepository.GetClinicsNames(id);
+            doctorDetailsViewModel.Clinics = _clinicMapper.MapToClinicDetailsInDoctorPageViewModel(clinicDetails);
+            doctorDetailsViewModel.FirstName = _applicationUser.FirstName(id);
+            doctorDetailsViewModel.LastName = _applicationUser.LastName(id);
+            doctorDetailsViewModel.IsAttended = _appointmentRepository.IsAppointmentsAvailable(5);
+            doctorDetailsViewModel.IsReview = _doctorReviewsRepository.IsReviewdBy(id, 5);
+            return View(doctorDetailsViewModel);
+        }
+
+        public async Task<IActionResult> ClinicDetails(int id)
+        {
+            var clinic = await _clinicRepository.GetClinics(id);
+            var clinicMapVm = _clinicMapMapper.ClinicMapper(clinic);
+
+            return View(clinicMapVm);
         }
 
         public async Task<IActionResult> Profile(int id = 1)
@@ -169,6 +317,8 @@ namespace Etammen.Controllers
                         existingPatient.Address.City = model.Address.City;
                         existingPatient.Address.governorate = model.Address.governorate;
 
+
+
                         await _unitOfWork.Commit();
                         return RedirectToAction(nameof(Profile));
                     }
@@ -177,6 +327,11 @@ namespace Etammen.Controllers
             }
 
             return View(model);
+        }
+        private void populateViewModel(MainViewModel mainViewModel)
+        {
+            mainViewModel.City_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
+            mainViewModel.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
         }
 
         public async Task<IActionResult> DoctorIndex()
@@ -245,7 +400,7 @@ namespace Etammen.Controllers
                     if (!IsHomeExisted)
                     {
                         var appointmentbooked = _mapper.Map<BookViewModel, HomeAppointment>(book);
-                        await _unitOfWork.HomeAppointment.AddAsync(appointmentbooked);
+                        await _unitOfWork.HomeAppointment.Add(appointmentbooked);
                     }
                     else { 
                     TempData["BookMessage"] = $"You already booked for today, See your appointment here";
@@ -259,7 +414,7 @@ namespace Etammen.Controllers
                         var appointmentbooked = _mapper.Map<BookViewModel, ClinicAppointment>(book);
                     appointmentbooked.ReservationPeriodNumber = book.ReservtionPeriodNumber;
                     appointmentbooked.Clinic = null;
-                        await _unitOfWork.ClinicAppointments.AddAsync(appointmentbooked);
+                        await _unitOfWork.ClinicAppointments.Add(appointmentbooked);
                     }
                     else
                     {

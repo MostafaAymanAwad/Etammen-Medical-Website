@@ -12,7 +12,7 @@ public interface IGenericRepository<T> where T : class
     Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null);
     Task<bool> Any(Expression<Func<T, bool>> patientId, Expression<Func<T, bool>> clinicId, Expression<Func<T, bool>> date);
    
-    Task AddAsync(T entity);
+    Task Add(T entity);
     void Update(T entity);
     Task Delete(int id, bool isHardDeleted);
     Task Delete(int id);
