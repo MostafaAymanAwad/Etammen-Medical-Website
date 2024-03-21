@@ -10,5 +10,6 @@ namespace BusinessLogicLayer.Interfaces
     public interface IClinicRepository
     {
         IEnumerable<Clinic> GetClinicsNames(int id);
+        Task<Clinic> GetClinics(int id);
     }
 }

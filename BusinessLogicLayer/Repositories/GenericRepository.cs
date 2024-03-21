@@ -91,7 +91,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
         return await query.Where(criteria).ToListAsync();
     }
-        public async Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null)
+    public async Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null)
     {
         IQueryable<T> query = _context.Set<T>();
 
@@ -124,4 +124,23 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
        _context.Update(entity);
     }
+    public async Task<bool> Any(Expression<Func<T, bool>> patientId, Expression<Func<T, bool>> clinicId, Expression<Func<T, bool>> date)
+    {
+        IQueryable<T> query = _context.Set<T>();
+
+        // Combine the first two expressions using AndAlso
+        var combinedExpression = Expression.AndAlso(patientId.Body, clinicId.Body);
+
+        // Combine the result of the first two with the third expression using AndAlso
+        combinedExpression = Expression.AndAlso(combinedExpression, date.Body);
+
+        // Create a new lambda expression
+        var lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, patientId.Parameters);
+
+        // Use Any with the combined lambda expression
+        var finalQuery = await query.AnyAsync(lambda);
+        return finalQuery;
+
+    }
+  
 }

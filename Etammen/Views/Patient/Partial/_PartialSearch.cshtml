@@ -4,9 +4,18 @@
 
 @{
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
-    SelectList Cities = new SelectList(myModel.City_areaDict.Keys);
     SelectList specialitiesSL = new SelectList(myModel.Specialties);
-    var dict = myModel.City_areaDict;
+
+    SelectList Cities = null;
+    SelectList Areas = new SelectList(new List<string> { "ALL" });
+
+    if (myModel.City is null || myModel.City == "ALL")
+        Cities = new SelectList(myModel.City_areaDict.Keys);
+    else
+    {
+        Cities = new SelectList(myModel.City_areaDict.Keys, myModel.City);
+        Areas = new SelectList(myModel.City_areaDict[myModel.City], myModel.Area ?? "ALL");
+    }
 }
 
 <form id="Searchform" asp-action="Index" onsubmit="updateAndSubmit(event,'Searchform')">
@@ -28,6 +37,7 @@
         <input id="submit" type="submit" value="Search" class="btn btn-primary" />
 
     </div>
+
 </form>
 
 

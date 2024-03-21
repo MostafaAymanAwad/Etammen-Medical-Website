@@ -6,8 +6,11 @@ namespace Etammen.ViewModels
     public class DoctorDetailsViewModel
     {
         public int DoctorId { get; set; }
+        public int ClinicId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string PatientFirstName { get; set; }
+        public string PatientLastName { get; set; }
         public int Age { get; set; }
         public Gender Gender { get; set; }
         public string? AboutTheDoctor { get; set; }
@@ -27,5 +30,6 @@ namespace Etammen.ViewModels
         public bool? IsAttended { get; set; }
         public bool? IsReview { get; set; }
         public IEnumerable<ClinicDetailsInDoctorPageViewModel>? Clinics { get; set; }
+        public IEnumerable<OpeningDays> OpeningDays { get; set; }
     }
 }

@@ -29,6 +29,9 @@ namespace Etammen.ViewModels
         public IFormFile? ProfilePictureFormFile { get; set; } 
         [Display(Name = "Experience")]
         public string YearsOfExperience { get; set; }
+        public string? Speciality { get; set; }
+        public string? Degree { get; set; }
+        public string? TotalRatings { get; set; }
         [Column(TypeName = "money"), Display(Name = "Home Visit Fees")]
         public decimal? HomeVisitFees { get; set; }
         [Required, Display(Name = "Home Visits")]

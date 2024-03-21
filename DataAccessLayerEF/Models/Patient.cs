@@ -15,7 +15,8 @@ public class Patient:BaseModel
 
     public Address Address { get; set; }
 
-    public virtual ICollection<Appointment>? Appointments { get; set; } = new HashSet<Appointment>();
+    public virtual ICollection<ClinicAppointment>? ClinicAppointments { get; set; } = new HashSet<ClinicAppointment>();
+    public virtual ICollection<HomeAppointment>? HomeAppointments { get; set; } = new HashSet<HomeAppointment>();
     public virtual ICollection<DoctorReviews>? DoctorReviews { get; set; } = new HashSet<DoctorReviews>();
 
    

@@ -17,11 +17,11 @@
     }
 
 .doctor-card__details {
-    flex: 0 0 70%;
+    flex: 0 0 30%;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+   
 }
 
 .doctor-card__name {

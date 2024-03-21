@@ -3,9 +3,20 @@
 
 @{
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
-    SelectList Cities = new SelectList(myModel.City_areaDict.Keys);
+
+    SelectList Cities = null;
+    SelectList Areas = new SelectList(new List<string>{ "ALL" });
+
+
+    if (myModel.City is null || myModel.City == "ALL")
+        Cities = new SelectList(myModel.City_areaDict.Keys);
+    else
+    {
+        Cities = new SelectList(myModel.City_areaDict.Keys, myModel.City);
+        Areas = new SelectList(myModel.City_areaDict[myModel.City], myModel.Area ?? "ALL");
+    }
     SelectList specialitiesSL = new SelectList(myModel.Specialties);
-    var dict = @myModel.City_areaDict;
+    
 }
 <link rel="stylesheet" href="/assets/css/search.css"/>
 <div class="s010">
@@ -33,7 +44,6 @@
                         <div class="input-select">
                             <select asp-items="Cities" id="cityselectlist" name="city">
                                 <option placeholder="" selected disabled value="ALL">Select a city</option>
-
                             </select>
                         </div>
                     </div>
@@ -61,6 +71,7 @@
         </div>
     </form>
 </div>
+
 
 @section Scripts {
     <script>

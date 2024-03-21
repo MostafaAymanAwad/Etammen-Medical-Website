@@ -41,4 +41,6 @@ public class Doctor:BaseModel
     public virtual ICollection<Clinic>? Clinics { get; set; } = new HashSet<Clinic>();
     public virtual ApplicationUser? ApplicationUser { get; set; }
     public virtual ICollection<DoctorReviews>? DoctorReviews { get; set; } = new HashSet<DoctorReviews>();
+    public virtual ICollection<HomeAppointment>? HomeAppointments { get; set; } = new HashSet<HomeAppointment>();
+
 }

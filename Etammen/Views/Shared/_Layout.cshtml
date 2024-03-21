@@ -94,7 +94,7 @@
 
         <div class="container d-flex align-items-center">
 
-            <h1 class="logo me-auto"><a href="index.html">Etammen</a></h1>
+            <h1 class="logo me-auto"><a href="/">Etammen</a></h1>
             <!-- Uncomment below if you prefer to use an image logo -->
             <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>
 
@@ -106,10 +106,21 @@
                             <li><a asp-action="Profile" asp-controller="Doctors">Profile</a></li>
                             <li><a asp-action="AppointmentIndex" asp-controller="Doctors">Appointments</a></li>
                             <li><a asp-action="ClinicIndex" asp-controller="Doctors">Clinics</a></li>
+                            <li><a asp-action="DeactivateAccount" asp-controller="Doctors">Deactivate Account</a></li>
                         </ul>
                     </li>
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-                    <li><a class="nav-link scrollto" asp-action="Home" asp-controller="Admin">Admin</a></li>
+
+                    <li><a asp-action="Home" asp-controller="Admin">Admin</a></li>
+                    <li class="dropdown">
+                        <a href="#"><span>patient User</span> <i class="bi bi-chevron-down"></i></a>
+                        <ul>
+                            <li><a asp-action="Profile" asp-controller="Patient">Profile</a></li>
+                            <li><a asp-action="AppointmentIndex" asp-controller="Patient">Appointments</a></li>
+                            <li><a asp-action="DoctorIndex" asp-controller="Patient">test</a></li>
+                           
+                        </ul>
+                    </li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>
