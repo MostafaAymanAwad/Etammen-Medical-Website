@@ -37,6 +37,32 @@ namespace BusinessLogicLayer.Repositories
             return sumOfRates;
         }
 
+        public async Task<bool> AnyAppointment(int patientId, int? clinicId, DateOnly date, bool IsDeleted, bool IsAttended)
+        {
+
+            var query = await _context.Appointments.AnyAsync(a =>
+            a.patientId == patientId &&
+            a.ClinicId == clinicId &&
+            a.Date == date&&
+            a.IsAttended == IsAttended&&
+            a.IsDeleted == IsDeleted
+                );
+            return query;
+        }
+        public async Task<bool> AnyHomeVisit(int patientId, int doctorId, DateOnly date, bool IsDeleted, bool IsAttended)
+        {
+
+            var query = await _context.HomeAppointments.AnyAsync(a =>
+            a.PatientId == patientId &&
+            a.DoctorId == doctorId &&
+            a.Date == date&&
+            a.IsDeleted == IsDeleted&&
+            a.IsAttended == IsAttended
+
+                );
+            return query;
+        }
+
         public int NumberOfRates(int id)
         {
             var doctorReviews = _context.DoctorReviews.Where(e => e.DoctorId == id).ToList();

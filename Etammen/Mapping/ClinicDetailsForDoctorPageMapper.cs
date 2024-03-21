@@ -13,6 +13,7 @@ namespace Etammen.Mapping
             {
                 var clinicVM = new ClinicDetailsInDoctorPageViewModel()
                 {
+                    Id = clinic.Id,
                     Name = clinic.Name,
                     Address = clinic.Address,
                     Fees = clinic.Fees,

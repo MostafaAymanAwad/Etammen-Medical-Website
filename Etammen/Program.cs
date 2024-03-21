@@ -19,7 +19,6 @@ using Etammen.Mapping;
 using Etammen.Services.ServicesConfigurations;
 using Etammen.Services.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using BusinessLogicLayer.Services.SMS;
 using BusinessLogicLayer.Services.ServicesConfigurations;
 using Etammen.Helpers;
 using Serilog;
@@ -82,6 +81,7 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(PatientProfile));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
@@ -122,6 +122,10 @@ builder.Services.AddTransient<DoctorRegisterationHelper>();
 builder.Services.AddTransient<AccountMapper>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddAutoMapper(M => M.AddProfile(new DoctorProfile()));
+
+builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+
 
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
@@ -138,10 +142,9 @@ builder.Services.AddScoped<PatientForAdminMapper>();
 builder.Services.AddScoped<DoctorReviewMapping>();
 builder.Services.AddScoped<DoctorDetailsMapping>();
 builder.Services.AddScoped<ClinicDetailsForDoctorPageMapper>();
+builder.Services.AddScoped<ClinicDetailsMapViewModelMapper>();
 
 
-builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
-builder.Services.AddTransient<ISmsService, SmsService>();
 
 
 

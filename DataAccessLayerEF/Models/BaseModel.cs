@@ -12,7 +12,7 @@ namespace DataAccessLayerEF.Models
     {
         public DateOnly LastUpdate { get; set;}
         public DateOnly CreationDate { get; set;} = DateOnly.FromDateTime(DateTime.Now);
-        public DateOnly DeletionDate { get; set; } 
+        public DateOnly? DeletionDate { get; set; } 
         public bool IsDeleted { get; set;} 
     }
 }

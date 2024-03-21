@@ -7,16 +7,17 @@
 
 
 <style>
-    .filter-container {
-        font-family: Arial, sans-serif;
-    }
-
-    .filter-title {
-        font-size: 1.5rem;
+    .filter-header {
+        display: flex;
+        align-items: center;
+        font-size: 1.2rem;
         font-weight: bold;
-        margin-bottom: 10px;
+        border-top-left-radius:5px;
+        border-top-right-radius: 5px;
+        color:white;
+        padding:4px;
+        background-color: rgb(0, 112, 205);
     }
-
     .filter-item {
         margin-bottom: 10px;
     }
@@ -32,48 +33,60 @@
         transition: background-color 0.3s;
     }
 
-        .collapsible-trigger:hover {
-            background-color: #e0e0e0;
-        }
+    .collapsible-trigger:hover {
+        background-color: #e0e0e0;
+    }
 
     .collapsible-content {
         display: none;
         padding: 10px;
     }
 
-        .collapsible-content a {
-            display: block;
-            padding: 5px 0;
-            color: #333;
-            text-decoration: none;
-        }
+    .collapsible-content a {
+        display: block;
+        padding: 5px 0;
+        color: #333;
+        text-decoration: none;
+    }
 
-            .collapsible-content a:hover {
-                background-color: #f0f0f0;
-            }
+    .collapsible-content a:hover {
+        background-color: #f0f0f0;
+    }
 
     .filter-item.active .collapsible-content {
         display: block;
     }
+    .card>.filter-header>span{
+        margin-left:5px;
+    }
+
+    #submitBtn{
+        background-color: rgb(0, 112, 205);
+    }
 </style>
 
 
-<div class="filter-container">
-    <div class="filter-header">
-        <span>
-            Filters
-        </span>
-        <br />
-    </div>
-    <div class="filter-content">
-        <form id="filterForm" asp-action="Filter" asp-controller="Patient" onsubmit="updateAndSubmit(event,'filterForm')">
-
-            <input type="hidden" name="JSONdata" />
-
-            <div class="filter-item">
-                <a id="degree" class="collapsible-trigger" data-target="title">Degree</a>
-
-                <div style="display:none" class="collapsible-content" id="title-degree">
+<form id="filterForm" asp-action="Filter" asp-controller="Patient" onsubmit="updateAndSubmit(event,'filterForm')">
+    <input type="hidden" name="JSONdata" />
+    <div class="card">
+        <div class="filter-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+                <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5" />
+            </svg>
+            <span>
+               Filters
+            </span>
+            <br/>
+        </div>
+        <article class="filter-group">
+            <header class="card-header">
+                <a href="#" data-toggle="collapse" data-target="#degree" aria-expanded="true" class="">
+                    @* <i class="icon-control fa fa-chevron-down"></i> *@
+                    <h6 class="title">Degree</h6>
+                </a>
+            </header>
+            <div class="filter-content collapse hide" id="degree">
+                <div class="card-body">
                     <div class="checkbox">
                         <input type="checkbox" id="title-professor" checked="@myModel.IsProfessor">
                         <label for="title-professor">Professor</label>
@@ -96,37 +109,51 @@
                     </div>
                 </div>
             </div>
+        </article>
 
 
-            @{
-                var genderValues = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
-            }
-            <div class="filter-item">
-                <a id="gender" class="collapsible-trigger" data-target="title">Gender</a>
-                <div style="display:none" class="collapsible-content-gender" id="title-gender">
+        @{
+            var genderValues = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
+        }
+        <article class="filter-group">
+            <header class="card-header">
+                <a href="#" data-toggle="collapse" data-target="#gender" aria-expanded="true" class="">
+                    @* <i class="icon-control fa fa-chevron-down"></i> *@
+                    <h6 class="title">Gender</h6>
+                </a>
+            </header>
+            <div class="filter-content collapse hide" id="gender">
+                <div class="card-body">
                     <div class="checkbox">
                         @{
                             bool isMale = myModel.Gender == Gender.Male;
                         }
-                        <input type="radio" class="gender" value="@genderValues[0]" name ="gender" checked="@isMale">
+                        <input type="radio" class="gender" value="@genderValues[0]" name="gender" checked="@isMale">
                         <label for="gender">@genderValues[0]</label>
                     </div>
                     <div class="checkbox">
-                        <input type="radio" class="gender" value="@genderValues[1]" name="gender"  checked="@(!isMale)">
+                        <input type="radio" class="gender" value="@genderValues[1]" name="gender" checked="@(!isMale)">
                         <label for="gender">@genderValues[1]</label>
                     </div>
                     <div class="checkbox">
                         <input type="radio" class="gender" name="gender" checked="@(myModel.Gender == null)">
                         <label for="gender">All</label>
                     </div>
-                </div>
+                </div> <!-- card-body.// -->
             </div>
+        </article> <!-- filter-group .// -->
 
-            <div class="filter-item">
-                <a id="fees" class="collapsible-trigger" data-target="title">Fees</a>
-                <div style="display:none" class="collapsible-content-fees" id="title-fees">
+        <article class="filter-group">
+            <header class="card-header">
+                <a href="#" data-toggle="collapse" data-target="#fees" aria-expanded="true" class="">
+                    @* <i class="icon-control fa fa-chevron-down"></i> *@
+                    <h6 class="title">Fees</h6>
+                </a>
+            </header>
+            <div class="filter-content collapse hide" id="fees">
+                <div class="card-body">
                     <div class="checkbox">
-                        <input type="checkbox" id="title-fees-1" checked="@myModel.IsFeesLessThan100"> 
+                        <input type="checkbox" id="title-fees-1" checked="@myModel.IsFeesLessThan100">
                         <label for="title-fees-1">less than 100</label>
                     </div>
                     <div class="checkbox">
@@ -141,30 +168,38 @@
                         <input type="checkbox" id="title-fees-4" checked="@myModel.IsFeesMoreThan300">
                         <label for="title-fees-4">Greater than 300</label>
                     </div>
-                </div>
+                </div> <!-- card-body.// -->
             </div>
+        </article> <!-- filter-group .// -->
 
-            @{
-                var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
-            }
+        @{
+            var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
+        }
 
-            <div class="filter-item">
-                <a id="openingdays" class="collapsible-trigger" data-target="title">Opening Days</a>
-                <div style="display:none" class="collapsible-content-fees" id="title-openingdays">
+        <article class="filter-group">
+            <header class="card-header">
+                <a href="#" data-toggle="collapse" data-target="#openingDays" aria-expanded="true" class="">
+                    @* <i class="icon-control fa fa-chevron-down"></i> *@
+                    <h6 class="title">Opening Days</h6>
+                </a>
+            </header>
+            <div class="filter-content collapse hide" id="openingDays">
+                <div class="card-body">
                     <div class="checkbox">
                         @{
                             foreach (var day in openingDaysValues)
                             {
-                                 bool IsChecked = myModel.OpeningDays.HasFlag(day);
-                                <input type="checkbox" class="OpeningDays" checked="@IsChecked" name="openDay" value="@((int)day)">
-                                <label for="openDay">@day</label>
+                                bool IsChecked = myModel.OpeningDays.HasFlag(day);
+                                <div class="checkbox">
+                                    <input type="checkbox" class="OpeningDays" checked="@IsChecked" name="openDay" value="@((int)day)">
+                                    <label for="openDay">@day</label>
+                                </div>
                             }
                         }
                     </div>
-                </div>
+                </div> <!-- card-body.// -->
             </div>
-
-            <input id="submitBtn" type="submit" value="Filter" class="btn btn-primary" />
-        </form>
+        </article> <!-- filter-group .// -->
+        <input id="submitBtn" type="submit" value="Filter" class="btn btn-primary" />
     </div>
-</div>
+</form>

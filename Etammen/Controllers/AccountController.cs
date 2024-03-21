@@ -6,12 +6,18 @@ using Microsoft.AspNetCore.Identity;
 using DataAccessLayerEF.Models;
 using Etammen.Mapping;
 using Etammen.Services.Email;
+using DataAccessLayerEF.Models;
+using Microsoft.AspNetCore.Hosting;
+using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessLogicLayer.Services.SMS;
+
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Jwt.AccessToken;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using DataAccessLayerEF.SettingsModel;
 
 
 
@@ -361,7 +367,12 @@ public class AccountController : Controller
             if (user is not null)
             {
                 var passwordResetToken = await _userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultPhoneProvider, "ResetPasswordPurpose");
-                MessageResource result = await _smsService.SendSmsAsync($"+2{user.PhoneNumber}", $"your OTP for resetting your Etammen account password is {passwordResetToken}");
+                var sms = new SMSMessage()
+                {
+                    PhoneNumber = $"+2{user.PhoneNumber}",
+                    body = $"your OTP for resetting your Etammen account password is {passwordResetToken}"
+                };
+                MessageResource result = _smsService.Send(sms);
                 if (string.IsNullOrEmpty(result.ErrorMessage))
                     return RedirectToAction("ResetPasswordOtp", new { userId = user.Id, token = passwordResetToken });
                 else

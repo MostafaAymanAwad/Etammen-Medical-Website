@@ -4,20 +4,56 @@
 
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
+<style>
+        body{
+            background-color: rgb(226, 230, 234);
+        }
 
+        .pagination {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+        .pagination .page-item {
+            display: inline;
+        }
+        form#paginationForm{
+            margin-right:0;
+        }
+        .pagination .page-link {
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            margin-right: 5px;
+            text-decoration: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #f0f0f0;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        .pagination .page-item:not(.active) .page-link:hover {
+            background-color: #e9ecef;
+        }
+</style>
 <div>
     <partial name="Partial/_PartialSearch.cshtml" model="@Model" />
 </div>
-
-
-<div>
-    <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
-</div>
-
-
-<div>
-    <partial name="Partial/_PartialOrder.cshtml" model="@Model" />
-</div>
+<div class="container mt-3 p-2" id="cardContainer">
+    <div class="row mt-2">
+        <aside class="col-3">
+            <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
+        </aside>
 
 
 @for(int i = 0; i < myModel.CurrentPageDoctors.Count; i++)
@@ -81,6 +117,7 @@
         }
     </ul>
 </nav>
+
 
 
 

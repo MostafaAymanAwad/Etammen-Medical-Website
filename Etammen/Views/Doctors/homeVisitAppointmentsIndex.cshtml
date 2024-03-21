@@ -1,0 +1,138 @@
+﻿@using Etammen.ViewModels
+
+@model IEnumerable<AppointmentViewModel>
+
+@{
+    ViewData["Title"] = "AppointmentIndex";
+}
+
+@if (TempData["AttendedMessage"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Info!</strong> @TempData["AttendedMessage"]
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+        </button>
+    </div>
+}@if (TempData["AcceptedMessage"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Info!</strong> @TempData["AcceptedMessage"]
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+        </button>
+    </div>
+}@if (TempData["MessageWasSent"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Info!</strong> @TempData["MessageWasSent"]
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+        </button>
+    </div>
+}
+
+<div>
+    <stong><h3>Home Visit Requests: </h3></stong>
+    <div style="margin-left:1200px">
+        <a asp-action="AppointmentIndex" class="appointment-btn scrollto"><span class="d-none d-md-inline"></span>Return To Appointments</a>
+    </div>
+    @if (Model.Count() > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DoctorFirstName)
+                    </th>
+                   
+                    <th>
+                        @Html.DisplayNameFor(model => model.PatientFirstName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Patient.Address)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsAccepted)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsAttended)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsPaidOnline)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <input type="hidden" asp-for="@item.Id" />
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Doctor.ApplicationUser.FirstName) @Html.DisplayFor(model => item.Doctor.ApplicationUser.LastName)
+                        </td> <td>
+                            @Html.DisplayFor(modelItem => item.Patient.ApplicationUser.FirstName) @Html.DisplayFor(model => item.Patient.ApplicationUser.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Patient.Address.StreetAddress) @Html.DisplayFor(modelItem => item.Patient.Address.City) @Html.DisplayFor(modelItem => item.Patient.Address.governorate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsAccepted)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsAttended)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsPaidOnline)
+                        </td>
+                       
+                        <td>
+                            @{
+                                if (item.IsAccepted == false)
+                                {
+                                    <a asp-action="AcceptAppointment" asp-route-id="@item.Id" asp-route-ReservationPeriodNumber="@item.ReservationPeriodNumber" class="btn btn-outline-success">Accept</a>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @{
+                                if (item.IsAttended == false)
+                                {
+                                    <a asp-action="AttenededAppointment" asp-route-id="@item.Id" asp-route-ReservationPeriodNumber="@item.ReservationPeriodNumber" class="btn btn-outline-success">Attended</a>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @{
+                                if (item.IsAttended == true && item.IsAccepted == true)
+                                {
+
+                                }
+                                else
+                                {
+                                    <a asp-action="CancelAppointment" asp-route-id="@item.Id" asp-route-ReservationPeriodNumber="@item.ReservationPeriodNumber" class="btn btn-outline-danger">Cancel</a>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="mt-4 alert alert-danger">
+            <h2>There is NO Appointments Request</h2>
+        </div>
+    }
+</div>
+<script>
+    function dismissAlert() {
+        var alert = document.getElementById('alertMessage');
+        alert.style.display = 'none';
+    }
+</script>
