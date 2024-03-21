@@ -7,26 +7,60 @@
     SelectList specialitiesSL = new SelectList(myModel.Specialties);
     var dict = @myModel.City_areaDict;
 }
+<link rel="stylesheet" href="/assets/css/search.css"/>
+<div class="s010">
+    <form asp-action="Index" onsubmit="updateAndSubmit(event)">
+        <input type="hidden" name="JSONdata"/>
+        <div class="inner-form">
+            <div class="basic-search" style="display:flex; flex-direction: row; justify-content: space-between;">
+                <div class="input-field" style="margin-right: 10px;">
+                  <input id="search" type="text" placeholder="Doctor Name" name="doctorName" />
+                </div>
+                <div class="input-field">
+                  <input id="search" type="text" placeholder="Clinic Name" name="clinicName" />
+                </div>
+            </div>
+            <div class="advance-search">
+                <div class="row">
+                    <div class="input-field">
+                        <div class="input-select">
+                            <select asp-items="specialitiesSL" id="specialityselectlist" name="choices-single-defaul">
+                                <option placeholder="" selected disabled value="ALL">Select a speciality</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <div class="input-select">
+                            <select asp-items="Cities" id="cityselectlist" name="city">
+                                <option placeholder="" selected disabled value="ALL">Select a city</option>
 
-<form asp-action="Index" onsubmit="updateAndSubmit(event)">
-    <input type="hidden" name="JSONdata" />
-    <select asp-items="specialitiesSL" class="form-select" name="specialty"></select>
-    <label>City</label>
-    <select asp-items="Cities" id="cityselectlist" class="form-select" name="city"></select>
-    <label>Area</label>
-    <select id="areaselectlist" class="form-select" name="area">
-        <option value="ALL">ALL</option>
-    </select>
-    <label>Doctor Name</label>
-    <br />
-    <input type="text" value="" placeholder="EX: Ahmed Mostafa" name="doctorName" class="form-text" />
-    <br />
-    <label>Clinic Name</label>
-    <br />
-    <input type="text" value="" placeholder="EX: ElAml" name="clinicName" class="form-text" />
-    <br />
-    <input id="submit" type="submit" value="submit" class="btn btn-primary" />
-</form>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <div class="input-select">
+                            <select id="areaselectlist" name="choices-single-defaul">
+                                <option disabled selected placeholder="" value="ALL">Select Area</option>
+                                <option value="ALL">All Areas</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row third">
+                    <div class="input-field">
+                        <div class="result-count">
+                            <span>Etammen</span>&copy;
+                        </div>
+                        <div class="group-btn">
+                            <button class="btn-delete" id="delete">RESET</button>
+                            <button id="submit" type="submit" class="btn-search">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <script>
@@ -45,21 +79,20 @@
             }
         }
 
-            function updateAndSubmit(event) {
-                
-                myModel.Specialty = document.querySelector("[name=specialty]").value;
-                myModel.City = document.querySelector("[name=city]").value;
-                myModel.Area = document.querySelector("[name=area]").value;
-                myModel.DoctorName = document.querySelector("[name=doctorName]").value;
-                myModel.ClinicName = document.querySelector("[name=clinicName]").value;
+        function updateAndSubmit(event) {
+            myModel.Specialty = document.querySelector("#specialityselectlist").value;
+            myModel.City = document.querySelector("#cityselectlist").value;
+            myModel.Area = document.querySelector("#areaselectlist").value;
+            myModel.DoctorName = document.querySelector("[name=doctorName]").value;
+            myModel.ClinicName = document.querySelector("[name=clinicName]").value;
 
-                let json = JSON.stringify(myModel);
+            let json = JSON.stringify(myModel);
 
-                document.querySelector("[name=JSONdata]").value = json;
+            document.querySelector("[name=JSONdata]").value = json;
 
-                document.getElementById(formId).submit();
-            }
-            document.getElementById("cityselectlist").addEventListener("change", function () {
+            document.getElementById(formId).submit();
+        }
+        document.getElementById("cityselectlist").addEventListener("change", function () {
             let areaSelect = document.getElementById("areaselectlist");
             areaSelect.innerHTML = '';
             let selectedIndex = this.selectedIndex;
@@ -71,6 +104,9 @@
                 newOption.text = area;
                 areaSelect.appendChild(newOption);
             }
-        });
+            initializeCustomSelects();
+    });
     </script>
+    <script src="/assets/js/choices.js"></script>
+    <script src="/assets/js/search.js"></script>
 }
