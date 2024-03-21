@@ -5,75 +5,119 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
+<style>
+        body{
+            background-color: rgb(226, 230, 234);
+        }
 
+        .pagination {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+        .pagination .page-item {
+            display: inline;
+        }
+        form#paginationForm{
+            margin-right:0;
+        }
+        .pagination .page-link {
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            margin-right: 5px;
+            text-decoration: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #f0f0f0;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        .pagination .page-item:not(.active) .page-link:hover {
+            background-color: #e9ecef;
+        }
+</style>
 <div>
     <partial name="Partial/_PartialSearch.cshtml" model="@Model" />
 </div>
+<div class="container mt-3 p-2" id="cardContainer">
+    <div class="row mt-2">
+        <aside class="col-3">
+            <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
+        </aside>
 
-
-<div>
-    <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
-</div>
-
-
-<div>
-    <partial name="Partial/_PartialOrder.cshtml" model="@Model" />
-</div>
-
-
-@foreach (var doctor in ViewBag.CurrentPageDoctors)
-{
-    <div class="doctor-card">
-        <div class="doctor-card__image">
-            <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
-        </div>
-        <div class="doctor-card__details">
-            <h2 class="doctor-card__name">Dr: @doctor.ApplicationUser.FirstName @doctor.ApplicationUser.LastName</h2>
-            <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
-            <div class="doctor-card__ratings">
-                <div class="star-rating">
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="half-filled-star"></span>
+        <div class="col-9">
+            <div class="d-flex justify-content-end mb-2 mr-5">
+                <span class="p-1">Order:</span>
+                <partial name="Partial/_PartialOrder.cshtml" model="@Model" />
+            </div>
+            @foreach (var doctor in ViewBag.CurrentPageDoctors)
+            {
+                <div class="doctor-card bg-white" onclick="doctorDetails(@doctor.Id)">
+                    <div class="doctor-card__image">
+                        <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
+                    </div>
+                    <div class="doctor-card__details">
+                        <h2 class="doctor-card__name">Dr: @doctor.ApplicationUser.FirstName @doctor.ApplicationUser.LastName</h2>
+                        <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
+                        <div class="doctor-card__ratings">
+                            <div class="star-rating">
+                                <span class="filled-star"></span>
+                                <span class="filled-star"></span>
+                                <span class="filled-star"></span>
+                                <span class="filled-star"></span>
+                                <span class="half-filled-star"></span>
+                            </div>
+                            <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
+                        </div>
+                        <div class="doctor-card__specialties">
+                            <h3 class="specialty-title">Specialized in: </h3>
+                            <ul class="specialty-list">
+                                <li><a href="/en/doctor/gastroenterology-and-endoscopy/egypt">@doctor.Speciality</a></li>
+                                <li><a href="/en/doctor/adult-hepatology/egypt">Adult Hepatology</a></li>
+                                <li><a href="/en/doctor/adult-gastroenterology-and-endoscopy/egypt">Adult Gastroenterology and Endoscopy</a></li>
+                            </ul>
+                        </div>
+                        <div class="doctor-card__location">
+                            <span class="location">New Cairo: Fifth Settlement Medical Center</span>
+                            <span class="fees">Fees: 500 EGP</span>
+                            <span class="waiting-time">Waiting Time: 16 Minutes</span>
+                        </div>
+                        <div class="doctor-card__contact">
+                            <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
+                        </div>
+                    </div>
                 </div>
-                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
-            </div>
-            <div class="doctor-card__specialties">
-                <h3 class="specialty-title">Specialized in: </h3>
-                <ul class="specialty-list">
-                    <li><a href="/en/doctor/gastroenterology-and-endoscopy/egypt">@doctor.Speciality</a></li>
-                    <li><a href="/en/doctor/adult-hepatology/egypt">Adult Hepatology</a></li>
-                    <li><a href="/en/doctor/adult-gastroenterology-and-endoscopy/egypt">Adult Gastroenterology and Endoscopy</a></li>
-                </ul>
-            </div>
-            <div class="doctor-card__location">
-                <span class="location">New Cairo: Fifth Settlement Medical Center</span>
-                <span class="fees">Fees: 500 EGP</span>
-                <span class="waiting-time">Waiting Time: 16 Minutes</span>
-            </div>
-            <div class="doctor-card__contact">
-                <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
+            }
+            <div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <form asp-action="Pagination" id="paginationForm" onsubmit="updateAndSubmit(event,'paginationForm')">
+                                    <input type="hidden" name="JSONdata" value="@Model.JSONdata"/>
+                                    <input type="hidden" name="pageNumber" value="@i"/>
+                                    <button type="submit" class="page-link">@i</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
-}
-
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        @for (var i = 1; i <= ViewBag.TotalPages; i++)
-        {
-            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                <form asp-action="Pagination" id="paginationForm" onsubmit="updateAndSubmit(event,'paginationForm')">
-                    <input type="hidden" name="JSONdata" value="@Model.JSONdata"/>
-                    <input type="hidden" name="pageNumber" value="@i"/>
-                    <button type="submit" class="page-link">@i</button>
-                </form>
-            </li>
-        }
-    </ul>
-</nav>
+</div>
 
 
 
