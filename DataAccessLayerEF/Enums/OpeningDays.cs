@@ -17,5 +17,4 @@ namespace DataAccessLayerEF.Enums
         Friday = 32,
         Saturday = 64
     }
-
 }

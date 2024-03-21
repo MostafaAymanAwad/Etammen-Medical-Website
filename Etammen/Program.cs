@@ -1,3 +1,4 @@
+using AutoMapper;
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
@@ -25,12 +26,13 @@ using Etammen.Helpers;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(jsonOptions =>
+{
+    jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 
-//options =>
-//{
-//    options.Filters.Add(new AuthorizeFilter());
-//}
+
+
 builder.Services.AddDbContext<EtammenDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
@@ -115,11 +117,20 @@ builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twi
 
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
+builder.Services.AddScoped<IApplicationUser, ApplicationUserRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IDoctorReviewsRepository, DoctorReviewsRepository>();
+ 
 
 //Admin Services
 builder.Services.AddScoped<DoctorsAdminMapper>();
 builder.Services.AddScoped<ClinicAdminMapper>();
 builder.Services.AddScoped<PatientForAdminMapper>();
+builder.Services.AddScoped<DoctorReviewMapping>();
+builder.Services.AddScoped<DoctorDetailsMapping>();
+builder.Services.AddScoped<ClinicDetailsForDoctorPageMapper>();
+builder.Services.AddScoped<ClinicDetailsMapViewModelMapper>();
 
 
 
@@ -142,6 +153,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Patient}/{action=Search}/{id?}");
 
 app.Run();
