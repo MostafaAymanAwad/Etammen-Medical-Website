@@ -10,11 +10,11 @@ using DataAccessLayerEF.Models;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessLogicLayer.Services.SMS;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Jwt.AccessToken;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using DataAccessLayerEF.SettingsModel;
 
 
 
@@ -86,7 +86,7 @@ public class AccountController : Controller
                 List<string> imagePAths = _doctorRegisterationHelper.SaveUploadedImages(new List<IFormFile> { certificate, profilePicture }, UploadedPicturesFolder);
 
                 Doctor newDoctor = _mapper.GetDoctorFromVM(doctorRegisterViewModel, newUser.Id, imagePAths);
-                await _unitOfWork.Doctors.Add(newDoctor);
+                await _unitOfWork.Doctors.AddAsync(newDoctor);
                 await _unitOfWork.Commit();
                 return View("RegisterationSuccess");
             }
@@ -126,7 +126,7 @@ public class AccountController : Controller
                 await SendEmailConfirmation(newUser);
 
                 Patient newPatient = _mapper.GetPatientFromVM(patientRegisterViewModel, newUser.Id);
-                await _unitOfWork.Patients.Add(newPatient);
+                await _unitOfWork.Patients.AddAsync(newPatient);
                 await _unitOfWork.Commit();
 
                 return View("RegisterationSuccess");
@@ -359,7 +359,12 @@ public class AccountController : Controller
             if (user is not null)
             {
                 var passwordResetToken = await _userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultPhoneProvider, "ResetPasswordPurpose");
-                MessageResource result = await _smsService.SendSmsAsync($"+2{user.PhoneNumber}", $"your OTP for resetting your Etammen account password is {passwordResetToken}");
+                var sms = new SMSMessage()
+                {
+                    PhoneNumber = $"+2{user.PhoneNumber}",
+                    body = $"your OTP for resetting your Etammen account password is {passwordResetToken}"
+                };
+                MessageResource result = _smsService.Send(sms);
                 if (string.IsNullOrEmpty(result.ErrorMessage))
                     return RedirectToAction("ResetPasswordOtp", new { userId = user.Id, token = passwordResetToken });
                 else
@@ -486,7 +491,7 @@ public class AccountController : Controller
                 await _userManager.AddToRoleAsync(newUser, "Patient");
 
                 Patient newPatient = _mapper.GetPatientFromExternalLoginViewModel(externalloginViewModel, newUser.Id);
-                await _unitOfWork.Patients.Add(newPatient);
+                await _unitOfWork.Patients.AddAsync(newPatient);
                 await _unitOfWork.Commit();
 
                 return await AssociateExternalLoginProviderWithUser(newUser, info);

@@ -19,12 +19,16 @@ namespace Etammen.Mapping_Profiles
                 .ForMember(d=>d.City, o=>o.MapFrom(s=>s.Address.City))
                 .ForMember(d=>d.governorate, o=>o.MapFrom(s=>s.Address.governorate))
                 .ReverseMap();
-            CreateMap<Appointment, AppointmentViewModel>().
+            CreateMap<ClinicAppointment, AppointmentViewModel>().
                 ForMember(D => D.ClinicName, O => O.MapFrom(s => s.Clinic.Name))
                 .ForMember(d => d.DoctorFirstName, o => o.MapFrom(s => s.Clinic.Doctor.ApplicationUser.FirstName))
                 .ForMember(d => d.DoctorLastName, o => o.MapFrom(s => s.Clinic.Doctor.ApplicationUser.LastName))
                 .ReverseMap();
             CreateMap<MainViewModel, DoctorFilterOptions>().ReverseMap();
+            CreateMap<HomeAppointment, AppointmentViewModel>()
+                .ForMember(d => d.DoctorFirstName, o => o.MapFrom(s => s.Doctor.ApplicationUser.FirstName))
+                .ForMember(d => d.DoctorLastName, o => o.MapFrom(s => s.Doctor.ApplicationUser.LastName))
+                .ReverseMap();
 
         }
     }

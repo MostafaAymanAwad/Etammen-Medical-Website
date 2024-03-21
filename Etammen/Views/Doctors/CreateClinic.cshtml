@@ -8,17 +8,19 @@
 @{
     string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
     // var doctorlist = new SelectList(await _unitOfWork.Doctors.GetAll(includes), "Id", "ApplicationUser.FirstName");
-    var doctors = await _unitOfWork.Doctors.GetAll(includes);
-    var doctorListItems = doctors.Select(d => new SelectListItem
-            {
-                Value = d.Id.ToString(),
-                Text = $"{d.ApplicationUser.FirstName} {d.ApplicationUser.LastName}" // Concatenate first name and last name
-            });
+    int id = ViewBag.id;
+    var doctors = await _unitOfWork.Doctors.FindBy(d => d.Id == id, includes);
+    var fullName = $"{doctors.ApplicationUser.FirstName} {doctors.ApplicationUser.LastName}";
+    // var doctorListItems = doctors.Select(d => new SelectListItem
+    //         {
+    //             Value = d.Id.ToString(),
+    //             Text = $"{d.ApplicationUser.FirstName} {d.ApplicationUser.LastName}" 
+    //         });
 
-    var doctorList = new SelectList(doctorListItems, "Value", "Text");
+    // var doctorList = new SelectList(doctorListItems, "Value", "Text");
     var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
-    string ahmed = "ahme";
 }
+
 <h1>CreateClinic</h1>
 
 <h4>Clinic</h4>
@@ -27,9 +29,11 @@
     <div class="col-md-4">
         <form asp-action="CreateClinic">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="DoctorId" value="@id" />
+            <input type="hidden" asp-for="Id" value="0" />
             <div class="form-group">
-                <label asp-for="DoctorId" class="control-label"></label>
-                <select asp-for="DoctorId" class="form-control" asp-items="@doctorList"></select>
+                <label asp-for="DoctorId" class="control-label">Doctor Name</label>
+                <input asp-for="DoctorName" readonly class="form-control" value="@fullName" />
             </div>
 
             <partial name="Partial/_CreateAndEditClinicPartialView.cshtml" />

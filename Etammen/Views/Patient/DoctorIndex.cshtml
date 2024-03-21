@@ -1,0 +1,62 @@
+﻿@model IEnumerable<DoctorViewModel>
+
+@if (TempData["BookMessage"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Success!</strong> @TempData["BookMessage"]
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+        </button>
+    </div>
+}
+
+@foreach (var doctor in Model)
+{
+
+    <div class="doctor-card" style="height:350px">
+        <div class="doctor-card__image">
+            <img src="/files/Images/@doctor.ProfilePicture" alt="Dr. Abdellatif Hamouda">
+        </div>
+        <div class="doctor-card__details">
+            <h2 class="doctor-card__name">Dr: @doctor.FirstName @doctor.LastName</h2>
+            <p class="doctor-card__description">@doctor.AboutTheDoctor</p>
+            <p class="doctor-card__description">Experiance Years: @doctor.YearsOfExperience years</p>
+            <div class="doctor-card__ratings">
+                <div class="star-rating">
+                    <span class="filled-star"></span>
+                    <span class="filled-star"></span>
+                    <span class="filled-star"></span>
+                    <span class="filled-star"></span>
+                    <span class="half-filled-star"></span>
+                </div>
+                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
+            </div>
+            <div class="doctor-card__specialties">
+                <h3 class="specialty-title">Specialized in: </h3>
+                <ul class="specialty-list">
+                    <li><p>@doctor.Degree in @doctor.Speciality</p></li>
+                    <li style="margin-left:250px;margin-bottom:1000px">
+                        <a asp-action="ClinicIndex" asp-controller="Patient" asp-route-id="@doctor.Id" class="btn btn-outline-primary">Book Appointment</a>
+
+                    </li>
+                </ul>
+            </div>
+          @*   <div class="doctor-card__location">
+                <span class="location">New Cairo: Fifth Settlement Medical Center</span>
+                <span class="waiting-time">Examination Duration: </span>
+            </div>
+            <div class="doctor-card__contact">
+                <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
+            </div>
+            <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
+ *@
+        </div>
+    </div>
+    <br />
+}
+<script>
+    function dismissAlert() {
+        var alert = document.getElementById('alertMessage');
+        alert.style.display = 'none';
+    }
+</script>
+

@@ -95,15 +95,24 @@
                             <li><a asp-action="Profile" asp-controller="Doctors">Profile</a></li>
                             <li><a asp-action="AppointmentIndex" asp-controller="Doctors">Appointments</a></li>
                             <li><a asp-action="ClinicIndex" asp-controller="Doctors">Clinics</a></li>
+                            <li><a asp-action="DeactivateAccount" asp-controller="Doctors">Deactivate Account</a></li>
                         </ul>
                     </li>
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
                     <li><a asp-action="Home" asp-controller="Admin">Admin</a></li>
+                    <li class="dropdown">
+                        <a href="#"><span>patient User</span> <i class="bi bi-chevron-down"></i></a>
+                        <ul>
+                            <li><a asp-action="Profile" asp-controller="Patient">Profile</a></li>
+                            <li><a asp-action="AppointmentIndex" asp-controller="Patient">Appointments</a></li>
+                            <li><a asp-action="DoctorIndex" asp-controller="Patient">test</a></li>
+                           
+                        </ul>
+                    </li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>
 
-            <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Make an</span> Appointment</a>
 
         </div>
     </header><!-- End Header --> 

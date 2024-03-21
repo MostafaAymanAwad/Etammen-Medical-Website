@@ -9,7 +9,7 @@
     <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
         <strong>Success!</strong> @TempData["CreateMessage"]
         <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
-            <span aria-hidden="true">&times;</span>
+            
         </button>
     </div>
 }
@@ -19,7 +19,7 @@
     <div class="alert alert-danger alert-dismissible" style="margin-top:50px" id="alertMessage">
         <strong>Success!</strong> @TempData["DeleteMessage"]
         <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
-            <span aria-hidden="true">&times;</span>
+         
         </button>
     </div>
 }
@@ -28,7 +28,7 @@
     <div class="alert alert-warning alert-dismissible" style="margin-top:50px" id="alertMessage">
         <strong>Success!</strong> @TempData["EditedMessage"]
         <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
-            <span aria-hidden="true">&times;</span>
+            
         </button>
     </div>
 }
@@ -41,11 +41,11 @@
     _unitOfWork.Doctors.ge
 } *@
 <p>
-    <a asp-action="CreateClinic" class="btn btn-outline-primary">Add a clinic</a>
+    <a asp-action="CreateClinic" asp-route-id="@ViewBag.id" class="btn btn-outline-primary">Add a clinic</a>
 </p>
 @if (Model.Count() > 0)
 {
-    <table class="table">
+    <table class="table" style="width:1000px">
         <thead>
             <tr>
                 <th>
@@ -117,9 +117,15 @@
                         @Html.DisplayFor(modelItem => item.OpeningDays)
                     </td>
                     <td>
-                        <a asp-action="EditClinic" asp-route-id="@item.Id" class="btn btn-outline-success">Edit</a> |
-                        <a asp-action="ClinicDetails" asp-route-id="@item.Id" class="btn btn-outline-warning">Details</a> |
-                        <a asp-action="ClinicDelete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+                    <td class="dropdown">
+                        <button class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-sharp fa-solid fa-bars"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a asp-action="EditClinic" asp-route-id="@item.Id" class="btn btn-outline-success">Edit</a></li>
+                            <li> <a asp-action="ClinicDetails" asp-route-id="@item.Id" class="btn btn-outline-warning">Details</a></li>
+                            <li> <a asp-action="ClinicDelete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a></li>
+                        </ul>
                     </td>
                 </tr>
             }

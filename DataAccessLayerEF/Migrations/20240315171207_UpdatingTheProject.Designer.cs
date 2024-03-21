@@ -5,6 +5,7 @@ using DataAccessLayerEF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayerEF.Migrations
 {
     [DbContext(typeof(EtammenDbContext))]
-    partial class EtammenDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240315171207_UpdatingTheProject")]
+    partial class UpdatingTheProject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,6 +107,44 @@ namespace DataAccessLayerEF.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("DataAccessLayerEF.Models.Appointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClinicId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsAttended")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsHomeVisit")
+                        .HasColumnType("bit");
+
+                    b.Property<TimeOnly>("ReservationPeriodNumber")
+                        .HasColumnType("time");
+
+                    b.Property<int>("patientId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClinicId");
+
+                    b.HasIndex("patientId");
+
+                    b.ToTable("Appointments");
+                });
+
             modelBuilder.Entity("DataAccessLayerEF.Models.Clinic", b =>
                 {
                     b.Property<int>("Id")
@@ -118,7 +159,7 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<DateOnly>("CreationDate")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly?>("DeletionDate")
+                    b.Property<DateOnly>("DeletionDate")
                         .HasColumnType("date");
 
                     b.Property<int>("DoctorId")
@@ -174,50 +215,6 @@ namespace DataAccessLayerEF.Migrations
                     b.ToTable("Clinics");
                 });
 
-            modelBuilder.Entity("DataAccessLayerEF.Models.ClinicAppointment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ClinicId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<bool>("IsAccepted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAttended")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPaidOnline")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeOnly?>("ReservationPeriodNumber")
-                        .HasColumnType("time");
-
-                    b.Property<int>("patientId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClinicId");
-
-                    b.HasIndex("patientId");
-
-                    b.ToTable("Appointments");
-                });
-
             modelBuilder.Entity("DataAccessLayerEF.Models.Doctor", b =>
                 {
                     b.Property<int>("Id")
@@ -245,7 +242,7 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<string>("Degree")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("DeletionDate")
+                    b.Property<DateOnly>("DeletionDate")
                         .HasColumnType("date");
 
                     b.Property<decimal?>("HomeVisitFees")
@@ -300,7 +297,7 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<DateOnly>("CreationDate")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly?>("DeletionDate")
+                    b.Property<DateOnly>("DeletionDate")
                         .HasColumnType("date");
 
                     b.Property<bool>("IsDeleted")
@@ -319,47 +316,6 @@ namespace DataAccessLayerEF.Migrations
                     b.ToTable("DoctorReviews");
                 });
 
-            modelBuilder.Entity("DataAccessLayerEF.Models.HomeAppointment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly?>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsAccepted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAttended")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPaidOnline")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("HomeAppointments");
-                });
-
             modelBuilder.Entity("DataAccessLayerEF.Models.Patient", b =>
                 {
                     b.Property<int>("Id")
@@ -374,7 +330,7 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<DateOnly>("CreationDate")
                         .HasColumnType("date");
 
-                    b.Property<DateOnly?>("DeletionDate")
+                    b.Property<DateOnly>("DeletionDate")
                         .HasColumnType("date");
 
                     b.Property<bool>("IsDeleted")
@@ -545,6 +501,25 @@ namespace DataAccessLayerEF.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DataAccessLayerEF.Models.Appointment", b =>
+                {
+                    b.HasOne("DataAccessLayerEF.Models.Clinic", "Clinic")
+                        .WithMany("Appointments")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccessLayerEF.Models.Patient", "Patient")
+                        .WithMany("Appointments")
+                        .HasForeignKey("patientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("DataAccessLayerEF.Models.Clinic", b =>
                 {
                     b.HasOne("DataAccessLayerEF.Models.Doctor", "Doctor")
@@ -554,23 +529,6 @@ namespace DataAccessLayerEF.Migrations
                         .IsRequired();
 
                     b.Navigation("Doctor");
-                });
-
-            modelBuilder.Entity("DataAccessLayerEF.Models.ClinicAppointment", b =>
-                {
-                    b.HasOne("DataAccessLayerEF.Models.Clinic", "Clinic")
-                        .WithMany("ClinicAppointments")
-                        .HasForeignKey("ClinicId");
-
-                    b.HasOne("DataAccessLayerEF.Models.Patient", "Patient")
-                        .WithMany("ClinicAppointments")
-                        .HasForeignKey("patientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Clinic");
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Doctor", b =>
@@ -592,25 +550,6 @@ namespace DataAccessLayerEF.Migrations
 
                     b.HasOne("DataAccessLayerEF.Models.Patient", "Patient")
                         .WithMany("DoctorReviews")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("DataAccessLayerEF.Models.HomeAppointment", b =>
-                {
-                    b.HasOne("DataAccessLayerEF.Models.Doctor", "Doctor")
-                        .WithMany("HomeAppointments")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccessLayerEF.Models.Patient", "Patient")
-                        .WithMany("HomeAppointments")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -689,7 +628,7 @@ namespace DataAccessLayerEF.Migrations
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Clinic", b =>
                 {
-                    b.Navigation("ClinicAppointments");
+                    b.Navigation("Appointments");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Doctor", b =>
@@ -697,17 +636,13 @@ namespace DataAccessLayerEF.Migrations
                     b.Navigation("Clinics");
 
                     b.Navigation("DoctorReviews");
-
-                    b.Navigation("HomeAppointments");
                 });
 
             modelBuilder.Entity("DataAccessLayerEF.Models.Patient", b =>
                 {
-                    b.Navigation("ClinicAppointments");
+                    b.Navigation("Appointments");
 
                     b.Navigation("DoctorReviews");
-
-                    b.Navigation("HomeAppointments");
                 });
 #pragma warning restore 612, 618
         }

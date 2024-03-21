@@ -10,6 +10,8 @@ public interface IGenericRepository<T> where T : class
     Task<IEnumerable<T>> FindByWithTwoThenIncludes(Expression<Func<T, bool>> criteria, Dictionary<Expression<Func<T, object>>, List<Expression<Func<object, object>>>> includes);
     Task<T> FindBy(Expression<Func<T, bool>> criteria, string[] includes = null);
     Task<IEnumerable<T>> FindAllBy(Expression<Func<T, bool>> criteria, string[] includes = null);
+    Task<bool> Any(Expression<Func<T, bool>> patientId, Expression<Func<T, bool>> clinicId, Expression<Func<T, bool>> date);
+   
     Task AddAsync(T entity);
     void Update(T entity);
     Task Delete(int id, bool isHardDeleted);

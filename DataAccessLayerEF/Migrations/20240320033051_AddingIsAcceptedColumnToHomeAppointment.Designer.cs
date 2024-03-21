@@ -5,6 +5,7 @@ using DataAccessLayerEF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayerEF.Migrations
 {
     [DbContext(typeof(EtammenDbContext))]
-    partial class EtammenDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240320033051_AddingIsAcceptedColumnToHomeAppointment")]
+    partial class AddingIsAcceptedColumnToHomeAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,9 +191,6 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<bool>("IsAccepted")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsAttended")
                         .HasColumnType("bit");
 
@@ -199,9 +199,6 @@ namespace DataAccessLayerEF.Migrations
 
                     b.Property<bool>("IsPaidOnline")
                         .HasColumnType("bit");
-
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<TimeOnly?>("ReservationPeriodNumber")
                         .HasColumnType("time");
@@ -321,17 +318,14 @@ namespace DataAccessLayerEF.Migrations
 
             modelBuilder.Entity("DataAccessLayerEF.Models.HomeAppointment", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("PatientId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly?>("Date")
-                        .HasColumnType("date");
 
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
+
+                    b.Property<DateOnly?>("Date")
+                        .HasColumnType("date");
 
                     b.Property<bool>("IsAccepted")
                         .HasColumnType("bit");
@@ -345,17 +339,9 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<bool>("IsPaidOnline")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("PatientId", "DoctorId", "Date");
 
                     b.HasIndex("DoctorId");
-
-                    b.HasIndex("PatientId");
 
                     b.ToTable("HomeAppointments");
                 });

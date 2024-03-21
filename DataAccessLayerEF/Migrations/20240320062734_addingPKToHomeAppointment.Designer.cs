@@ -5,6 +5,7 @@ using DataAccessLayerEF.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayerEF.Migrations
 {
     [DbContext(typeof(EtammenDbContext))]
-    partial class EtammenDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240320062734_addingPKToHomeAppointment")]
+    partial class addingPKToHomeAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,9 +203,6 @@ namespace DataAccessLayerEF.Migrations
                     b.Property<bool>("IsPaidOnline")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<TimeOnly?>("ReservationPeriodNumber")
                         .HasColumnType("time");
 
@@ -347,9 +347,6 @@ namespace DataAccessLayerEF.Migrations
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
-
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
