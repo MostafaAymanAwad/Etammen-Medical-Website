@@ -10,16 +10,20 @@ using DataAccessLayerEF.Models;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using BusinessLogicLayer.Services.SMS;
+
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Jwt.AccessToken;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using DataAccessLayerEF.SettingsModel;
 
 
 
 namespace Etammen.Controllers;
 
+[AllowAnonymous]
 public class AccountController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -30,6 +34,8 @@ public class AccountController : Controller
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IEmailService _emailService;
     private readonly ISmsService _smsService;
+    private readonly ILogger<AccountController> _logger;
+
 
     private const string UploadedPicturesFolder = "DoctorImages";
     private const string EmailConfirmationHtml = "EmailConfirmation/new-email.html";
@@ -37,7 +43,8 @@ public class AccountController : Controller
 
     public AccountController(IUnitOfWork unitOfWork, AccountMapper mapper, DoctorRegisterationHelper doctorRegisterationData,
         UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-        IWebHostEnvironment webHostEnvironment, IEmailService emailService, ISmsService smsService)
+        IWebHostEnvironment webHostEnvironment, IEmailService emailService, ISmsService smsService,
+        ILogger<AccountController> logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -47,14 +54,13 @@ public class AccountController : Controller
         _webHostEnvironment = webHostEnvironment;
         _emailService = emailService;
         _smsService = smsService;
+        _logger = logger;
     }
-
     public IActionResult RegisterDoctor()
     {
-        DoctorRegisterViewModel doctorRegisterViewModel = new DoctorRegisterViewModel();
-        populateDoctorViewModelLists(doctorRegisterViewModel);
-
-        return View(doctorRegisterViewModel);
+            DoctorRegisterViewModel doctorRegisterViewModel = new DoctorRegisterViewModel();
+            populateDoctorViewModelLists(doctorRegisterViewModel);
+            return View(doctorRegisterViewModel);
     }
     private void populateDoctorViewModelLists(DoctorRegisterViewModel doctorRegisterViewModel)
     {
@@ -259,9 +265,9 @@ public class AccountController : Controller
                 return RedirectToAction("Index", "Home");
 
             if (Role == "Doctor")
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Search", "Patient");
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Search", "Patient");
 
         }
         if (singinREsult.IsLockedOut)
@@ -278,6 +284,8 @@ public class AccountController : Controller
         ModelState.AddModelError("", "invalid Email or Password");
         return View(loginViewModel);
     }
+
+
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
@@ -510,6 +518,13 @@ public class AccountController : Controller
     }
 
     #endregion
+
+
+    public IActionResult AccessDenied()
+    {
+        return RedirectToAction("StatusCodeError","Error", new { statusCode = 403 });
+    }
+
 }
 
 
