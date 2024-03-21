@@ -64,7 +64,7 @@
                     <p class="card-text"><strong>Fees:</strong> $@Model.Fees</p>
 
                     <div class="text-md-end">
-                        <a asp-action="Index" class="btn btn-primary">Book Appointment</a>
+                        <a asp-action="Book" asp-controller="Patient" asp-route-id="@Model.Id" asp-route-doctorId="@Model.DoctorId" class="btn btn-primary">Book Appointment</a>
                     </div>
                 </div>
             </div>

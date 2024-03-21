@@ -8,7 +8,7 @@ namespace Etammen.ViewModels
     public class ClinicDetailsMapViewModel
     {
         public int Id { get; set; }
-
+        public int PatientId { get; set; }
         public  string Name { get; set; }
         public  string DoctorFirstName { get; set; }
         public  string DoctorLastName { get; set; }
@@ -25,6 +25,6 @@ namespace Etammen.ViewModels
 
         public OpeningDays OpeningDays { get; set; }
 
-        public virtual ICollection<Appointment>? Appointments { get; set; } = new HashSet<Appointment>();
+        public virtual ICollection<ClinicAppointment>? Appointments { get; set; } = new HashSet<ClinicAppointment>();
     }
 }

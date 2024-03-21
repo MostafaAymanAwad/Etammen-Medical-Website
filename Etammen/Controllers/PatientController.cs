@@ -259,7 +259,7 @@ namespace Etammen.Controllers
 
         public async Task<IActionResult> Profile(int id = 1)
         {
-            string[] includes = { "Appointments", "DoctorReviews", "ApplicationUser" };
+            string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
 
             var patients = await _unitOfWork.Patients.FindBy(d => d.Id == id, includes);
             var mappedpatient = _mapper.Map<Patient, PatientViewModel>(patients);
@@ -268,7 +268,7 @@ namespace Etammen.Controllers
 
         public async Task<IActionResult> ProfileEdit(int id)
         {
-            string[] includes = { "Appointments", "DoctorReviews", "ApplicationUser" };
+            string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
 
             var Patient = await _unitOfWork.Patients.FindBy(d => d.Id == id, includes);
             if (Patient == null)
@@ -303,7 +303,7 @@ namespace Etammen.Controllers
                     {
 
                         //_unitOfWork.Doctors.Update(mappeddoctor);
-                        string[] includes = { "Appointments", "DoctorReviews", "ApplicationUser" };
+                        string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
 
                         var existingPatient = await _unitOfWork.Patients.FindBy(d => d.Id == model.Id, includes);
                         if (existingPatient == null)
@@ -333,24 +333,23 @@ namespace Etammen.Controllers
             mainViewModel.City_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
             mainViewModel.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
         }
+        //public async Task<IActionResult> DoctorIndex()
+        //{
+        //    string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
+        //    var doctors = await _unitOfWork.Doctors.GetAll(includes);
+        //    var mappedDoctors = _mapper.Map<IEnumerable<Doctor>, IEnumerable<DoctorViewModel>>(doctors);
+        //    return View(mappedDoctors);
+        //}
+        //public async Task<IActionResult> ClinicIndex(int id)
+        //{
+        //    ViewBag.id = id;
+        //    var includes = new Dictionary<Expression<Func<Clinic, object>>, Expression<Func<object, object>>>();
+        //    includes.Add(c => c.Doctor, d => ((Doctor)d).ApplicationUser);
+        //    var clinicList = await _unitOfWork.Clinics.GetAllWithExpression(includes, c => c.IsDeleted == false && c.DoctorId == id);
 
-        public async Task<IActionResult> DoctorIndex()
-        {
-            string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
-            var doctors = await _unitOfWork.Doctors.GetAll(includes);
-            var mappedDoctors = _mapper.Map<IEnumerable<Doctor>, IEnumerable<DoctorViewModel>>(doctors);
-            return View(mappedDoctors);
-        }
-        public async Task<IActionResult> ClinicIndex(int id)
-        {
-            ViewBag.id = id;
-            var includes = new Dictionary<Expression<Func<Clinic, object>>, Expression<Func<object, object>>>();
-            includes.Add(c => c.Doctor, d => ((Doctor)d).ApplicationUser);
-            var clinicList = await _unitOfWork.Clinics.GetAllWithExpression(includes, c => c.IsDeleted == false && c.DoctorId == id);
-
-            var mappedClinics = _mapper.Map<IEnumerable<Clinic>, IEnumerable<ClinicViewModel>>(clinicList);
-            return View(mappedClinics);
-        }
+        //    var mappedClinics = _mapper.Map<IEnumerable<Clinic>, IEnumerable<ClinicViewModel>>(clinicList);
+        //    return View(mappedClinics);
+        //}
         public async Task<IActionResult> Book(int id, int doctorId)
         {
             string[] includes = { "Doctor", "ClinicAppointments" };
@@ -433,12 +432,10 @@ namespace Etammen.Controllers
                 else if (book.IsPaidOnline == true && book.ClinicId is not null)
                     return RedirectToAction("CheckoutSession", "Payment", new { fees = book.HomeVisitFees, name = book.ClinicName });
 
-                return RedirectToAction(nameof(DoctorIndex));
+                return RedirectToAction(nameof(AppointmentIndex));
             }
             return View(nameof(Book), book);
-        }
-
-      
+        } 
         public async Task<IActionResult> AppointmentIndex(int id = 1)
             {
 
