@@ -1,12 +1,9 @@
 
 .doctor-card {
     display: flex;
-    max-width: 900px;
-    height: 800px;
     border: 1px solid #ddd;
     border-radius: 10px;
     overflow: hidden;
-    margin: auto;
 }
 
 .doctor-card__image {
