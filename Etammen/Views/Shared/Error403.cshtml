@@ -1,0 +1,17 @@
+﻿@model ErrorViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>403 not authorized</title>
+
+</head>
+<body>
+    <div>
+        <img src="/assets/images/backgrounds/403ErrorPic.png" />
+    </div>
+    <p>Error code: @Model.StatusCode</p>
+    <pre>@Model.Message</pre>
+
+</body>
+</html>

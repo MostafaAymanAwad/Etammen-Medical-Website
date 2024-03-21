@@ -2,10 +2,12 @@
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayerEF.Models;
 using Etammen.Mapping.DoctorForAdmin;
+using Etammen.Services.Email;
 using Etammen.ViewModels.Admin.Doctor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Numerics;
 
 namespace Etammen.Controllers
 {
@@ -15,12 +17,15 @@ namespace Etammen.Controllers
         private readonly DoctorsAdminMapper _doctorsMapper;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
-        public DoctorAdminController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, IMapper mapper, UserManager<ApplicationUser> applicationUser)
+        private readonly IEmailService _emailService;
+        public DoctorAdminController(IUnitOfWork unitOfWork, DoctorsAdminMapper getAllDoctorsMapper, IMapper mapper,
+            UserManager<ApplicationUser> applicationUser, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _doctorsMapper = getAllDoctorsMapper;
             _mapper = mapper;
             _userManager = applicationUser;
+            _emailService = emailService;
         }
         public async Task<IActionResult> Index()
         {
@@ -47,7 +52,6 @@ namespace Etammen.Controllers
             return View(doctorViewModel);
         }
 
-        // POST: DoctorAdminController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(GetDoctorByIdViewModel doctorViewModel)
@@ -85,15 +89,34 @@ namespace Etammen.Controllers
             {
                 doctor.IsRegistered = true;
                 _unitOfWork.Doctors.Update(doctor);
+
+                string rejectionMailBody = "we are glad to inform you that the documents you provided for you Etammen's account verification was accepted," +
+                     " you can now log in to your account, best wishes doctor!";
+                string rejectionMailSubject = "Etammen account Documents Verification Update";
+
+                await SendStatusUpdateEmail(doctor.ApplicationUser.Email, rejectionMailSubject, rejectionMailBody);
+                
             }
             else
             {
-                //Send Email To User tilling him that he was declined
                 _unitOfWork.Doctors.Delete(doctor.Id, true);
                 await _userManager.DeleteAsync(doctor.ApplicationUser);
+
+                string rejectionMailBody = "we are sorry to inform you that the documents you provided for you Etammen's account verification was not accepted," +
+                    " please try to provide valid documents and register again";
+                string rejectionMailSubject = "Etammen account Documents Verification Update";
+
+                await _emailService.SendEmailAsync(new Message(doctor.ApplicationUser.Email,rejectionMailSubject, rejectionMailBody));
+
+                await SendStatusUpdateEmail(doctor.ApplicationUser.Email, rejectionMailSubject, rejectionMailBody);
+
             }
             int rows = await _unitOfWork.Commit();
             return RedirectToAction(nameof(Approve));
+        }
+        private async Task SendStatusUpdateEmail(string email,string rejectionMailBody, string rejectionMailSubject)
+        {
+            await _emailService.SendEmailAsync(new Message(email, rejectionMailSubject, rejectionMailBody));
         }
     }
 }
