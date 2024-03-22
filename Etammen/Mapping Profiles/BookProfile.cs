@@ -12,6 +12,7 @@ namespace Etammen.Mapping_Profiles
                 .ForMember(d=>d.DoctorFirstName, o=>o.MapFrom(s=>s.ApplicationUser.FirstName))
                 .ForMember(d=>d.DoctorLastName, o=>o.MapFrom(s=>s.ApplicationUser.LastName))
                 .ForMember(d=>d.DoctorId, o=>o.MapFrom(s=>s.Id))
+
                 .ReverseMap();
 
             CreateMap<Clinic, BookViewModel>()
@@ -20,6 +21,7 @@ namespace Etammen.Mapping_Profiles
                 .ForMember(d => d.DoctorLastName, o => o.MapFrom(s => s.Doctor.ApplicationUser.LastName))
                 .ForMember(d => d.ISHomeVisit, o => o.MapFrom(s => s.Doctor.IsVisitHome))
                 .ForMember(d => d.HomeVisitFees, o => o.MapFrom(s => s.Doctor.HomeVisitFees))
+                .ForMember(d => d.ClinicName, o => o.MapFrom(s => s.Name))
                 .ReverseMap();
 
             CreateMap<ClinicAppointment, BookViewModel>()

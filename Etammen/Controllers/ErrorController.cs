@@ -1,6 +1,8 @@
 ﻿using Etammen.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Etammen.Controllers;
 

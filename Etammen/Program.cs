@@ -25,6 +25,7 @@ using Serilog;
 using Serilog.Events;
 using Etammen.GlobalExceptionHandlingMiddleware;
 using System.Net;
+using BusinessLogicLayer.Services.SMS;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -181,16 +182,16 @@ app.UseSerilogRequestLogging(options =>
         }
     };
 });
+
 app.UseRouting();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Patient}/{action=Search}");
+    pattern: "{controller=Patient}/{action=Search}/{id?}");
 
 app.UseStatusCodePagesWithRedirects("/StatusCodeError/{0}");
 

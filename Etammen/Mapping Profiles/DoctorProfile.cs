@@ -14,6 +14,9 @@ namespace Etammen.Mapping_Profiles
                 .ForMember(d=>d.LastName, o=>o.MapFrom(s=>s.ApplicationUser.LastName))
                 .ForMember(d=>d.Age, o=>o.MapFrom(s=>s.ApplicationUser.Age))
                 .ReverseMap();
+
+
+
             CreateMap<Clinic,ClinicViewModel>()
                 .ForMember(d=>d.StreetAddress, o=>o.MapFrom(s=>s.Address.StreetAddress))
                 .ForMember(d=>d.City, o=>o.MapFrom(s=>s.Address.City))

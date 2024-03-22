@@ -2,6 +2,7 @@
 @using System.Text.Json;
 
 @{
+    ViewData["Title"] = "Home";
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 
     SelectList Cities = null;
