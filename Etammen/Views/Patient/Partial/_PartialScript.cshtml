@@ -63,7 +63,7 @@
 
                 let orderCheckboxes = document.querySelectorAll(".orderBy");
                 for (let orderCheckBox of orderCheckboxes) {
-                    if (orderCheckBox.checked)
+                    if (orderCheckBox.checked == true) 
                         myModel.Order = parseInt(orderCheckBox.value);
                 }
 
@@ -141,4 +141,3 @@
 
 
 </script>
-}

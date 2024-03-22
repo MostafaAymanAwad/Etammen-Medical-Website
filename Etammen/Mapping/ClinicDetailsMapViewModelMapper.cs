@@ -12,7 +12,7 @@ namespace Etammen.Mapping
                 Address = clinic.Address,
                 Name = clinic.Name,
                 Id = clinic.Id,
-                Appointments = clinic.Appointments,
+                Appointments = clinic.ClinicAppointments,
                 ClosingHour = clinic.ClosingHour,
                 DoctorId = clinic.DoctorId,
                 ExmainationDuration = clinic.ExmainationDuration,

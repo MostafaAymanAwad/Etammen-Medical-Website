@@ -5,28 +5,30 @@
 @{
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
-
+<style>
+    form{
+        margin-right:3rem;
+    }
+</style>
 <form id="OrderForm" asp-action="Order" >
-
-    <div class="filter-item">
-        <a id="orderOptions" class="collapsible-trigger" data-target="title">Sort By</a>
-
-        <div style="display:none" class="collapsible-content-gender" id="title-order">
-            <input type="hidden" name="JSONdata" />
-
-            <div calss="checkbox">
-                <input type="radio" class="orderBy" value="1" id="order1" checked="@(myModel.Order == 1)" onchange="updateAndSubmit(event,'OrderForm')">
+    <input type="hidden" name="JSONdata" />
+    <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort By
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">
+                <input type="radio" class="orderBy" value="1" id="order1" checked="@(myModel.Order == 1)" name="ordername" onchange="updateAndSubmit(event,'OrderForm')">
                 <label for="order">Top Rated</label>
-            </div>
-            <div calss="checkbox">
-                <input type="radio" class="orderBy" value="2" id="order2" checked="@(myModel.Order == 2)" onchange="updateAndSubmit(event,'OrderForm')">
+            </a>
+            <a class="dropdown-item" href="#">
+                <input type="radio" class="orderBy" value="2" id="order2" name="ordername" onchange="updateAndSubmit(event,'OrderForm')">
                 <label for="order2">Price Low To High</label>
-            </div>
-            <div calss="checkbox">
-                <input type="radio" class="orderBy" value="3" id="order3" checked="@(myModel.Order == 3)" onchange="updateAndSubmit(event,'OrderForm')">
+            </a>
+            <a class="dropdown-item" href="#">
+                <input type="radio" class="orderBy" value="3" id="order3" name="ordername" checked="@(myModel.Order == 3)" onchange="updateAndSubmit(event,'OrderForm')">
                 <label for="order3">Price High To Low</label>
-            </div>
-      
+            </a>
         </div>
     </div>
 
