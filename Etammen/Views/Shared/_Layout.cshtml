@@ -50,7 +50,6 @@
         .wrapper{
             display:flex;
             flex-direction:column;
-            min-height:100%;
         }
         .section{
             padding-top:0px;
@@ -74,7 +73,6 @@
 
             </div>
             <div class="d-none d-lg-flex social-links align-items-center">
-                <a class="nav-link text-dark" asp-controller="Payment" asp-action="CheckoutSession" asp-route-fees="300" asp-route-clinicName="dawy clinics">Test Payment</a>
 
                 @if(!User.Identity.IsAuthenticated)
                 {
@@ -112,15 +110,12 @@
                             <li><a asp-action="DeactivateAccount" asp-controller="Doctors">Deactivate Account</a></li>
                         </ul>
                     </li>
-                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-
-                    <li><a asp-action="Home" asp-controller="Admin">Admin</a></li>
+                    <li><a asp-action="Index" asp-controller="DoctorAdmin">Admin</a></li>
                     <li class="dropdown">
                         <a class="nav-link scrollto"><span>Patient</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
                             <li><a asp-action="Profile" asp-controller="Patient">Profile</a></li>
                             <li><a asp-action="AppointmentIndex" asp-controller="Patient">Appointments</a></li>
-                            <li><a asp-action="DoctorIndex" asp-controller="Patient">test</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -129,13 +124,7 @@
         </div>
     </header><!-- End Header --> 
     <!-- ======= Hero Section ======= -->
-  
-
-
-    <br />
-    <br />
-    <br />
-    <main id="main" class="d-flex justify-content-center" style="flex:1">
+    <main id="main" class="d-flex justify-content-center pt-5" style="flex:1">
         <section class="container">
             @RenderBody()
         </section>
@@ -149,8 +138,8 @@
                     <div class="col-lg-3 col-md-6 footer-contact">
                         <h3>Etammen</h3>
                         <p>
-                            21 hassan dawood-faisal <br>
-                            giza<br>
+                            21 Hassan Dawood-Faisal <br>
+                            Giza<br>
                             Egypt <br><br>
                             <strong>Phone:</strong> +1023558316<br>
                             <strong>Email:</strong> info@example.com<br>
