@@ -22,8 +22,7 @@
     flex: 0 0 30%;
     padding: 20px;
     display: flex;
-    flex-direction: column;
-   
+    flex-direction: column;  
 }
 
 .doctor-card__name {

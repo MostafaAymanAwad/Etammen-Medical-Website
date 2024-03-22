@@ -26,6 +26,7 @@ namespace Etammen.ViewModels
 
         [Required]
         public string? ProfilePicture { get; set; } = "";
+        public string? OldProfilePicture { get; set; } 
         public IFormFile? ProfilePictureFormFile { get; set; } 
         [Display(Name = "Experience")]
         public string YearsOfExperience { get; set; }

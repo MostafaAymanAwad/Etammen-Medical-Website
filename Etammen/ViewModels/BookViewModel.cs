@@ -14,25 +14,26 @@ namespace Etammen.ViewModels
         public int? ClinicId { get; set; }
         public int patientId { get; set; }
         public int DoctorId { get; set; }
-        public virtual Clinic? Clinic { get; set; }
+        public virtual Clinic? Clinic { get; set; } 
         public virtual Doctor? Doctor { get; set; }
         [Display(Name = "Reservation Date")]
         public DateOnly Date { get; set; }
-        [Display(Name = "Reservation Time")]
+        [Required,Display(Name = "Reservation Time")]
         public TimeOnly? ReservtionPeriodNumber { get; set; }
         [Display(Name = "Attended")]
-        public bool IsAttended { get; set; }//patient
-        public bool IsVisitHome { get; set; }//doctor
+        public bool IsAttended { get; set; }
+        public bool IsVisitHome { get; set; }
         public decimal? HomeVisitFees { get; set; }
         public decimal? ClinicFees { get; set; }
-        public string? ProfilePicture { get; set; } = "";//doctor
+        public string? ProfilePicture { get; set; } = "";
         public string? YearsOfExperience { get; set; }
 
         public string? Speciality { get; set; }
         public string? Degree { get; set; }
-        public bool ISHomeVisit { get; set; } //patient
-        public bool ISHomeAppointmentDeleted { get; set; } //patient
-        public bool ISClinicAppointmentDeleted { get; set; } //patient
+        public bool ISHomeVisit { get; set; } 
+        public bool IsWantToPayOnline {  get; set; }
+        public bool ISHomeAppointmentDeleted { get; set; } 
+        public bool ISClinicAppointmentDeleted { get; set; } 
         [Display(Name = "Pay Online")]
 
         public bool IsPaidOnline { get; set; }
