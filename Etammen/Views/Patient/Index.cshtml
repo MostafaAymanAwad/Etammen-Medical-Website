@@ -1,7 +1,7 @@
 ﻿@model Etammen.ViewModels.JSONMainViewModelHolder
 @using System.Text.Json;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Search results";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
@@ -46,6 +46,11 @@
         .pagination .page-item:not(.active) .page-link:hover {
             background-color: #e9ecef;
         }
+
+        .doctor-card:hover {
+            cursor: pointer;
+            background-color: darkgray;
+        }
 </style>
 <div>
     <partial name="Partial/_PartialSearch.cshtml" model="@Model" />
@@ -63,13 +68,11 @@
 
 @for(int i = 0; i < myModel.CurrentPageDoctors.Count; i++)
 {
-    <div class="doctor-card">
+    <div class="doctor-card" onclick="RedirectToDetails(@myModel.CurrentPageDoctors[i].Id)">
         <div class="doctor-card__image">
             <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
         </div>
-        <div class="doctor-card__details">
-            <a asp-controller="Patient" asp-action="Details" asp-route-id="@myModel.CurrentPageDoctors[i].Id">Details</a>
-
+        <div class="doctor-card__details flex-fill">
             <h2 class="doctor-card__name">Dr: @myModel.DoctorFullnames[i]</h2>
             <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
             <div class="doctor-card__ratings">
