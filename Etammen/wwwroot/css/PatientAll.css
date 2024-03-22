@@ -4,6 +4,8 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     overflow: hidden;
+    margin-bottom:10px;
+    padding-left: 0px;
 }
 
 .doctor-card__image {

@@ -32,7 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
     <ProjectReference Include="..\DataAccessLayerEF\DataAccessLayerEF.csproj" />
-
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\DoctorImages\" />
     <Folder Include="wwwroot\Logs\" />

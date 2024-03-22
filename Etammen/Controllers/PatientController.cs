@@ -18,10 +18,7 @@ using System;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Text.Json;
-
-
 namespace Etammen.Controllers;
-[Route("")]
 
 public class PatientController : Controller
 {
@@ -49,8 +46,7 @@ public class PatientController : Controller
         IAppointmentRepository appointmentRepository,
         IApplicationUser applicationUser,
         ClinicDetailsMapViewModelMapper clinicMapMapper,
-                    ISmsService smsService
-
+        ISmsService smsService,
         IClinicRepository clinicRepository,
         DoctorRegisterationHelper doctorRegisterationHelper,
         IMapper mapper,
@@ -78,7 +74,7 @@ public class PatientController : Controller
         totalAppointments = new List<AppointmentViewModel>();
 
     }
-    [Route("")]
+
 
     public async Task<IActionResult> Search(JSONMainViewModelHolder jSONMainViewModelHolder)
     {
@@ -94,7 +90,7 @@ public class PatientController : Controller
         else
             return await Index( new() { JSONdata = JsonSerializer.Serialize(mainViewModel)});
     }
-    [Route("Index")]
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -122,7 +118,6 @@ public class PatientController : Controller
 		}
 
 
-    [Route("Pagination")]
     public async Task<IActionResult> Pagination(JSONMainViewModelHolder jSONMainViewModelHolder , int pageNumber = 1, int pageSize = 2)
     {
            var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
@@ -162,7 +157,6 @@ public class PatientController : Controller
         return Fullnames;
     }
 
-    [Route("Filter")]
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -183,9 +177,6 @@ public class PatientController : Controller
         return await Pagination(jSONMainViewModelHolder);
     }
 
-
-    [Route("Order")]
-
     public async Task<IActionResult> Order(JSONMainViewModelHolder jSONMainViewModelHolder)
     {
         var mainViewModel = JsonSerializer.Deserialize<MainViewModel>(jSONMainViewModelHolder.JSONdata);
@@ -196,7 +187,6 @@ public class PatientController : Controller
         return await Pagination(jSONMainViewModelHolder);
     }
 
-    [Route("DoctorReviews")]
     [HttpPost]
     public async Task<IActionResult> DoctorReviews(DoctorReviewViewModel doctorViewModel)
     {
@@ -243,9 +233,6 @@ public class PatientController : Controller
         return View(doctorViewModel);
     }
 
-    [Authorize(Roles = "Patient,Admin")]
-
-    [Route("DoctorDetails")]
 
     public async Task<IActionResult> Details(int id)
     {
@@ -260,366 +247,364 @@ public class PatientController : Controller
             doctorDetailsViewModel.IsAttended = _appointmentRepository.IsAppointmentsAvailable(5);
             doctorDetailsViewModel.IsReview = _doctorReviewsRepository.IsReviewdBy(id, 5);
             return View(doctorDetailsViewModel);
-        }
+    }
 
-        public async Task<IActionResult> ClinicDetails(int id)
+    public async Task<IActionResult> ClinicDetails(int id)
+    {
+        var clinic = await _clinicRepository.GetClinics(id);
+        var clinicMapVm = _clinicMapMapper.ClinicMapper(clinic);
+
+        return View(clinicMapVm);
+    }
+
+    public async Task<IActionResult> Profile(int id = 1)
+    {
+        string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
+
+        var patients = await _unitOfWork.Patients.FindBy(d => d.Id == id, includes);
+        var mappedpatient = _mapper.Map<Patient, PatientViewModel>(patients);
+        return View(mappedpatient);
+    }
+
+    public async Task<IActionResult> ProfileEdit(int id)
+    {
+        string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
+
+        var Patient = await _unitOfWork.Patients.FindBy(d => d.Id == id, includes);
+        if (Patient == null)
         {
-            var clinic = await _clinicRepository.GetClinics(id);
-            var clinicMapVm = _clinicMapMapper.ClinicMapper(clinic);
-
-            return View(clinicMapVm);
+            return NotFound();
         }
+        var mappedPatient = _mapper.Map<Patient, PatientViewModel>(Patient);
 
-        public async Task<IActionResult> Profile(int id = 1)
+        return View(mappedPatient);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ProfileEdit(int id, PatientViewModel model)
+    {
+
+        if (ModelState.IsValid)
         {
-            string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
 
-            var patients = await _unitOfWork.Patients.FindBy(d => d.Id == id, includes);
-            var mappedpatient = _mapper.Map<Patient, PatientViewModel>(patients);
-            return View(mappedpatient);
-        }
-
-        public async Task<IActionResult> ProfileEdit(int id)
-        {
-            string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
-
-            var Patient = await _unitOfWork.Patients.FindBy(d => d.Id == id, includes);
-            if (Patient == null)
+            var existinuser = await _userManager.FindByIdAsync(model.ApplicationUserId);
+            if (existinuser is not null)
             {
-                return NotFound();
-            }
-            var mappedPatient = _mapper.Map<Patient, PatientViewModel>(Patient);
+                existinuser.FirstName = model.FirstName;
+                existinuser.LastName = model.LastName;
+                existinuser.Age = model.Age;
+                existinuser.UserName = model.UserName;
+                existinuser.PhoneNumber = model.PhoneNumber;
+                existinuser.Email = model.Email;
 
-            return View(mappedPatient);
-        }
+                var result = await _userManager.UpdateAsync(existinuser);
 
-        [HttpPost]
-        public async Task<IActionResult> ProfileEdit(int id, PatientViewModel model)
-        {
-
-            if (ModelState.IsValid)
-            {
-
-                var existinuser = await _userManager.FindByIdAsync(model.ApplicationUserId);
-                if (existinuser is not null)
+                if (result.Succeeded)
                 {
-                    existinuser.FirstName = model.FirstName;
-                    existinuser.LastName = model.LastName;
-                    existinuser.Age = model.Age;
-                    existinuser.UserName = model.UserName;
-                    existinuser.PhoneNumber = model.PhoneNumber;
-                    existinuser.Email = model.Email;
 
-                    var result = await _userManager.UpdateAsync(existinuser);
+                    //_unitOfWork.Doctors.Update(mappeddoctor);
+                    string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
 
-                    if (result.Succeeded)
+                    var existingPatient = await _unitOfWork.Patients.FindBy(d => d.Id == model.Id, includes);
+                    if (existingPatient == null)
                     {
-
-                        //_unitOfWork.Doctors.Update(mappeddoctor);
-                        string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
-
-                        var existingPatient = await _unitOfWork.Patients.FindBy(d => d.Id == model.Id, includes);
-                        if (existingPatient == null)
-                        {
-                            return NotFound();
-                        }
-                        //var mappedpatient = _mapper.Map<PatientViewModel,Patient>(model);
-                        //_unitOfWork.Patients.Update(mappedpatient);
-                        existingPatient.Id = model.Id;
-                        existingPatient.Address.StreetAddress = model.Address.StreetAddress;
-                        existingPatient.Address.City = model.Address.City;
-                        existingPatient.Address.governorate = model.Address.governorate;
-
-
-
-                        await _unitOfWork.Commit();
-                        return RedirectToAction(nameof(Profile));
+                        return NotFound();
                     }
+                    //var mappedpatient = _mapper.Map<PatientViewModel,Patient>(model);
+                    //_unitOfWork.Patients.Update(mappedpatient);
+                    existingPatient.Id = model.Id;
+                    existingPatient.Address.StreetAddress = model.Address.StreetAddress;
+                    existingPatient.Address.City = model.Address.City;
+                    existingPatient.Address.governorate = model.Address.governorate;
+
+
+
+                    await _unitOfWork.Commit();
                     return RedirectToAction(nameof(Profile));
                 }
+                return RedirectToAction(nameof(Profile));
             }
-
-            return View(model);
         }
-        private void populateViewModel(MainViewModel mainViewModel)
-        {
-            mainViewModel.City_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
-            mainViewModel.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
-        }
-        //public async Task<IActionResult> DoctorIndex()
-        //{
-        //    string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
-        //    var doctors = await _unitOfWork.Doctors.GetAll(includes);
-        //    var mappedDoctors = _mapper.Map<IEnumerable<Doctor>, IEnumerable<DoctorViewModel>>(doctors);
-        //    return View(mappedDoctors);
-        //}
-        //public async Task<IActionResult> ClinicIndex(int id)
-        //{
-        //    ViewBag.id = id;
-        //    var includes = new Dictionary<Expression<Func<Clinic, object>>, Expression<Func<object, object>>>();
-        //    includes.Add(c => c.Doctor, d => ((Doctor)d).ApplicationUser);
-        //    var clinicList = await _unitOfWork.Clinics.GetAllWithExpression(includes, c => c.IsDeleted == false && c.DoctorId == id);
 
-        //    var mappedClinics = _mapper.Map<IEnumerable<Clinic>, IEnumerable<ClinicViewModel>>(clinicList);
-        //    return View(mappedClinics);
-        //}
-        public async Task<IActionResult> Book(int id, int doctorId)
+        return View(model);
+    }
+    private void populateViewModel(MainViewModel mainViewModel)
+    {
+        mainViewModel.City_areaDict = _doctorRegisterationHelper.CityAreasDictionary;
+        mainViewModel.Specialties = _doctorRegisterationHelper.SpecialitySelectList;
+    }
+    //public async Task<IActionResult> DoctorIndex()
+    //{
+    //    string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
+    //    var doctors = await _unitOfWork.Doctors.GetAll(includes);
+    //    var mappedDoctors = _mapper.Map<IEnumerable<Doctor>, IEnumerable<DoctorViewModel>>(doctors);
+    //    return View(mappedDoctors);
+    //}
+    //public async Task<IActionResult> ClinicIndex(int id)
+    //{
+    //    ViewBag.id = id;
+    //    var includes = new Dictionary<Expression<Func<Clinic, object>>, Expression<Func<object, object>>>();
+    //    includes.Add(c => c.Doctor, d => ((Doctor)d).ApplicationUser);
+    //    var clinicList = await _unitOfWork.Clinics.GetAllWithExpression(includes, c => c.IsDeleted == false && c.DoctorId == id);
+
+    //    var mappedClinics = _mapper.Map<IEnumerable<Clinic>, IEnumerable<ClinicViewModel>>(clinicList);
+    //    return View(mappedClinics);
+    //}
+    public async Task<IActionResult> Book(int id, int doctorId)
+    {
+        string[] includes = { "Doctor", "ClinicAppointments" };
+        ViewBag.patientID = 1;
+        ViewBag.DoctorID = doctorId;
+        var clinic = await _unitOfWork.Clinics.FindBy(d => d.Id == id, includes);
+        if (clinic == null)
         {
-            string[] includes = { "Doctor", "ClinicAppointments" };
-            ViewBag.patientID = 1;
-            ViewBag.DoctorID = doctorId;
-            var clinic = await _unitOfWork.Clinics.FindBy(d => d.Id == id, includes);
-            if (clinic == null)
-            {
-                return NotFound();
-            }
-            var mappedClinic = _mapper.Map<Clinic, BookViewModel>(clinic);
-            mappedClinic.Clinic = clinic;
-            int indexForClinicNameInviewData = 0;
+            return NotFound();
+        }
+        var mappedClinic = _mapper.Map<Clinic, BookViewModel>(clinic);
+        mappedClinic.Clinic = clinic;
+        int indexForClinicNameInviewData = 0;
 
             
-                TimeSpan openingHour = clinic.OpeningHour.ToTimeSpan();
-                TimeSpan closingHour = clinic.ClosingHour.ToTimeSpan();
-                TimeSpan examinationDuration = clinic.ExmainationDuration.ToTimeSpan();
+            TimeSpan openingHour = clinic.OpeningHour.ToTimeSpan();
+            TimeSpan closingHour = clinic.ClosingHour.ToTimeSpan();
+            TimeSpan examinationDuration = clinic.ExmainationDuration.ToTimeSpan();
 
 
-                TimeSpan clinicDuration = closingHour - openingHour;
-                var appointmentlist = new List<TimeOnly?>();
-                int examinationPeriods = (int)(clinicDuration.TotalMinutes / examinationDuration.TotalMinutes);
-                ViewData[$"clinic{indexForClinicNameInviewData++}"] = examinationPeriods;
+            TimeSpan clinicDuration = closingHour - openingHour;
+            var appointmentlist = new List<TimeOnly?>();
+            int examinationPeriods = (int)(clinicDuration.TotalMinutes / examinationDuration.TotalMinutes);
+            ViewData[$"clinic{indexForClinicNameInviewData++}"] = examinationPeriods;
 
-                foreach (var appointment in clinic.ClinicAppointments)
-                {
-                    if (appointment.ReservationPeriodNumber is not null && appointment.Date == DateOnly.FromDateTime(DateTime.Now))
-                    {
-
-                        appointmentlist.Add(appointment.ReservationPeriodNumber);
-                    }
-                }
-                mappedClinic.ClinicAppointmentDictionary.Add(clinic.Id, appointmentlist);
-            
-            return View(mappedClinic);
-        }
-        [HttpPost]
-        public async Task<IActionResult> BookConfirmed(BookViewModel book)
-        {
-            if (ModelState.IsValid)
+            foreach (var appointment in clinic.ClinicAppointments)
             {
-                bool IsHomeExisted = await _patientRepository.AnyHomeVisit(book.patientId, book.DoctorId, book.Date,book.ISHomeAppointmentDeleted,book.IsAttended);
-                bool IsClinicExisted = await _patientRepository.AnyAppointment(book.patientId, book.ClinicId, book.Date, book.ISClinicAppointmentDeleted, book.IsAttended);
-                if (book.ClinicId is null)
+                if (appointment.ReservationPeriodNumber is not null && appointment.Date == DateOnly.FromDateTime(DateTime.Now))
                 {
-                    if (!IsHomeExisted)
-                    {
-                        var appointmentbooked = _mapper.Map<BookViewModel, HomeAppointment>(book);
-                        await _unitOfWork.HomeAppointment.Add(appointmentbooked);
-                    }
-                    else { 
-                    TempData["BookMessage"] = $"You already booked for today, See your appointment here";
-                    return RedirectToAction(nameof(AppointmentIndex));
-                    }
+
+                    appointmentlist.Add(appointment.ReservationPeriodNumber);
                 }
-                else
+            }
+            mappedClinic.ClinicAppointmentDictionary.Add(clinic.Id, appointmentlist);
+            
+        return View(mappedClinic);
+    }
+    [HttpPost]
+    public async Task<IActionResult> BookConfirmed(BookViewModel book)
+    {
+        if (ModelState.IsValid)
+        {
+            bool IsHomeExisted = await _patientRepository.AnyHomeVisit(book.patientId, book.DoctorId, book.Date,book.ISHomeAppointmentDeleted,book.IsAttended);
+            bool IsClinicExisted = await _patientRepository.AnyAppointment(book.patientId, book.ClinicId, book.Date, book.ISClinicAppointmentDeleted, book.IsAttended);
+            if (book.ClinicId is null)
+            {
+                if (!IsHomeExisted)
                 {
-                    if (!IsClinicExisted)
-                    {
-                        var appointmentbooked = _mapper.Map<BookViewModel, ClinicAppointment>(book);
-                    appointmentbooked.ReservationPeriodNumber = book.ReservtionPeriodNumber;
-                    appointmentbooked.Clinic = null;
-                        await _unitOfWork.ClinicAppointments.Add(appointmentbooked);
-                    }
-                    else
-                    {
-                        TempData["BookMessage"] = $"You already booked for today, See your appointment here";
-                        return RedirectToAction(nameof(AppointmentIndex));
-                    }
+                    var appointmentbooked = _mapper.Map<BookViewModel, HomeAppointment>(book);
+                    await _unitOfWork.HomeAppointment.Add(appointmentbooked);
                 }
-                var count = await _unitOfWork.Commit();
-                if (count > 0 && book.ClinicId is null)
-                    TempData["BookMessage"] = $"Home Appointment Was booked succssfully";
-                else
-                    TempData["BookMessage"] = $"Clinic Appointment Was booked succssfully";
-
-                if (book.IsPaidOnline==true&& book.ClinicId is null)
-                    return RedirectToAction("CheckoutSession","Payment", new {fees = book.HomeVisitFees,name = "Home Visit Appointment"});
-                else if (book.IsPaidOnline == true && book.ClinicId is not null)
-                    return RedirectToAction("CheckoutSession", "Payment", new { fees = book.HomeVisitFees, name = book.ClinicName });
-
+                else { 
+                TempData["BookMessage"] = $"You already booked for today, See your appointment here";
                 return RedirectToAction(nameof(AppointmentIndex));
-            }
-            return View(nameof(Book), book);
-        } 
-        public async Task<IActionResult> AppointmentIndex(int id = 1)
-            {
-
-            var includes = new Dictionary<Expression<Func<ClinicAppointment, object>>, List<Expression<Func<object, object>>>>()
-            {
-               {
-                     a => a.Clinic,
-                    new List<Expression<Func<object, object>>>
-                    {
-                           c => ((Clinic)c).Doctor,
-                           d => ((Doctor)d).ApplicationUser
-                    }
-               },
-               {
-                     a => a.Patient,
-                    new List<Expression<Func<object, object>>>
-                    {
-                           d => ((Patient)d).ApplicationUser
-                    }
-               },
-            };
-            var Homeincludes = new Dictionary<Expression<Func<HomeAppointment, object>>, List<Expression<Func<object, object>>>>()
-            {
-               {
-                    c => c.Doctor,
-                    new List<Expression<Func<object, object>>>
-                    {
-
-                           d => ((Doctor)d).ApplicationUser
-                    }
-               },
-               {
-                     a => a.Patient,
-                    new List<Expression<Func<object, object>>>
-                    {
-                           d => ((Patient)d).ApplicationUser
-                    }
-               },
-            };
-            var appointment = await _unitOfWork.ClinicAppointments.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.patientId == id, includes);
-            var homeappointment = await _unitOfWork.HomeAppointment.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.PatientId == id, Homeincludes);
-            var mappedappointmwnts = _mapper.Map<IEnumerable<ClinicAppointment>, IEnumerable<AppointmentViewModel>>(appointment);
-            totalAppointments.AddRange(mappedappointmwnts);
-            mappedappointmwnts = _mapper.Map<IEnumerable<HomeAppointment>, IEnumerable<AppointmentViewModel>>(homeappointment);
-            totalAppointments.AddRange(mappedappointmwnts);
-
-            return View(totalAppointments);
-
-        }
-        public async Task<IActionResult> CancelAppointment(int id, TimeOnly? ReservationPeriodNumber)
-        {
-
-            var includes = new Dictionary<Expression<Func<ClinicAppointment, object>>, List<Expression<Func<object, object>>>>()
-            {
-                 {
-                     a => a.Clinic,
-                    new List<Expression<Func<object, object>>>
-                     {
-                           c => ((Clinic)c).Doctor,
-                           d => ((Doctor)d).ApplicationUser
-                      }
-                 },
-                    {
-                     a => a.Patient,
-                    new List<Expression<Func<object, object>>>
-                     {
-                           d => ((Patient)d).ApplicationUser
-                      }
-                    },
-            };
-            var Homeincludes = new Dictionary<Expression<Func<HomeAppointment, object>>, List<Expression<Func<object, object>>>>()
-            {
-               {
-                    c => c.Doctor,
-                    new List<Expression<Func<object, object>>>
-                    {
-
-                           d => ((Doctor)d).ApplicationUser
-                    }
-               },
-               {
-                     a => a.Patient,
-                    new List<Expression<Func<object, object>>>
-                    {
-                           d => ((Patient)d).ApplicationUser
-                    }
-               },
-            };
-
-            var appointment = await _unitOfWork.ClinicAppointments.FindByWithExpression(a => a.Id == id, includes);
-            var homeappointment = await _unitOfWork.HomeAppointment.FindByWithExpression(a => a.Id == id, Homeincludes);
-            var mappedClinicAppointmwnts = _mapper.Map<ClinicAppointment, AppointmentViewModel>(appointment);
-            var mappedHomeAppointmwnts = _mapper.Map<HomeAppointment, AppointmentViewModel>(homeappointment);
-
-            if (ReservationPeriodNumber is null)
-            {
-                return View(mappedHomeAppointmwnts);
+                }
             }
             else
             {
-                return View(mappedClinicAppointmwnts);
+                if (!IsClinicExisted)
+                {
+                    var appointmentbooked = _mapper.Map<BookViewModel, ClinicAppointment>(book);
+                appointmentbooked.ReservationPeriodNumber = book.ReservtionPeriodNumber;
+                appointmentbooked.Clinic = null;
+                    await _unitOfWork.ClinicAppointments.Add(appointmentbooked);
+                }
+                else
+                {
+                    TempData["BookMessage"] = $"You already booked for today, See your appointment here";
+                    return RedirectToAction(nameof(AppointmentIndex));
+                }
             }
-        }
-        [HttpPost, ActionName("CancelAppointment")]
-        public async Task<IActionResult> CancelAppointmentConfirmed(AppointmentViewModel model)
-        {
-            var includes = new Dictionary<Expression<Func<ClinicAppointment, object>>, List<Expression<Func<object, object>>>>()
-            {
-                 {
-                     a => a.Clinic,
-                    new List<Expression<Func<object, object>>>
-                     {
-                           c => ((Clinic)c).Doctor,
-                           d => ((Doctor)d).ApplicationUser
-                      }
-                 },
-                    {
-                     a => a.Patient,
-                    new List<Expression<Func<object, object>>>
-                     {
-                           d => ((Patient)d).ApplicationUser
-                      }
-                    },
-            };
-            var Homeincludes = new Dictionary<Expression<Func<HomeAppointment, object>>, List<Expression<Func<object, object>>>>()
-            {
-               {
-                    c => c.Doctor,
-                    new List<Expression<Func<object, object>>>
-                    {
+            var count = await _unitOfWork.Commit();
+            if (count > 0 && book.ClinicId is null)
+                TempData["BookMessage"] = $"Home Appointment Was booked succssfully";
+            else
+                TempData["BookMessage"] = $"Clinic Appointment Was booked succssfully";
 
-                           d => ((Doctor)d).ApplicationUser
-                    }
-               },
-               {
-                     a => a.Patient,
-                    new List<Expression<Func<object, object>>>
-                    {
-                           d => ((Patient)d).ApplicationUser
-                    }
-               },
-            };
+            if (book.IsPaidOnline==true&& book.ClinicId is null)
+                return RedirectToAction("CheckoutSession","Payment", new {fees = book.HomeVisitFees,name = "Home Visit Appointment"});
+            else if (book.IsPaidOnline == true && book.ClinicId is not null)
+                return RedirectToAction("CheckoutSession", "Payment", new { fees = book.HomeVisitFees, name = book.ClinicName });
 
-            var appointment = await _unitOfWork.ClinicAppointments.FindByWithExpression(a => a.Id == model.Id, includes);
-            var homeappointment = await _unitOfWork.HomeAppointment.FindByWithExpression(a => a.Id == model.Id, Homeincludes);
-
-
-            //var PatientFullName = $"{appointment.Patient.ApplicationUser.FirstName} {appointment.Patient.ApplicationUser.LastName}";
-            //var smsmessage = new SMSMessage()
-            //{
-            //    PhoneNumber = appointment.Patient.ApplicationUser.PhoneNumber,
-            //    body = $"Dear Mr {PatientFullName} : your appointment was canceld successfully"
-            //};
-
-            if (model.ReservationPeriodNumber is null&& homeappointment is not null)
-            {
-                homeappointment.IsDeleted = true;
-                _unitOfWork.HomeAppointment.Update(homeappointment);
-            }
-            else if(model.ReservationPeriodNumber is not null && appointment is not null)
-            {
-                appointment.IsDeleted = true;
-                _unitOfWork.ClinicAppointments.Update(appointment);
-            }
-            await _unitOfWork.Commit();
-
-            //var messageSent = _smsService.Send(smsmessage);
-            //if (messageSent is not null)
-            //    TempData["MessageWasSent"] = $"{PatientFullName} You canceled your appointment ";
             return RedirectToAction(nameof(AppointmentIndex));
-
         }
+        return View(nameof(Book), book);
+    } 
+    public async Task<IActionResult> AppointmentIndex(int id = 1)
+        {
+
+        var includes = new Dictionary<Expression<Func<ClinicAppointment, object>>, List<Expression<Func<object, object>>>>()
+        {
+            {
+                    a => a.Clinic,
+                new List<Expression<Func<object, object>>>
+                {
+                        c => ((Clinic)c).Doctor,
+                        d => ((Doctor)d).ApplicationUser
+                }
+            },
+            {
+                    a => a.Patient,
+                new List<Expression<Func<object, object>>>
+                {
+                        d => ((Patient)d).ApplicationUser
+                }
+            },
+        };
+        var Homeincludes = new Dictionary<Expression<Func<HomeAppointment, object>>, List<Expression<Func<object, object>>>>()
+        {
+            {
+                c => c.Doctor,
+                new List<Expression<Func<object, object>>>
+                {
+
+                        d => ((Doctor)d).ApplicationUser
+                }
+            },
+            {
+                    a => a.Patient,
+                new List<Expression<Func<object, object>>>
+                {
+                        d => ((Patient)d).ApplicationUser
+                }
+            },
+        };
+        var appointment = await _unitOfWork.ClinicAppointments.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.patientId == id, includes);
+        var homeappointment = await _unitOfWork.HomeAppointment.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.PatientId == id, Homeincludes);
+        var mappedappointmwnts = _mapper.Map<IEnumerable<ClinicAppointment>, IEnumerable<AppointmentViewModel>>(appointment);
+        totalAppointments.AddRange(mappedappointmwnts);
+        mappedappointmwnts = _mapper.Map<IEnumerable<HomeAppointment>, IEnumerable<AppointmentViewModel>>(homeappointment);
+        totalAppointments.AddRange(mappedappointmwnts);
+
+        return View(totalAppointments);
+
+    }
+    public async Task<IActionResult> CancelAppointment(int id, TimeOnly? ReservationPeriodNumber)
+    {
+
+        var includes = new Dictionary<Expression<Func<ClinicAppointment, object>>, List<Expression<Func<object, object>>>>()
+        {
+                {
+                    a => a.Clinic,
+                new List<Expression<Func<object, object>>>
+                    {
+                        c => ((Clinic)c).Doctor,
+                        d => ((Doctor)d).ApplicationUser
+                    }
+                },
+                {
+                    a => a.Patient,
+                new List<Expression<Func<object, object>>>
+                    {
+                        d => ((Patient)d).ApplicationUser
+                    }
+                },
+        };
+        var Homeincludes = new Dictionary<Expression<Func<HomeAppointment, object>>, List<Expression<Func<object, object>>>>()
+        {
+            {
+                c => c.Doctor,
+                new List<Expression<Func<object, object>>>
+                {
+
+                        d => ((Doctor)d).ApplicationUser
+                }
+            },
+            {
+                    a => a.Patient,
+                new List<Expression<Func<object, object>>>
+                {
+                        d => ((Patient)d).ApplicationUser
+                }
+            },
+        };
+
+        var appointment = await _unitOfWork.ClinicAppointments.FindByWithExpression(a => a.Id == id, includes);
+        var homeappointment = await _unitOfWork.HomeAppointment.FindByWithExpression(a => a.Id == id, Homeincludes);
+        var mappedClinicAppointmwnts = _mapper.Map<ClinicAppointment, AppointmentViewModel>(appointment);
+        var mappedHomeAppointmwnts = _mapper.Map<HomeAppointment, AppointmentViewModel>(homeappointment);
+
+        if (ReservationPeriodNumber is null)
+        {
+            return View(mappedHomeAppointmwnts);
+        }
+        else
+        {
+            return View(mappedClinicAppointmwnts);
+        }
+    }
+    [HttpPost, ActionName("CancelAppointment")]
+    public async Task<IActionResult> CancelAppointmentConfirmed(AppointmentViewModel model)
+    {
+        var includes = new Dictionary<Expression<Func<ClinicAppointment, object>>, List<Expression<Func<object, object>>>>()
+        {
+                {
+                    a => a.Clinic,
+                new List<Expression<Func<object, object>>>
+                    {
+                        c => ((Clinic)c).Doctor,
+                        d => ((Doctor)d).ApplicationUser
+                    }
+                },
+                {
+                    a => a.Patient,
+                new List<Expression<Func<object, object>>>
+                    {
+                        d => ((Patient)d).ApplicationUser
+                    }
+                },
+        };
+        var Homeincludes = new Dictionary<Expression<Func<HomeAppointment, object>>, List<Expression<Func<object, object>>>>()
+        {
+            {
+                c => c.Doctor,
+                new List<Expression<Func<object, object>>>
+                {
+
+                        d => ((Doctor)d).ApplicationUser
+                }
+            },
+            {
+                    a => a.Patient,
+                new List<Expression<Func<object, object>>>
+                {
+                        d => ((Patient)d).ApplicationUser
+                }
+            },
+        };
+
+        var appointment = await _unitOfWork.ClinicAppointments.FindByWithExpression(a => a.Id == model.Id, includes);
+        var homeappointment = await _unitOfWork.HomeAppointment.FindByWithExpression(a => a.Id == model.Id, Homeincludes);
+
+
+        //var PatientFullName = $"{appointment.Patient.ApplicationUser.FirstName} {appointment.Patient.ApplicationUser.LastName}";
+        //var smsmessage = new SMSMessage()
+        //{
+        //    PhoneNumber = appointment.Patient.ApplicationUser.PhoneNumber,
+        //    body = $"Dear Mr {PatientFullName} : your appointment was canceld successfully"
+        //};
+
+        if (model.ReservationPeriodNumber is null&& homeappointment is not null)
+        {
+            homeappointment.IsDeleted = true;
+            _unitOfWork.HomeAppointment.Update(homeappointment);
+        }
+        else if(model.ReservationPeriodNumber is not null && appointment is not null)
+        {
+            appointment.IsDeleted = true;
+            _unitOfWork.ClinicAppointments.Update(appointment);
+        }
+        await _unitOfWork.Commit();
+
+        //var messageSent = _smsService.Send(smsmessage);
+        //if (messageSent is not null)
+        //    TempData["MessageWasSent"] = $"{PatientFullName} You canceled your appointment ";
+        return RedirectToAction(nameof(AppointmentIndex));
     }
 }

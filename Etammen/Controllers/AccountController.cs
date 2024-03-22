@@ -10,8 +10,6 @@ using DataAccessLayerEF.Models;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessLogicLayer.Services.SMS;
-
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Jwt.AccessToken;
 using Microsoft.AspNetCore.Authentication;
