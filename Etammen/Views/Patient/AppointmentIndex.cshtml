@@ -5,7 +5,15 @@
 @if (TempData["BookMessage"] is not null)
 {
     <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
-        <strong>Info!</strong> @TempData["BookMessage"]
+        <strong>@TempData["BookMessage"]</strong> 
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+        </button>
+    </div>
+}
+@if (TempData["MessageWasSent"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>@TempData["MessageWasSent"]</strong>
         <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
         </button>
     </div>

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayerEF", "DataAc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{7AED5B7D-CB4A-439B-A3EF-62938D59A3B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Etammen", "Etammen\Etammen.csproj", "{FCA9DEAA-8133-43FA-BFED-590F2BD60B93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Etammen", "Etammen\Etammen.csproj", "{44D101F7-B1CE-42B3-A827-DE0399A099F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{7AED5B7D-CB4A-439B-A3EF-62938D59A3B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AED5B7D-CB4A-439B-A3EF-62938D59A3B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AED5B7D-CB4A-439B-A3EF-62938D59A3B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FCA9DEAA-8133-43FA-BFED-590F2BD60B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCA9DEAA-8133-43FA-BFED-590F2BD60B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCA9DEAA-8133-43FA-BFED-590F2BD60B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCA9DEAA-8133-43FA-BFED-590F2BD60B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44D101F7-B1CE-42B3-A827-DE0399A099F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44D101F7-B1CE-42B3-A827-DE0399A099F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44D101F7-B1CE-42B3-A827-DE0399A099F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44D101F7-B1CE-42B3-A827-DE0399A099F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

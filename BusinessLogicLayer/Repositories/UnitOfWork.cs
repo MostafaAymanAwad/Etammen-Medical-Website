@@ -17,7 +17,7 @@ namespace BusinessLogicLayer.Repositories
         public IGenericRepository<Clinic> Clinics { get; private set; }
         public IDoctorRepository Doctors { get; private set; }
 
-        public IGenericRepository<Patient> Patients { get; private set; }
+        public IPatientRepository Patients { get; private set; }
 
         public IGenericRepository<ClinicAppointment> ClinicAppointments { get; private set; }
         public IGenericRepository<HomeAppointment> HomeAppointment { get; private set; }
@@ -30,7 +30,7 @@ namespace BusinessLogicLayer.Repositories
             _context = context;
             Clinics = new GenericRepository<Clinic>(_context);
             Doctors = new DoctorRepository(_context);
-            Patients = new GenericRepository<Patient>(_context);
+            Patients = new PatientRepository(_context);
             ClinicAppointments = new GenericRepository<ClinicAppointment>(_context);
             DoctorReviews = new GenericRepository<DoctorReviews>(_context);
             HomeAppointment = new GenericRepository<HomeAppointment>(_context); 

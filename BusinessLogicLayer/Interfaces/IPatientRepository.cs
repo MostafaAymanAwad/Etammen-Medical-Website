@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface IPatientRepository
+    public interface IPatientRepository:IGenericRepository<Patient>
     {
         List<Doctor> PatientsPaginationNextAsync(List<Doctor> doctors, int pageNumber, int pageSize);
         Task<bool> AnyAppointment(int patientId, int? clinicId, DateOnly date, bool IsDeleted, bool IsAttended);
@@ -19,5 +19,7 @@ namespace BusinessLogicLayer.Interfaces
         int? GetSumOfRates(int id);
         int NumberOfRates(int id);
         Task<Doctor> GetDoctorDetails(int id);
+        int GetPatientIdByUserId(string applicationUserID);
+
     }
 }

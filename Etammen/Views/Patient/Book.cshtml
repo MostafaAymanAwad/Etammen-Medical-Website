@@ -6,31 +6,14 @@
     string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
     ViewData["Title"] = Model.ClinicName + "-" + "Booking";
     int id = Model.Id;
-    int doctoriD = ViewBag.DoctorID;
-    var doctors = await _unitOfWork.Doctors.FindBy(d => d.Id == doctoriD, includes);
+    var doctors = await _unitOfWork.Doctors.FindBy(d => d.Id == Model.DoctorId, includes);
     var fullName = $"{doctors.ApplicationUser.FirstName} {doctors.ApplicationUser.LastName}";
 
     var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
-
-
 }
-<style>
-    .btn-outline-purple {
-        color: #800080;
-        background-color: transparent;
-        border-color: #800080;
-        width: 60px;
-    }
-
-        .btn-outline-purple:hover {
-            color: #fff;
-            background-color: #800080;
-
-            border-color: #800080; 
-        }
-</style>
 
 <form asp-action="BookConfirmed" asp-controller="Patient" method="post">
+
     <div class="row">
         <div class="col-12">
             <div class="doctor-card d-flex" style="height: fit-content;">
@@ -41,6 +24,7 @@
                     <h2 class="doctor-card__name">Dr. @fullName</h2>
                     <p class="doctor-card__description">Experience Years: @Model.Doctor.YearsOfExperience years</p>
                     <div class="doctor-card__specialties">
+
                         <div>
                             <h3 class="specialty-title">Specializations :</h3>
                             <p>@Model.Doctor.Degree in @Model.Doctor.Speciality</p>
@@ -92,22 +76,23 @@
                                     int index = 0;
                                 }
                                 <div id="reservationDiv">
-                                @{
-                                    for (int i = 0; i <= (int)ViewData[$"clinic{index}"]; i++)
-                                    {
-                                        TimeSpan openingHour = Model.Clinic.OpeningHour.ToTimeSpan();
-                                        TimeSpan closingHour = Model.Clinic.ClosingHour.ToTimeSpan();
-                                        TimeSpan examinationDuration = Model.Clinic.ExmainationDuration.ToTimeSpan(); 
+                                    @{
+                                        for (int i = 0; i <= (int)ViewData[$"{Model.ClinicName}"]; i++)
+                                        {
+                                            TimeSpan openingHour = Model.Clinic.OpeningHour.ToTimeSpan();
+                                            TimeSpan closingHour = Model.Clinic.ClosingHour.ToTimeSpan();
+                                            TimeSpan examinationDuration = Model.Clinic.ExmainationDuration.ToTimeSpan(); 
 
-                                        TimeSpan appointmentTime = openingHour + TimeSpan.FromMinutes(i * examinationDuration.TotalMinutes);
-                                        DateTime appointmentDateTime = DateTime.Today.Add(appointmentTime);
+                                            TimeSpan appointmentTime = openingHour + TimeSpan.FromMinutes(i * examinationDuration.TotalMinutes); 
+                                            DateTime appointmentDateTime = DateTime.Today.Add(appointmentTime);
 
-                                        TimeOnly appointmentSlot = TimeOnly.FromDateTime(appointmentDateTime);
+                                            TimeOnly appointmentSlot = TimeOnly.FromDateTime(appointmentDateTime);
 
-                                        var clinicId = Model.Clinic.Id; 
-                                        List<TimeOnly?> list = Model.ClinicAppointmentDictionary.ContainsKey(clinicId) ? Model.ClinicAppointmentDictionary[clinicId] : new List<TimeOnly?>();
+                                            var clinicId = Model.Clinic.Id;
+                                            List<TimeOnly?> list = Model.ClinicAppointmentDictionary[clinicId];
 
-                                        var isAppointmentSlotTaken = list.Contains(appointmentSlot);
+                                            var isAppointmentSlotTaken = list.Contains(appointmentSlot);
+
 
                                             <div class="checkbox reservation-slot clinic-@(Model.Clinic.Id)" id="reservation">
                                                 <label>
@@ -125,6 +110,7 @@
                                     }
                                     index++;
                                 }
+                                <span asp-validation-for="@Model.ReservtionPeriodNumber" class="text-danger" ></span>
                                 </div>
                             </div>
 
@@ -138,6 +124,7 @@
             </div>
         </div>
     </div>
+
 </form>
 <script>
     
