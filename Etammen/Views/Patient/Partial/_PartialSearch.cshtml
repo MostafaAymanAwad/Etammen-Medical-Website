@@ -1,10 +1,9 @@
-﻿
-@model Etammen.ViewModels.JSONMainViewModelHolder
+﻿@model Etammen.ViewModels.JSONMainViewModelHolder
 @using System.Text.Json;
 
 @{
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
-    SelectList specialitiesSL = new SelectList(myModel.Specialties);
+    SelectList specialitiesSL = new SelectList(myModel.Specialties, myModel.Specialty);
 
     SelectList Cities = null;
     SelectList Areas = new SelectList(new List<string> { "ALL" });
@@ -13,6 +12,7 @@
         Cities = new SelectList(myModel.City_areaDict.Keys);
     else
     {
+        
         Cities = new SelectList(myModel.City_areaDict.Keys, myModel.City);
         Areas = new SelectList(myModel.City_areaDict[myModel.City], myModel.Area ?? "ALL");
     }

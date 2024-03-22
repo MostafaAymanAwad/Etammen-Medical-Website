@@ -7,6 +7,12 @@
 <script defer>
     let City_Area = {};
     let myModel = @Html.Raw(Json.Serialize(myModel));
+
+    function RedirectToDetails(id){
+        var url = "@Url.Action("Details", "Patient")" + "?id=" + id;
+        window.location.href = url;
+    }
+  
     @foreach (var pair in myModel.City_areaDict)
     {
         <text>

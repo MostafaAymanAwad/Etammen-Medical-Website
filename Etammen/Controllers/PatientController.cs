@@ -133,6 +133,7 @@ public class PatientController : Controller
             mainViewModel.CurrentPageDoctors =  _patientRepository.PatientsPaginationNextAsync(mainViewModel.FilteredOrderedDoctors,pageNumber, pageSize);
 
             mainViewModel.DoctorFullnames = await populateViewModel(mainViewModel.CurrentPageDoctors);
+            jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
             if (totalPages == 0 || pageNumber <= 0)
             {
                 return View("Index", jSONMainViewModelHolder);
@@ -141,9 +142,6 @@ public class PatientController : Controller
             {
                 return await Pagination(jSONMainViewModelHolder, totalPages, pageSize);
             }
-
-	        jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
-
 	        ViewBag.CurrentPage = pageNumber;
             ViewBag.TotalPages = totalPages;
 
