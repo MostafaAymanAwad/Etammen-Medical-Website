@@ -47,6 +47,9 @@ figcaption,
 figure,
 main {
     /* 1 */
+    background-image: url(/assets/img/about.jpg);
+    background-size: cover;
+    background-position-y:-100px;
     display: block;
 }
 
@@ -814,7 +817,7 @@ legend {
 }
 
 .s010 {
-    min-height: 100vh;
+    min-height: 50vh;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: center;

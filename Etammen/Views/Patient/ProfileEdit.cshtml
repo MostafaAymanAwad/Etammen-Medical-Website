@@ -14,7 +14,7 @@
         <hr class="mt-0 mb-4">
         <div class="row">
 
-            <div class="col-xl-8">
+            <div class="flex-fill">
 
                 <div class="card mb-4">
                     <div class="card-header">Account Details</div>
@@ -24,12 +24,12 @@
                         <div class="row gx-3 mb-3">
 
                             <div class="col-md-6">
-                                <label class="small mb-1" asp-for="FirstName"></label>
+                                <label class="small mb-1" asp-for="FirstName">First Name</label>
                                 <input class="form-control" asp-for="FirstName" value="@Model.FirstName">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="small mb-1" asp-for="LastName"></label>
+                                <label class="small mb-1" asp-for="LastName">Last Name</label>
                                 <input class="form-control" asp-for="LastName" value="@Model.LastName">
                             </div>
                             <div class="col-md-6">
@@ -49,24 +49,19 @@
                                 <input class="form-control" asp-for="Email" value="@Model.Email">
                             </div>
                             <div class="col-md-6">
-                                <label class="small mb-1" asp-for="UserName"></label>
+                                <label class="small mb-1" asp-for="UserName">Username</label>
                                 <input class="form-control" asp-for="UserName" value="@Model.UserName">
                             </div>
                             <div class="col-md-6">
-                                <label class="small mb-1" asp-for="PhoneNumber"></label>
+                                <label class="small mb-1" asp-for="PhoneNumber">Phone Number</label>
                                 <input class="form-control" asp-for="PhoneNumber" value="@Model.PhoneNumber">
                             </div>
-                        </div>
-
-                        <div class="row gx-3 mb-3">
-
                             <div class="col-md-6">
                                 <label class="small mb-1" asp-for="Age"></label>
                                 <input class="form-control" asp-for="Age" placeholder="Enter your age" value="@Model.Age" >
                             </div>
-
                         </div>
-                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <input type="submit" value="Save" class="btn btn-primary float-right" />
 
                     </div>
 
