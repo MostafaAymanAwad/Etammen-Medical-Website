@@ -72,7 +72,7 @@ public class AccountController : Controller
     {
         if (certificate is null || profilePicture is null)
         {
-            ModelState.TryAddModelError("", "please Upload Valid pictures");
+            ModelState.TryAddModelError("", "Please upload valid pictures");
             populateDoctorViewModelLists(doctorRegisterViewModel);
             return View(doctorRegisterViewModel);
         }
@@ -194,7 +194,7 @@ public class AccountController : Controller
                 return await CheckUserRole(userToLogin, loginViewModel);
             }
         }
-        ModelState.TryAddModelError("", "invalid email or password");
+        ModelState.TryAddModelError("", "Invalid email or password.");
         return View(loginViewModel);
     }
 
@@ -205,7 +205,7 @@ public class AccountController : Controller
 
         if (!await _userManager.IsEmailConfirmedAsync(userToLogin))
         {
-            ModelState.TryAddModelError("", "email is not confirmed yet, please check your email");
+            ModelState.TryAddModelError("", "Email is not confirmed yet, please check your email.");
             return View(loginViewModel);
         }
 
@@ -214,7 +214,7 @@ public class AccountController : Controller
             Doctor doctorUser = await _unitOfWork.Doctors.FindBy(d => d.ApplicationUserId == userToLogin.Id);
             if (!doctorUser.IsRegistered)
             {
-                ModelState.AddModelError("", "documents are still in verification phase,you will be notified by email once verified");
+                ModelState.AddModelError("", "Documents are still in verification phase, you will be notified by email once verified.");
                 return View(loginViewModel);
             }
             if (doctorUser.IsDeleted)
@@ -271,15 +271,15 @@ public class AccountController : Controller
         if (singinREsult.IsLockedOut)
         {
             string forgetPassLink = Url.Action("ForgotPassword", "Account", new { }, HttpContext.Request.Scheme);
-            string emailBody = $"""your Etammen account is locked out due to multiple failed login attempts, if it was you and you forgot your password, or if it wasn't you, you might want to reset your password, please<a href="{forgetPassLink}">click here</a> to reset your password""";
+            string emailBody = $"""Your Etammen account is locked out due to multiple failed login attempts, if it was you and you forgot your password, or if it wasn't you, you might want to reset your password, please<a href="{forgetPassLink}">click here</a> to reset your password.""";
 
             await _emailService.SendEmailAsync(new Message(userToLogIn.Email, "Ettamen Account is Locked Out", emailBody));
 
-            string lockoutErrorMsg = $"account is locked out due to multiple failed login attempts, you can try again after {userToLogIn.LockoutEnd.Value.ToLocalTime().ToString("HH:mm")} or you can check your email to reset password.";
+            string lockoutErrorMsg = $"Account is locked out due to multiple failed login attempts, you can try again after {userToLogIn.LockoutEnd.Value.ToLocalTime().ToString("HH:mm")} or you can check your email to reset password.";
             ModelState.AddModelError("", lockoutErrorMsg);
             return View(loginViewModel);
         }
-        ModelState.AddModelError("", "invalid Email or Password");
+        ModelState.AddModelError("", "Invalid Email or Password.");
         return View(loginViewModel);
     }
 
@@ -317,11 +317,11 @@ public class AccountController : Controller
             {
                 var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, token = resetToken }, HttpContext.Request.Scheme);
-                await _emailService.SendEmailAsync(new Message(user.Email, "Etammen Account Password Reset", $"""to reset your password <a href="{callbackUrl}">Click Here</a>"""));
+                await _emailService.SendEmailAsync(new Message(user.Email, "Etammen Account Password Reset", $"""To reset your password <a href="{callbackUrl}">Click Here</a>."""));
                 return View("ResetPasswordSent");
             }
         }
-        ModelState.TryAddModelError("", "invalid email");
+        ModelState.TryAddModelError("", "Invalid email.");
         return View(forgotPasswordViewmodel);
     }
     public async Task<IActionResult> ResetPassword(string userId, string token)
@@ -368,19 +368,19 @@ public class AccountController : Controller
                 var sms = new SMSMessage()
                 {
                     PhoneNumber = $"+2{user.PhoneNumber}",
-                    body = $"your OTP for resetting your Etammen account password is {passwordResetToken}"
+                    body = $"Your OTP for resetting your Etammen account password is {passwordResetToken}."
                 };
                 MessageResource result = _smsService.Send(sms);
                 if (string.IsNullOrEmpty(result.ErrorMessage))
                     return RedirectToAction("ResetPasswordOtp", new { userId = user.Id, token = passwordResetToken });
                 else
                 {
-                    ModelState.TryAddModelError("", "couldn't send sms to the provided phone number");
+                    ModelState.TryAddModelError("", "Couldn't send sms to the provided phone number.");
                     return View(forgotPasswordViewmodel);
                 }
             }
         }
-        ModelState.TryAddModelError("", "invalid phone number");
+        ModelState.TryAddModelError("", "Invalid phone number.");
         return View(forgotPasswordViewmodel);
     }
 
@@ -402,7 +402,7 @@ public class AccountController : Controller
                 var tokenVerified = await _userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultPhoneProvider, "ResetPasswordPurpose", Otp);
                 if (!tokenVerified)
                 {
-                    ModelState.AddModelError("", "invalid OTP");
+                    ModelState.AddModelError("", "Invalid OTP.");
                     return View(resetPasswordViewModel);
                 }
                 var resetpasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -441,7 +441,7 @@ public class AccountController : Controller
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info is null)
         {
-            ModelState.TryAddModelError("", $"couln't login with {info.LoginProvider}");
+            ModelState.TryAddModelError("", $"Couldn't login with {info.LoginProvider}.");
             return RedirectToAction("Login");
         }
 
