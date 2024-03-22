@@ -190,16 +190,16 @@ namespace BusinessLogicLayer.Repositories
                 IsHaveFilters = true;
             }
 
-            if (doctorFilterOptions.OpeningDays != null)
-            {
-                var allEnumValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>().ToList();
-                var filteredDays = allEnumValues.Where(day => (doctorFilterOptions.OpeningDays & day) == day).ToList();
-                foreach (var day in filteredDays)
-                {
-                    query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => (c.OpeningDays & day) == day)), d => d.ApplicationUserId);
-                }
-                IsHaveFilters = true;
-            }
+            //if (doctorFilterOptions.OpeningDays != null)
+            //{
+            //    var allEnumValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>().ToList();
+            //    var filteredDays = allEnumValues.Where(day => (doctorFilterOptions.OpeningDays & day) == day).ToList();
+            //    foreach (var day in filteredDays)
+            //    {
+            //        query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => (c.OpeningDays & day) == day)), d => d.ApplicationUserId);
+            //    }
+            //    IsHaveFilters = true;
+            //}
 
 			if(!IsHaveFilters)
 				return doctors;

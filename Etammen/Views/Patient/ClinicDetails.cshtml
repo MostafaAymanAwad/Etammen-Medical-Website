@@ -6,7 +6,7 @@
     // Layout = "~/Views/Shared/_Layout.cshtml";
 
 
-    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     // Layout = null;
 }
 
@@ -15,10 +15,6 @@
 
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    body {
-        padding-top: 20px;
-    }
-
     .card {
         margin-bottom: 20px;
     }
@@ -52,7 +48,7 @@
                             {
                                 <div>
                                     <label>
-                                        <input type="checkbox" name="OpeningDays" value="@day" checked /> @day
+                                        <input type="checkbox" name="OpeningDays" value="@day" checked disabled /> @day
                                     </label>
                                 </div>
                             }
@@ -93,7 +89,7 @@
     }).addTo(map);
 
 
-    var address = "@Model.Address.governorate, @Model.Address.City, dsvsdvfsdafsdfsdfsdf"; // Your address here
+    var address = "@Model.Address.governorate, @Model.Address.City, @Model.Address.StreetAddress"; // Your address here
 
 
     // Initialize the geocoder
@@ -112,6 +108,6 @@
             document.getElementById("map").style.display = "none";
         }
     });
-</script>>
+</script>
 
 

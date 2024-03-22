@@ -1,7 +1,8 @@
 ﻿@model Etammen.ViewModels.JSONMainViewModelHolder
 @using System.Text.Json;
 @{
-
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
 <style>
@@ -54,7 +55,11 @@
         <aside class="col-3">
             <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
         </aside>
-
+        <div class="col-9">
+            <div class="d-flex justify-content-end mb-2 mr-5">
+                <span class="p-1">Order:</span>
+                <partial name="Partial/_PartialOrder.cshtml" model="@Model" />
+            </div>
 
 @for(int i = 0; i < myModel.CurrentPageDoctors.Count; i++)
 {
@@ -80,9 +85,7 @@
             <div class="doctor-card__specialties">
                 <h3 class="specialty-title">Specialized in: </h3>
                 <ul class="specialty-list">
-                    <li><a href="/en/doctor/gastroenterology-and-endoscopy/egypt">@myModel.CurrentPageDoctors[i].Speciality</a></li>
-                    <li><a href="/en/doctor/adult-hepatology/egypt">Adult Hepatology</a></li>
-                    <li><a href="/en/doctor/adult-gastroenterology-and-endoscopy/egypt">Adult Gastroenterology and Endoscopy</a></li>
+                    <li>@myModel.CurrentPageDoctors[i].Speciality</li>
                 </ul>
             </div>
             <div class="doctor-card__location">
@@ -94,10 +97,9 @@
                         <span class="clinic-city">@clinic.Address.City</span>
                     }
                 }
-
             </div>
             <div class="doctor-card__contact">
-                <a href="tel:16676" class="hotline">fuck you: 16676 (Cost of regular call)</a>
+                <a href="tel:16676" class="hotline">Contact me: 16676 (Cost of regular call)</a>
             </div>
         </div>
     </div>
