@@ -4,7 +4,7 @@
 
 @{
     string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
-
+    ViewData["Title"] = Model.ClinicName + "-" + "Booking";
     int id = Model.Id;
     int doctoriD = ViewBag.DoctorID;
     var doctors = await _unitOfWork.Doctors.FindBy(d => d.Id == doctoriD, includes);
@@ -31,65 +31,62 @@
 </style>
 
 <form asp-action="BookConfirmed" asp-controller="Patient" method="post">
-    <div class="row" style="display:inline-block">
-        <div class="col-20">
-            <div class="doctor-card" style="height: 650px;">
+    <div class="row">
+        <div class="col-12">
+            <div class="doctor-card d-flex" style="height: fit-content;">
                 <div class="doctor-card__image">
-                    <img src="/files/Images/@Model.Doctor.ProfilePicture" alt="Dr. Abdellatif Hamouda">
+                    <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
                 </div>
-                <div class="doctor-card__details">
-                    <h2 class="doctor-card__name">Dr: @fullName</h2>
+                <div class="doctor-card__details flex-fill">
+                    <h2 class="doctor-card__name">Dr. @fullName</h2>
                     <p class="doctor-card__description">Experience Years: @Model.Doctor.YearsOfExperience years</p>
                     <div class="doctor-card__specialties">
-                        <h3 class="specialty-title">Specialized in:</h3>
-
-                        <ul class="specialty-list">
-                            <li>
-                                <p>@Model.Doctor.Degree in @Model.Doctor.Speciality</p>
-                            </li>
-                            <li>
-                                @{
-                                    int patientId = ViewBag.patientID;
-                                }
-                                <label asp-for="ISHomeVisit" id="doctorvisithomelabel">Doctor Can Visit Home</label>
-                                <input asp-for="ISHomeVisit" value="@Model.ISHomeVisit" disabled id="doctorvisithome" />
-                                <input type="hidden" asp-for="patientId" value="@patientId" />
-                                <input type="hidden" asp-for="Date" value="@DateOnly.FromDateTime(DateTime.Now)" />
-                                <input type="hidden" asp-for="IsAttended" value="@false" />
-                                <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId" />
-                                <input type="hidden" asp-for="ClinicId" value="@Model.Clinic.Id" id="ClinicId" />
-                                <input type="hidden" asp-for="ClinicName" value="@Model.Clinic.Name" />
-                                <input type="hidden" asp-for="ISHomeAppointmentDeleted" value="@Model.ISHomeAppointmentDeleted" />
-
-                            </li>
-
-                        </ul>
-                        <ul class="specialty-list" style="margin-left:30px">
-                            <li id="homeVisitFeesSection">
-                                <label asp-for="HomeVisitFees"> Home Visit Fees</label>
+                        <div>
+                            <h3 class="specialty-title">Specializations :</h3>
+                            <p>@Model.Doctor.Degree in @Model.Doctor.Speciality</p>
+                        </div>
+                        <div class="specialty-list">
+                            @{
+                                int patientId = ViewBag.patientID;
+                            }
+                            <label asp-for="ISHomeVisit" id="doctorvisithomelabel">Doctor Can Visit Home</label>
+                            <input asp-for="ISHomeVisit" value="@Model.ISHomeVisit" disabled id="doctorvisithome"/>
+                            <input type="hidden" asp-for="patientId" value="@patientId" />
+                            <input type="hidden" asp-for="Date" value="@DateOnly.FromDateTime(DateTime.Now)" />
+                            <input type="hidden" asp-for="IsAttended" value="@false" />
+                            <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId" />
+                            <input type="hidden" asp-for="ClinicId" value="@Model.Clinic.Id" id="ClinicId" />
+                            <input type="hidden" asp-for="ClinicName" value="@Model.Clinic.Name" />
+                            <input type="hidden" asp-for="ISHomeAppointmentDeleted" value="@Model.ISHomeAppointmentDeleted" />
+                        </div>
+                        <div class="specialty-list">
+                            <div id="homeVisitFeesSection">
+                                <label asp-for="HomeVisitFees">Home Visit Fees</label>
                                 <label asp-for="HomeVisitFees">@String.Format("{0:N0}", @Model.HomeVisitFees)$</label>
-                            </li>
-                            <li id="homeRequestSection">
+                            </div>
+                            <div id="homeRequestSection">
                                 <label asp-for="ISHomeVisit">Request Appointment At Home: </label>
                                 <input type="checkbox" asp-for="ISHomeVisit"  id="homeVisit" />
-                            </li>
-                            <li>
-                              
-                                <label id="doctorClinics">Doctor's Clinic</label>
-                             <div class="checkbox" id="clinicnameandfees" >
-                                        <label>
-                                        <Label asp-for="ClinicId"  > @Model.Clinic.Name</label>  <label asp-for="ClinicFees" style="margin-left:300px"> Clinic Fees      @String.Format("{0:N0}", @Model.Clinic.Fees)$</label>
-                                        </label>
+                            </div>
+                            <div>
+                                <hr />
+                                <div class="checkbox" id="clinicnameandfees" >
+                                    <div>
+                                        <h4 style="display:inline">Clinic Name:</h4>
+                                        <Label asp-for="ClinicId"> @Model.Clinic.Name</label>  
                                     </div>
-                                    
-                                
-                            </li>
-                            <li>
-                                <div style="margin-left:200px;display:inline-block">
-                                <label asp-for="IsPaidOnline" ></label>
-                                <input  asp-for="IsPaidOnline"> 
+                                    <div>
+                                        <label asp-for="ClinicFees"><strong>Clinic Fees:</strong> @String.Format("{0:N0}", @Model.Clinic.Fees)$</label>
+                                    </div>
                                 </div>
-                                <label id="reservationPhrase"> Reservation Time available for bookings today (@DateOnly.FromDateTime(DateTime.Now) at the clinic</label>
+                            </div>
+                            <hr />
+                            <div>
+                                <div>
+                                    <label asp-for="IsPaidOnline"></label>
+                                    <input asp-for="IsPaidOnline">
+                                </div>
+                                <label id="reservationPhrase">Reservation times available for bookings today (@DateOnly.FromDateTime(DateTime.Now)) at the clinic :</label>
 
                                 @{
                                     int index = 0;
@@ -112,40 +109,34 @@
 
                                         var isAppointmentSlotTaken = list.Contains(appointmentSlot);
 
-                                                    <div class="checkbox reservation-slot clinic-@(Model.Clinic.Id)" id="reservation">
-                                                        <label>
-                                                            @if (isAppointmentSlotTaken)
+                                            <div class="checkbox reservation-slot clinic-@(Model.Clinic.Id)" id="reservation">
+                                                <label>
+                                                    @if (isAppointmentSlotTaken)
                                                 {
-                                                                <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" disabled />
+                                                        <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" disabled />
                                                 }
                                                 else
                                                 {
-                                                                <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" />
+                                                        <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" />
                                                 }
-                                                            <span id="ReservationPeriod">@appointmentSlot</span>
-                                                        </label>
-                                                    </div>
+                                                    <span id="ReservationPeriod">@appointmentSlot</span>
+                                                </label>
+                                            </div>
                                     }
                                     index++;
                                 }
                                 </div>
-                            </li>
+                            </div>
 
-                        </ul>
+                            <div>
+                                <input type="submit" value="Book" class="btn btn-outline-primary float-right" id="bookButton">
+                            </div>
+                        </div>
 
                     </div>
                 </div>
-
-
-
-
-
             </div>
         </div>
-    </div>
-    <div style="margin-left:650px">
-        <input type="submit" value="Book" class="btn btn-outline-primary" id="bookButton"> 
-     
     </div>
 </form>
 <script>
@@ -168,9 +159,6 @@
             var reservationPhrase = document.getElementById("reservationPhrase");
             reservationPhrase.textContent = isChecked ? 'Reservation Time available for bookings today at the clinic' : 'Requesting Home Appointment';
 
-            // Update doctor's clinic label
-            var doctorClinics = document.getElementById("doctorClinics");
-            doctorClinics.textContent = isChecked ? "Clinic Name" : ""; 
             
             var clinicidValue = document.getElementById('ClinicId');
             clinicidValue.value = isChecked ? "@Model.Clinic.Id" : "";
@@ -203,6 +191,7 @@
 
         if (!doctorvisithomeinput.checked) {
             doctorvisithomelabel.textContent = "Doctor is not taking home visit requests";
+            doctorvisithomelabel.style.color = "red";
             homeRequestSection.style.display = 'none';
             doctorvisithomeinput.style.display = 'none';
             
