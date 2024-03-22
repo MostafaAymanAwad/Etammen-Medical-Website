@@ -35,17 +35,12 @@
 
 
 <h1>Your clinics</h1>
-@* @inject BusinessLogicLayer.Interfaces.IUnitOfWork _unitOfWork
-@{
-    string[] includes = {""};
-    _unitOfWork.Doctors.ge
-} *@
 <p>
-    <a asp-action="CreateClinic" asp-route-id="@ViewBag.id" class="btn btn-outline-primary">Add a clinic</a>
+    <a asp-action="CreateClinic" asp-route-id="@ViewBag.doctorId" class="btn btn-outline-primary">Add a clinic</a>
 </p>
 @if (Model.Count() > 0)
 {
-    <table class="table" style="width:1000px">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -117,14 +112,15 @@
                         @Html.DisplayFor(modelItem => item.OpeningDays)
                     </td>
                     <td>
+        
                     <td class="dropdown">
                         <button class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa-sharp fa-solid fa-bars"></i>
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a asp-action="EditClinic" asp-route-id="@item.Id" class="btn btn-outline-success">Edit</a></li>
-                            <li> <a asp-action="ClinicDetails" asp-route-id="@item.Id" class="btn btn-outline-warning">Details</a></li>
-                            <li> <a asp-action="ClinicDelete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a></li>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">    
+                            <li><a asp-action="EditClinic" asp-route-id="@item.Id" class="dropdown-item">Edit</a></li>
+                            <li> <a asp-action="ClinicDetails" asp-route-id="@item.Id" class="dropdown-item">Details</a></li>
+                            <li> <a asp-action="ClinicDelete" asp-route-id="@item.Id" class="dropdown-item">Delete</a></li>
                         </ul>
                     </td>
                 </tr>

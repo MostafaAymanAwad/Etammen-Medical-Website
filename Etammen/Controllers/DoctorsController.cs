@@ -14,10 +14,12 @@ using Etammen.Helpers;
 using Microsoft.AspNetCore.Identity;
 using System.Linq.Expressions;
 using DataAccessLayerEF.SettingsModel;
-using Twilio.Rest.IpMessaging.V2.Service.Channel;
-using Twilio.TwiML.Messaging;
-using ISmsService = Etammen.Helpers.ISmsService;
+using BusinessLogicLayer.Services.SMS;
 using Microsoft.AspNetCore.Authorization;
+using BusinessLogicLayer.Helpers;
+using Org.BouncyCastle.Tls;
+using Twilio.Rest.Api.V2010.Account;
+using System.Security.Claims;
 
 namespace Etammen.Controllers
 {
@@ -28,24 +30,32 @@ namespace Etammen.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ISmsService _smsService;
+        private readonly DoctorRegisterationHelper _registerationHelper;
+        private const string UploadedPicturesFolder = "DoctorImages";
 
-        public DoctorsController(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, ISmsService smsService)
+
+        public DoctorsController(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager,
+            ISmsService smsService, DoctorRegisterationHelper registerationHelper)
         {
 
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
             _smsService = smsService;
+            _registerationHelper = registerationHelper;
         }
 
-        public async Task<IActionResult> Profile(int id = 2)
+        public async Task<IActionResult> Profile()
         {
             string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
 
-            var doctor = await _unitOfWork.Doctors.FindBy(d => d.Id == id, includes);
+            string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            int doctorId = _unitOfWork.Doctors.GetDoctorIdByUserId(applicationUserId);
+
+            var doctor = await _unitOfWork.Doctors.FindBy(d => d.Id == doctorId, includes);
             if (doctor == null)
             {
-                return NotFound();
+                return RedirectToAction("StatusCodeError", "Error", new { statusCode = 404});
             }
             var mappedDoctor = _mapper.Map<Doctor, DoctorViewModel>(doctor);
 
@@ -59,12 +69,14 @@ namespace Etammen.Controllers
             var doctor = await _unitOfWork.Doctors.FindBy(d => d.Id == id, includes);
             if (doctor == null)
             {
-                return NotFound();
+                return RedirectToAction("StatusCodeError", "Error", new { statusCode = 404 });
             }
-            var mappedDoctor = _mapper.Map<Doctor, DoctorViewModel>(doctor);
 
+            var mappedDoctor = _mapper.Map<Doctor, DoctorViewModel>(doctor);
+            mappedDoctor.OldProfilePicture = doctor.ProfilePicture;
             return View(mappedDoctor);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ProfileEdit(DoctorViewModel model)
@@ -74,8 +86,12 @@ namespace Etammen.Controllers
             {
                 if (model.ProfilePictureFormFile is not null)
                 {
-                    model.ProfilePicture = DocumentSettings.UploadFile(model.ProfilePictureFormFile, "Images");
+
+                    List<string> imagePAths = _registerationHelper.SaveUploadedImages(new List<IFormFile> { model.ProfilePictureFormFile}, UploadedPicturesFolder);
+                    model.ProfilePicture = imagePAths[0];
+
                 }
+
                 var mappeddoctor = _mapper.Map<DoctorViewModel, Doctor>(model);
                 var existinuser = await _userManager.FindByIdAsync(model.ApplicationUserId);
                 if (existinuser is not null)
@@ -115,23 +131,27 @@ namespace Etammen.Controllers
             return View(model);
         }
 
-
-
-        public async Task<IActionResult> ClinicIndex(int id = 2)
+        public async Task<IActionResult> ClinicIndex()
         {
-            ViewBag.id = id;
+            string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            int doctorId = _unitOfWork.Doctors.GetDoctorIdByUserId(applicationUserId);
+
             var includes = new Dictionary<Expression<Func<Clinic, object>>, Expression<Func<object, object>>>();
             includes.Add(c => c.Doctor, d => ((Doctor)d).ApplicationUser);
-            var clinicList = await _unitOfWork.Clinics.GetAllWithExpression(includes, c => c.IsDeleted == false && c.DoctorId == id);
+            var clinicList = await _unitOfWork.Clinics.GetAllWithExpression(includes, c => c.IsDeleted == false && c.DoctorId == doctorId);
 
             var mappedClinics = _mapper.Map<IEnumerable<Clinic>, IEnumerable<ClinicViewModel>>(clinicList);
+
+            ViewBag.doctorId = doctorId;
             return View(mappedClinics);
         }
+
         public async Task<IActionResult> CreateClinic(int id)
         {
-            ViewBag.id = id;
-            return View();
+           ViewBag.doctorId = id;
+           return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateClinic(ClinicViewModel VMmodel)
         {
@@ -145,7 +165,9 @@ namespace Etammen.Controllers
 
                 return RedirectToAction(nameof(ClinicIndex));
             }
-            return View();
+
+            ViewBag.doctorId = VMmodel.DoctorId;
+            return View(VMmodel);
         }
         public async Task<IActionResult> EditClinic(int id)
         {
@@ -361,20 +383,22 @@ namespace Etammen.Controllers
 
 
             var PatientFullName = $"{appointment.Patient.ApplicationUser.FirstName} {appointment.Patient.ApplicationUser.LastName}";
-            var smsmessage = new SMSMessage()
-            {
-                PhoneNumber = appointment.Patient.ApplicationUser.PhoneNumber,
-                body = $"Dear Mr {PatientFullName} : Your Appointment was Canceled by the doctor for some reason you can book another time if you wish . Sorry For the Inconvenience"
-            };
+            
+            string toPhoneNumber = $"+2{appointment.Patient.ApplicationUser.PhoneNumber}";
+            string smsBody = $"Dear Mr {PatientFullName} : Your Appointment was Canceled by the doctor for some reason you can book another time if you wish . Sorry For the Inconvenience";
+
+
 
             if (model.ReservationPeriodNumber is null && homeappointment is not null)
             {
                 homeappointment.IsDeleted = true;
                 _unitOfWork.HomeAppointment.Update(homeappointment);
                 await _unitOfWork.Commit();
-                var messagesent = _smsService.Send(smsmessage);
-                if (messagesent is not null)
+
+                MessageResource result = await _smsService.SendSmsAsync(toPhoneNumber, smsBody);
+                if (string.IsNullOrEmpty(result.ErrorMessage))
                     TempData["messagewassent"] = $"cancelation message was sent to patient {PatientFullName}";
+
                 return RedirectToAction(nameof(homeVisitAppointmentsIndex));
             }
             else if (model.ReservationPeriodNumber is not null && appointment is not null)
@@ -382,8 +406,9 @@ namespace Etammen.Controllers
                 appointment.IsDeleted = true;
                 _unitOfWork.ClinicAppointments.Update(appointment);
                 await _unitOfWork.Commit();
-                var messagesent = _smsService.Send(smsmessage);
-                if (messagesent is not null)
+
+                MessageResource result = await _smsService.SendSmsAsync(toPhoneNumber, smsBody);
+                if (string.IsNullOrEmpty(result.ErrorMessage))
                     TempData["messagewassent"] = $"cancelation message was sent to patient {PatientFullName}";
 
                 return RedirectToAction(nameof(AppointmentIndex));
@@ -544,10 +569,11 @@ namespace Etammen.Controllers
 
         }
 
-        public async Task<IActionResult> DeactivateAccount(int id = 4)
+        public async Task<IActionResult> DeactivateAccount()
         {
-            ViewBag.id = id;
-            return View();
+            string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            int doctorId = _unitOfWork.Doctors.GetDoctorIdByUserId(applicationUserId);
+            return View(doctorId);
         }
 
         public async Task<IActionResult> DeactivateAccountConfirmed(int id)
@@ -569,7 +595,7 @@ namespace Etammen.Controllers
             }
             _unitOfWork.Doctors.Update(doctor);
             await _unitOfWork.Commit();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Logout", "Account");
         }
     }
 }

@@ -1,4 +1,4 @@
-/**
+    /**
 * Template Name: Medilab
 * Updated: Jan 29 2024 with Bootstrap v5.3.2
 * Template URL: https://bootstrapmade.com/medilab-free-medical-bootstrap-theme/
@@ -545,7 +545,6 @@ h6 {
 --------------------------------------------------------------*/
 section {
   padding: 60px 0;
-  overflow: hidden;
 }
 
 .section-bg {

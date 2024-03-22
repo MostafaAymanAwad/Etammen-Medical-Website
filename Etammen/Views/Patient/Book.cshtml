@@ -6,34 +6,16 @@
     string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
 
     int id = Model.Id;
-    int doctoriD = ViewBag.DoctorID;
-    var doctors = await _unitOfWork.Doctors.FindBy(d => d.Id == doctoriD, includes);
+    var doctors = await _unitOfWork.Doctors.FindBy(d => d.Id == Model.DoctorId, includes);
     var fullName = $"{doctors.ApplicationUser.FirstName} {doctors.ApplicationUser.LastName}";
 
     var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
-
-
 }
-<style>
-    .btn-outline-purple {
-        color: #800080;
-        background-color: transparent;
-        border-color: #800080;
-        width: 60px;
-    }
-
-        .btn-outline-purple:hover {
-            color: #fff;
-            background-color: #800080;
-
-            border-color: #800080; 
-        }
-</style>
 
 <form asp-action="BookConfirmed" asp-controller="Patient" method="post">
     <div class="row" style="display:inline-block">
         <div class="col-20">
-            <div class="doctor-card" style="height: 650px;">
+            <div class="doctor-card" style="height: 800px;">
                 <div class="doctor-card__image">
                     <img src="/files/Images/@Model.Doctor.ProfilePicture" alt="Dr. Abdellatif Hamouda">
                 </div>
@@ -48,18 +30,19 @@
                                 <p>@Model.Doctor.Degree in @Model.Doctor.Speciality</p>
                             </li>
                             <li>
-                                @{
-                                    int patientId = ViewBag.patientID;
-                                }
+
                                 <label asp-for="ISHomeVisit" id="doctorvisithomelabel">Doctor Can Visit Home</label>
                                 <input asp-for="ISHomeVisit" value="@Model.ISHomeVisit" disabled id="doctorvisithome" />
-                                <input type="hidden" asp-for="patientId" value="@patientId" />
+                                <input type="hidden" asp-for="patientId" value="@Model.patientId" />
                                 <input type="hidden" asp-for="Date" value="@DateOnly.FromDateTime(DateTime.Now)" />
                                 <input type="hidden" asp-for="IsAttended" value="@false" />
                                 <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId" />
                                 <input type="hidden" asp-for="ClinicId" value="@Model.Clinic.Id" id="ClinicId" />
                                 <input type="hidden" asp-for="ClinicName" value="@Model.Clinic.Name" />
                                 <input type="hidden" asp-for="ISHomeAppointmentDeleted" value="@Model.ISHomeAppointmentDeleted" />
+
+                                <input type="hidden" asp-for="ClinicFees" value="@Model.Clinic.Fees" />
+                                <input type="hidden" asp-for="HomeVisitFees" value="@Model.Doctor.HomeVisitFees" />
 
                             </li>
 
@@ -70,8 +53,8 @@
                                 <label asp-for="HomeVisitFees">@String.Format("{0:N0}", @Model.HomeVisitFees)$</label>
                             </li>
                             <li id="homeRequestSection">
-                                <label asp-for="ISHomeVisit">Request Appointment At Home: </label>
-                                <input type="checkbox" asp-for="ISHomeVisit"  id="homeVisit" />
+                                <label asp-for="IsVisitHome">Request Appointment At Home: </label>
+                                <input type="checkbox" asp-for="IsVisitHome"  id="homeVisit" />
                             </li>
                             <li>
                               
@@ -81,13 +64,11 @@
                                         <Label asp-for="ClinicId"  > @Model.Clinic.Name</label>  <label asp-for="ClinicFees" style="margin-left:300px"> Clinic Fees      @String.Format("{0:N0}", @Model.Clinic.Fees)$</label>
                                         </label>
                                     </div>
-                                    
-                                
                             </li>
                             <li>
                                 <div style="margin-left:200px;display:inline-block">
-                                <label asp-for="IsPaidOnline" ></label>
-                                <input  asp-for="IsPaidOnline"> 
+                                <label asp-for="IsWantToPayOnline" ></label>
+                                <input  asp-for="IsWantToPayOnline"> 
                                 </div>
                                 <label id="reservationPhrase"> Reservation Time available for bookings today (@DateOnly.FromDateTime(DateTime.Now) at the clinic</label>
 
@@ -95,39 +76,40 @@
                                     int index = 0;
                                 }
                                 <div id="reservationDiv">
-                                @{
-                                    for (int i = 0; i <= (int)ViewData[$"clinic{index}"]; i++)
-                                    {
-                                        TimeSpan openingHour = Model.Clinic.OpeningHour.ToTimeSpan();
-                                        TimeSpan closingHour = Model.Clinic.ClosingHour.ToTimeSpan();
-                                        TimeSpan examinationDuration = Model.Clinic.ExmainationDuration.ToTimeSpan(); 
+                                    @{
+                                        for (int i = 0; i <= (int)ViewData[$"{Model.ClinicName}"]; i++)
+                                        {
+                                            TimeSpan openingHour = Model.Clinic.OpeningHour.ToTimeSpan();
+                                            TimeSpan closingHour = Model.Clinic.ClosingHour.ToTimeSpan();
+                                            TimeSpan examinationDuration = Model.Clinic.ExmainationDuration.ToTimeSpan(); 
 
-                                        TimeSpan appointmentTime = openingHour + TimeSpan.FromMinutes(i * examinationDuration.TotalMinutes);
-                                        DateTime appointmentDateTime = DateTime.Today.Add(appointmentTime);
+                                            TimeSpan appointmentTime = openingHour + TimeSpan.FromMinutes(i * examinationDuration.TotalMinutes); 
+                                            DateTime appointmentDateTime = DateTime.Today.Add(appointmentTime);
 
-                                        TimeOnly appointmentSlot = TimeOnly.FromDateTime(appointmentDateTime);
+                                            TimeOnly appointmentSlot = TimeOnly.FromDateTime(appointmentDateTime);
 
-                                        var clinicId = Model.Clinic.Id; 
-                                        List<TimeOnly?> list = Model.ClinicAppointmentDictionary.ContainsKey(clinicId) ? Model.ClinicAppointmentDictionary[clinicId] : new List<TimeOnly?>();
+                                            var clinicId = Model.Clinic.Id;
+                                            List<TimeOnly?> list = Model.ClinicAppointmentDictionary[clinicId];
 
-                                        var isAppointmentSlotTaken = list.Contains(appointmentSlot);
+                                            var isAppointmentSlotTaken = list.Contains(appointmentSlot);
 
                                                     <div class="checkbox reservation-slot clinic-@(Model.Clinic.Id)" id="reservation">
                                                         <label>
                                                             @if (isAppointmentSlotTaken)
-                                                {
-                                                                <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" disabled />
-                                                }
-                                                else
-                                                {
-                                                                <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" />
-                                                }
+                                                            {
+                                                                   <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" disabled />
+                                                            }
+                                                            else
+                                                            {
+                                                                   <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" />
+                                                            }
                                                             <span id="ReservationPeriod">@appointmentSlot</span>
                                                         </label>
                                                     </div>
                                     }
                                     index++;
                                 }
+                                <span asp-validation-for="@Model.ReservtionPeriodNumber" class="text-danger" ></span>
                                 </div>
                             </li>
 
@@ -144,7 +126,9 @@
         </div>
     </div>
     <div style="margin-left:650px">
-        <input type="submit" value="Book" class="btn btn-outline-primary" id="bookButton"> 
+        @{
+            <input type="submit" value="Book" class="btn btn-outline-primary" id="bookButton"> 
+        }
      
     </div>
 </form>

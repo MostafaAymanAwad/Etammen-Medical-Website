@@ -7,17 +7,11 @@
 @inject BusinessLogicLayer.Interfaces.IUnitOfWork _unitOfWork
 @{
     string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
-    // var doctorlist = new SelectList(await _unitOfWork.Doctors.GetAll(includes), "Id", "ApplicationUser.FirstName");
-    int id = ViewBag.id;
+
+    int id = ViewBag.doctorId;
     var doctors = await _unitOfWork.Doctors.FindBy(d => d.Id == id, includes);
     var fullName = $"{doctors.ApplicationUser.FirstName} {doctors.ApplicationUser.LastName}";
-    // var doctorListItems = doctors.Select(d => new SelectListItem
-    //         {
-    //             Value = d.Id.ToString(),
-    //             Text = $"{d.ApplicationUser.FirstName} {d.ApplicationUser.LastName}" 
-    //         });
 
-    // var doctorList = new SelectList(doctorListItems, "Value", "Text");
     var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
 }
 

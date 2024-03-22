@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Hosting;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessLogicLayer.Services.SMS;
-
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Jwt.AccessToken;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using DataAccessLayerEF.SettingsModel;
+using Twilio.Types;
 
 
 
@@ -244,14 +244,16 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ReactivateAccount(ReactivateAccountViewModel reactivateAccountViewModel)
     {
-        Doctor doctor = await _unitOfWork.Doctors.FindBy(d => d.ApplicationUserId == reactivateAccountViewModel.ApplicationUserId, ["Clinics"]);
+        Doctor doctor = await _unitOfWork.Doctors.FindBy(d => d.ApplicationUserId == reactivateAccountViewModel.ApplicationUserId, ["Clinics","ApplicationUser"]);
         doctor.IsDeleted = false;
-        foreach(var doctorClinic in doctor.Clinics)
+
+        foreach (var doctorClinic in doctor.Clinics)
         {
             doctorClinic.IsDeleted = false;
         }
         await _unitOfWork.Commit();
-        return RedirectToAction("Login");
+         await _signInManager.SignInAsync(doctor.ApplicationUser, isPersistent: false);
+         return RedirectToAction("Profile","Doctors");
     }
 
     private async Task<IActionResult> LogUserIn(ApplicationUser userToLogIn, LoginViewModel loginViewModel, string Role)
@@ -367,12 +369,12 @@ public class AccountController : Controller
             if (user is not null)
             {
                 var passwordResetToken = await _userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultPhoneProvider, "ResetPasswordPurpose");
-                var sms = new SMSMessage()
-                {
-                    PhoneNumber = $"+2{user.PhoneNumber}",
-                    body = $"your OTP for resetting your Etammen account password is {passwordResetToken}"
-                };
-                MessageResource result = _smsService.Send(sms);
+  
+                string toPhoneNumber = $"+2{user.PhoneNumber}";
+                string smsBody = $"your OTP for resetting your Etammen account password is {passwordResetToken}";
+
+
+                MessageResource result = await _smsService.SendSmsAsync(toPhoneNumber, smsBody);
                 if (string.IsNullOrEmpty(result.ErrorMessage))
                     return RedirectToAction("ResetPasswordOtp", new { userId = user.Id, token = passwordResetToken });
                 else
@@ -474,7 +476,7 @@ public class AccountController : Controller
         var addloginResult = await _userManager.AddLoginAsync(user, info);
         await _userManager.AddToRoleAsync(user, "Patient");
         await _signInManager.SignInAsync(user, isPersistent: false);
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Search", "Patient");
     }
 
     [HttpPost]

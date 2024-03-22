@@ -221,5 +221,12 @@ namespace BusinessLogicLayer.Repositories
 					return doctors;
             }
         }
+        public int GetDoctorIdByUserId(string applicationUserID)
+        {
+            return _context.Doctors.Where(d => d.ApplicationUserId == applicationUserID)
+                                     .Select(d => d.Id).FirstOrDefault();
+        }
+
+
     }
 }

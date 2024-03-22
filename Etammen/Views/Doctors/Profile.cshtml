@@ -20,7 +20,7 @@
                     <div class="card-body text-center">
                         @if (Model.ProfilePicture != null)
                         {
-                            <img class="img-account-profile rounded-circle mb-2" src="/files/Images/@Model.ProfilePicture" style="width:250px;height:300px"/>
+                            <img class="img-account-profile rounded-circle mb-2" src="/DoctorImages/@Model.ProfilePicture" style="width:250px;height:300px"/>
                         }
                         else
                         {
@@ -34,12 +34,6 @@
                 <div class="card mb-4">
                     <div class="card-header">Account Details</div>
                     <div class="card-body">
-
-
-                        @*   <div class="mb-3">
-                        <label class="small mb-1" asp-for="ApplicationUser.UserName">Username (how your name will appear to other users on the site)</label>
-                        <input class="form-control" asp-for="ApplicationUser.UserName" placeholder="Enter your username" value="@Model.ApplicationUser.UserName">
-                        </div> *@
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="ApplicationUserId" />
                         <div class="row gx-3 mb-3">
@@ -86,6 +80,7 @@
                                 <input asp-for="IsVisitHome" value="@Model.IsVisitHome" disabled value="0">
                             </div>
                         </div>
+
 
                         <a asp-action="ProfileEdit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
                     </div>
