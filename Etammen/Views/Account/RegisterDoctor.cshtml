@@ -24,8 +24,8 @@
                     <div class="col-md-12 col-lg-12 col-xxl-6">
                         <div class="card mb-2">
                             <div class="card-body">
-                                <div class="bg-primary mb-3">
-                                    <p class="text-center text-white header mb-0">Connect With Facebook or Google</p>
+                                <div class="mb-3">
+                                    <p class="text-center text-blue header mb-2">Connect With Facebook or Google</p>
                                     <partial name="_ExternalAuthinticationPartial" />
                                 </div>
                                 <form asp-action="RegisterDoctor" asp-controller="Account" method="post" enctype="multipart/form-data">
@@ -33,14 +33,14 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="FirstName" class="control-label"></label>
+                                                <label asp-for="FirstName" class="control-label">First Name</label>
                                                 <input asp-for="FirstName" class="form-control" />
                                                 <span asp-validation-for="FirstName" class="text-danger"></span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="LastName" class="control-label"></label>
+                                                <label asp-for="LastName" class="control-label">Last Name</label>
                                                 <input asp-for="LastName" class="form-control" />
                                                 <span asp-validation-for="LastName" class="text-danger"></span>
                                             </div>
@@ -49,7 +49,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="UserName" class="control-label"></label>
+                                                <label asp-for="UserName" class="control-label">Username</label>
                                                 <input asp-for="UserName" class="form-control" />
                                                 <span asp-validation-for="UserName" class="text-danger"></span>
                                             </div>
@@ -57,7 +57,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label asp-for="Age" class="control-label"></label>
-                                                <input asp-for="Age" class="form-control" min="25" max="70" value="25" />
+                                                <input asp-for="Age" class="form-control" min="25" max="70" value="" />
                                                 <span asp-validation-for="Age" class="text-danger"></span>
                                             </div>
                                         </div>
@@ -72,7 +72,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="ConfirmPassword" class="control-label"></label>
+                                                <label asp-for="ConfirmPassword" class="control-label">Confirm Password</label>
                                                 <input asp-for="ConfirmPassword" class="form-control" />
                                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                                             </div>
@@ -88,7 +88,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="PhoneNumber" class="control-label"></label>
+                                                <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
                                                 <input asp-for="PhoneNumber" class="form-control" />
                                                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                             </div>
@@ -104,7 +104,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="YearsOfExperience" class="control-label"></label>
+                                                <label asp-for="YearsOfExperience" class="control-label">Years of experience</label>
                                                 <input asp-for="YearsOfExperience" class="form-control" />
                                                 <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
                                             </div>
@@ -131,20 +131,20 @@
                                             <div class="form-group">
                                                 <br />
                                                 &nbsp &nbsp <input asp-for="IsVisitHome" id="IsVisitHome" class="form-check-input" />
-                                                <label class="form-check-label" for="IsVisitHome">&nbsp &nbsp provide home visits</label>
+                                                <label class="form-check-label" for="IsVisitHome">&nbsp &nbsp Provide home visits</label>
                                                 <br /><br />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label asp-for="HomeVisitFees" id="HomeVisitFeesLabel" class="control-label"></label>
-                                            <input asp-for="HomeVisitFees" id="HomeVisitFees" class="form-control" />
+                                            <input type="number" asp-for="HomeVisitFees" id="HomeVisitFees" class="form-control" />
                                             <span asp-validation-for="HomeVisitFees" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label asp-for="AboutTheDoctor" class="control-label"></label>
+                                                <label asp-for="AboutTheDoctor" class="control-label">About yourself</label>
                                                 <textarea asp-for="AboutTheDoctor" class="form-control" rows="4"></textarea>
                                                 <span asp-validation-for="AboutTheDoctor" class="text-danger"></span>
                                             </div>
@@ -159,7 +159,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="control-label">Cerificate</label>
+                                                <label class="control-label">Certificate</label>
                                                 <input type="file" name="certificate" class="form-control" />
                                             </div>
                                         </div>
@@ -170,8 +170,8 @@
                                     </div>
                                     <br />
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <p class="fs-3 mb-0 fw-bold">Already have an Account?</p>
-                                        <a class="fs-3 mb-0 fw-bold" asp-action="Login" asp-controller="Account">&nbsp Login</a>
+                                        <p class="fs-3 mb-0 fw-bold">Already have an Account? &nbsp</p>
+                                        <a class="fs-3 mb-0 fw-bold" asp-action="Login" asp-controller="Account">Login</a>
                                     </div>
                                 </form>
                             </div>

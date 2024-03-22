@@ -32,8 +32,8 @@
     <form asp-action="ExternalLogin"  asp-controller="Account" method="post" class="form-horizontal">
          <div class="row">
              <div class="form-group  d-flex justify-content-center">
-                <button type="submit" name="provider" value="@providers[0].Name" class=" btn btn-facebook btn-facebook:hover me-2">@providers[0].Name</button>
-                <button type="submit" name="provider" value="@providers[1].Name" class=" btn btn-google btn-google:hover me-2">@providers[1].Name</button>
+                <button type="submit" name="provider" value="@providers[0].Name" class=" btn btn-facebook btn-facebook:hover me-2">@char.ToUpper(providers[0].Name[0])@providers[0].Name.Substring(1)</button>
+                <button type="submit" name="provider" value="@providers[1].Name" class=" btn btn-google btn-google:hover me-2">@char.ToUpper(providers[1].Name[0])@providers[1].Name.Substring(1)</button>
              </div>
          </div>
     </form>
