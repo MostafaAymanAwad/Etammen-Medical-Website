@@ -19,7 +19,7 @@ namespace Etammen.Mapping_Profiles
                 .ForMember(d => d.ClinicFees, o => o.MapFrom(s => s.Fees))
                 .ForMember(d => d.DoctorFirstName, o => o.MapFrom(s => s.Doctor.ApplicationUser.FirstName))
                 .ForMember(d => d.DoctorLastName, o => o.MapFrom(s => s.Doctor.ApplicationUser.LastName))
-                .ForMember(d => d.ISHomeVisit, o => o.MapFrom(s => s.Doctor.IsVisitHome))
+                .ForMember(d => d.IsVisitHome, o => o.MapFrom(s => s.Doctor.IsVisitHome))
                 .ForMember(d => d.HomeVisitFees, o => o.MapFrom(s => s.Doctor.HomeVisitFees))
                 .ForMember(d => d.ClinicName, o => o.MapFrom(s => s.Name))
                 .ReverseMap();

@@ -30,12 +30,10 @@
                             <p>@Model.Doctor.Degree in @Model.Doctor.Speciality</p>
                         </div>
                         <div class="specialty-list">
-                            @{
-                                int patientId = ViewBag.patientID;
-                            }
-                            <label asp-for="ISHomeVisit" id="doctorvisithomelabel">Doctor Can Visit Home</label>
-                            <input asp-for="ISHomeVisit" value="@Model.ISHomeVisit" disabled id="doctorvisithome"/>
-                            <input type="hidden" asp-for="patientId" value="@patientId" />
+                            
+                            <label asp-for="IsVisitHome" id="doctorvisithomelabel">Doctor Can Visit Home</label>
+                            <input asp-for="IsVisitHome" value="@Model.ISHomeVisit" disabled id="doctorvisithome"/>
+                            <input type="hidden" asp-for="patientId" value="@Model.patientId" />
                             <input type="hidden" asp-for="Date" value="@DateOnly.FromDateTime(DateTime.Now)" />
                             <input type="hidden" asp-for="IsAttended" value="@false" />
                             <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId" />

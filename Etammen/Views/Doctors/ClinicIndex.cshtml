@@ -133,8 +133,8 @@ else
 {
     <div class="alert alert-info alert-dismissible d-flex align-items-center fade show">
         <i class="bi-info-circle-fill"></i>
-        <strong class="mx-2">You have no clinics</strong> 
-        <a asp-action="CreateClinic" class="btn btn-outline-primary">Add a clinic?</a>
+        <strong class="mx-2">You have no clinics</strong>
+        <a asp-action="CreateClinic" asp-route-id="@ViewBag.doctorId" class="btn btn-outline-primary">Add a clinic?</a>
     </div>
 }
 <script>
