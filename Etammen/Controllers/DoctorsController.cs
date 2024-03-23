@@ -23,7 +23,7 @@ using System.Security.Claims;
 
 namespace Etammen.Controllers
 {
-    [AllowAnonymous]
+    [AllowAnonymous, Route("Doctors")]
     public class DoctorsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -44,7 +44,7 @@ namespace Etammen.Controllers
             _smsService = smsService;
             _registerationHelper = registerationHelper;
         }
-
+        [Route("DoctorAccount")]
         public async Task<IActionResult> Profile()
         {
             string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
@@ -55,13 +55,13 @@ namespace Etammen.Controllers
             var doctor = await _unitOfWork.Doctors.FindBy(d => d.Id == doctorId, includes);
             if (doctor == null)
             {
-                return RedirectToAction("StatusCodeError", "Error", new { statusCode = 404});
+                return RedirectToAction("StatusCodeError", "Error", new { statusCode = 404 });
             }
             var mappedDoctor = _mapper.Map<Doctor, DoctorViewModel>(doctor);
 
             return View(mappedDoctor);
         }
-
+        [Route("DoctorAccountEdit/{id:int:min(1)}")]
         public async Task<IActionResult> ProfileEdit(int id)
         {
             string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
@@ -78,8 +78,8 @@ namespace Etammen.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> ProfileEdit(DoctorViewModel model)
+        [HttpPost,Route("DoctorAccountEdit/{id:int}")]
+        public async Task<IActionResult> ProfileEdit(int id,DoctorViewModel model)
         {
 
             if (ModelState.IsValid)
@@ -87,7 +87,7 @@ namespace Etammen.Controllers
                 if (model.ProfilePictureFormFile is not null)
                 {
 
-                    List<string> imagePAths = _registerationHelper.SaveUploadedImages(new List<IFormFile> { model.ProfilePictureFormFile}, UploadedPicturesFolder);
+                    List<string> imagePAths = _registerationHelper.SaveUploadedImages(new List<IFormFile> { model.ProfilePictureFormFile }, UploadedPicturesFolder);
                     model.ProfilePicture = imagePAths[0];
 
                 }
@@ -130,7 +130,7 @@ namespace Etammen.Controllers
 
             return View(model);
         }
-
+        [Route("myClinics")]
         public async Task<IActionResult> ClinicIndex()
         {
             string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -145,15 +145,16 @@ namespace Etammen.Controllers
             ViewBag.doctorId = doctorId;
             return View(mappedClinics);
         }
+        [Route("AddClinic/{id:int:min(1)}")]
 
         public async Task<IActionResult> CreateClinic(int id)
         {
-           ViewBag.doctorId = id;
-           return View();
+            ViewBag.doctorId = id;
+            return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateClinic(ClinicViewModel VMmodel)
+        [HttpPost, Route("AddClinic/{id:int:min(1)}")]
+        public async Task<IActionResult> CreateClinic(int id,ClinicViewModel VMmodel)
         {
             if (ModelState.IsValid)
             {
@@ -169,6 +170,7 @@ namespace Etammen.Controllers
             ViewBag.doctorId = VMmodel.DoctorId;
             return View(VMmodel);
         }
+        [Route("EditClinic/{id:int:min(1)}")]
         public async Task<IActionResult> EditClinic(int id)
         {
             var includes = new Dictionary<Expression<Func<Clinic, object>>, List<Expression<Func<object, object>>>>();
@@ -184,8 +186,9 @@ namespace Etammen.Controllers
 
             return View(mappedClinic);
         }
-        [HttpPost]
-        public async Task<IActionResult> EditClinic(ClinicViewModel VMmodel)
+        
+        [HttpPost, Route("EditClinic/{id:int:min(1)}")]
+        public async Task<IActionResult> EditClinic(int id,ClinicViewModel VMmodel)
         {
             if (ModelState.IsValid)
             {
@@ -198,6 +201,7 @@ namespace Etammen.Controllers
             }
             return View();
         }
+        [Route("ClinicDetails/{id:int:min(1)}")]
         public async Task<IActionResult> ClinicDetails(int id)
         {
             var includes = new Dictionary<Expression<Func<Clinic, object>>, List<Expression<Func<object, object>>>>();
@@ -213,6 +217,7 @@ namespace Etammen.Controllers
 
             return View(mappedClinic);
         }
+        [Route("DeleteClinic/{id:int:min(1)}")]
 
         public async Task<IActionResult> ClinicDelete(int id)
         {
@@ -230,6 +235,7 @@ namespace Etammen.Controllers
         }
         [HttpPost, ActionName("ClinicDelete")]
 
+        [Route("DeleteClinic/{id:int:min(1)}")]
 
         public async Task<IActionResult> ClinicDeleteConfirmed(int id)
         {
@@ -255,6 +261,8 @@ namespace Etammen.Controllers
             return RedirectToAction(nameof(ClinicIndex));
         }
 
+        [Route("MyAppointment")]
+
         public async Task<IActionResult> AppointmentIndex()
         {
             string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -277,12 +285,19 @@ namespace Etammen.Controllers
                       }
                     },
             };
-            ViewBag.doctorId = doctorId;
-            var appointment = await _unitOfWork.ClinicAppointments.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.Clinic.DoctorId == doctorId, includes);
+
+            string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+
+            int id = _unitOfWork.Doctors.GetDoctorIdByUserId(applicationUserId);
+            ViewBag.doctorId = id;
+            var appointment = await _unitOfWork.ClinicAppointments.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.Clinic.DoctorId == id, includes);
+       
             var mappedappointmwnts = _mapper.Map<IEnumerable<ClinicAppointment>, IEnumerable<AppointmentViewModel>>(appointment);
             return View(mappedappointmwnts);
 
         }
+        [Route("CancelDoctorAppointment/{id:int}")]
 
         public async Task<IActionResult> CancelAppointment(int id, TimeOnly? ReservationPeriodNumber)
         {
@@ -340,8 +355,8 @@ namespace Etammen.Controllers
             }
 
         }
-        [HttpPost, ActionName("CancelAppointment")]
-        public async Task<IActionResult> CancelAppointmentConfirmed(AppointmentViewModel model)
+        [HttpPost,Route("CancelDoctorAppointment/{id:int:min(1)}")]
+        public async Task<IActionResult> CancelAppointment(int id,AppointmentViewModel model)
         {
             var includes = new Dictionary<Expression<Func<ClinicAppointment, object>>, List<Expression<Func<object, object>>>>()
             {
@@ -383,19 +398,17 @@ namespace Etammen.Controllers
             var appointment = await _unitOfWork.ClinicAppointments.FindByWithExpression(a => a.Id == model.Id, includes);
             var homeappointment = await _unitOfWork.HomeAppointment.FindByWithExpression(a => a.Id == model.Id, Homeincludes);
 
-
-            var PatientFullName = $"{appointment.Patient.ApplicationUser.FirstName} {appointment.Patient.ApplicationUser.LastName}";
-            
-            string toPhoneNumber = $"+2{appointment.Patient.ApplicationUser.PhoneNumber}";
-            string smsBody = $"Dear Mr {PatientFullName} : Your Appointment was Canceled by the doctor for some reason you can book another time if you wish . Sorry For the Inconvenience";
-
-
-
             if (model.ReservationPeriodNumber is null && homeappointment is not null)
             {
                 homeappointment.IsDeleted = true;
                 _unitOfWork.HomeAppointment.Update(homeappointment);
                 await _unitOfWork.Commit();
+
+                var PatientFullName = $"{homeappointment.Patient.ApplicationUser.FirstName} {homeappointment.Patient.ApplicationUser.LastName}";
+
+                string toPhoneNumber = $"+2{homeappointment.Patient.ApplicationUser.PhoneNumber}";
+                string smsBody = $"Dear Mr {PatientFullName} : Your Appointment was Canceled by the doctor for some reason you can book another time if you wish . Sorry For the Inconvenience";
+
 
                 MessageResource result = await _smsService.SendSmsAsync(toPhoneNumber, smsBody);
                 if (string.IsNullOrEmpty(result.ErrorMessage))
@@ -409,6 +422,11 @@ namespace Etammen.Controllers
                 _unitOfWork.ClinicAppointments.Update(appointment);
                 await _unitOfWork.Commit();
 
+                var PatientFullName = $"{appointment.Patient.ApplicationUser.FirstName} {appointment.Patient.ApplicationUser.LastName}";
+
+                string toPhoneNumber = $"+2{appointment.Patient.ApplicationUser.PhoneNumber}";
+               
+                string smsBody = $"Dear Mr {PatientFullName} : Your Appointment was Canceled by the doctor for some reason you can book another time if you wish . Sorry For the Inconvenience";
                 MessageResource result = await _smsService.SendSmsAsync(toPhoneNumber, smsBody);
                 if (string.IsNullOrEmpty(result.ErrorMessage))
                     TempData["messagewassent"] = $"cancelation message was sent to patient {PatientFullName}";
@@ -417,8 +435,9 @@ namespace Etammen.Controllers
             }
             else
                 return BadRequest();
-           
+
         }
+        [Route("ApointmentAttended/{id:int}")]
         public async Task<IActionResult> AttenededAppointment(int id, TimeOnly? ReservationPeriodNumber)
         {
             if (ReservationPeriodNumber is not null)
@@ -479,9 +498,10 @@ namespace Etammen.Controllers
                     TempData["AttendedMessage"] = $"Appointment is marked as attended";
                 return RedirectToAction(nameof(homeVisitAppointmentsIndex));
             }
-            
+
         }
 
+        [Route("AcceptAppointment/{id:int}")]
 
         public async Task<IActionResult> AcceptAppointment(int id, TimeOnly? ReservationPeriodNumber)
         {
@@ -545,7 +565,8 @@ namespace Etammen.Controllers
             }
 
         }
-        public async Task<IActionResult> homeVisitAppointmentsIndex(int id = 1)
+        [Route("homeAppointment")]
+        public async Task<IActionResult> homeVisitAppointmentsIndex()
         {
             var includes = new Dictionary<Expression<Func<HomeAppointment, object>>, List<Expression<Func<object, object>>>>()
             {
@@ -565,18 +586,23 @@ namespace Etammen.Controllers
                       }
                     },
             };
+            string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+
+            int id = _unitOfWork.Doctors.GetDoctorIdByUserId(applicationUserId);
             var appointment = await _unitOfWork.HomeAppointment.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.DoctorId == id, includes);
             var mappedappointmwnts = _mapper.Map<IEnumerable<HomeAppointment>, IEnumerable<AppointmentViewModel>>(appointment);
             return View(mappedappointmwnts);
 
         }
-
+        [Route("DeactivateAccount")]
         public async Task<IActionResult> DeactivateAccount()
         {
             string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             int doctorId = _unitOfWork.Doctors.GetDoctorIdByUserId(applicationUserId);
             return View(doctorId);
         }
+        [Route("DeactivateAccount{id:int}")]
 
         public async Task<IActionResult> DeactivateAccountConfirmed(int id)
         {

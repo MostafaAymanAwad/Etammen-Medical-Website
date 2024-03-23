@@ -267,7 +267,7 @@ public class AccountController : Controller
                 return RedirectToAction("Index", "Home");
 
             if (Role == "Doctor")
-                return RedirectToAction("Search", "Patient");
+                return RedirectToAction("AppointmentIndex", "Doctors");
 
             return RedirectToAction("Search", "Patient");
 

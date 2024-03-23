@@ -127,6 +127,7 @@
                             <h3 class="doctor-card__description" style="color:rgb(0, 112, 205);">Specializations :</h3>
                             <p>@Model.Doctor.Degree in @Model.Doctor.Speciality</p>
                         </div>
+
                     </div>
                     <div class="doctor-card__specialties row">
 
@@ -161,6 +162,7 @@
                                                 <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" disabled />
                                         }
                                         else
+
                                         {
                                                 <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" />
                                         }

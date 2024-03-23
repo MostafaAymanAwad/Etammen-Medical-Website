@@ -8,8 +8,8 @@
     let City_Area = {};
     let myModel = @Html.Raw(Json.Serialize(myModel));
 
-    function RedirectToDetails(id){
-        var url = "@Url.Action("Details", "Patient")" + "?id=" + id;
+    function RedirectToDetails(id) {
+        var url = "/doctorDetails/" + id;
         window.location.href = url;
     }
   

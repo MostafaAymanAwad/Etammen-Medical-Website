@@ -62,11 +62,11 @@
                         @{
                             if (item.ClinicId == 0)
                             {
-                                @Html.DisplayFor(modelItem => item.Doctor.ApplicationUser.FirstName) @Html.DisplayFor(model => item.Doctor.ApplicationUser.LastName)
+                                <span>Dr.</span>  @Html.DisplayFor(modelItem => item.Doctor.ApplicationUser.FirstName) <span> </span> @Html.DisplayFor(model => item.Doctor.ApplicationUser.LastName)
                             }
                             else
                             {
-                                @Html.DisplayFor(modelItem => item.Clinic.Doctor.ApplicationUser.FirstName) @Html.DisplayFor(model => item.Clinic.Doctor.ApplicationUser.LastName)
+                                <span>Dr.</span>  @Html.DisplayFor(modelItem => item.Clinic.Doctor.ApplicationUser.FirstName)  <span> </span>    @Html.DisplayFor(model => item.Clinic.Doctor.ApplicationUser.LastName)
 
                             }
                         }

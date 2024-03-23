@@ -188,7 +188,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Patient}/{action=Search}/{id?}");
+    pattern: "{controller}/{action}/{id?}");
 
 app.UseStatusCodePagesWithRedirects("/StatusCodeError/{0}");
 
