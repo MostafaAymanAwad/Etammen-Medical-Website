@@ -285,10 +285,6 @@ namespace Etammen.Controllers
                       }
                     },
             };
-
-            string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-
             int id = _unitOfWork.Doctors.GetDoctorIdByUserId(applicationUserId);
             ViewBag.doctorId = id;
             var appointment = await _unitOfWork.ClinicAppointments.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.Clinic.DoctorId == id, includes);
@@ -428,6 +424,7 @@ namespace Etammen.Controllers
                
                 string smsBody = $"Dear Mr {PatientFullName} : Your Appointment was Canceled by the doctor for some reason you can book another time if you wish . Sorry For the Inconvenience";
                 MessageResource result = await _smsService.SendSmsAsync(toPhoneNumber, smsBody);
+                
                 if (string.IsNullOrEmpty(result.ErrorMessage))
                     TempData["messagewassent"] = $"cancelation message was sent to patient {PatientFullName}";
 
