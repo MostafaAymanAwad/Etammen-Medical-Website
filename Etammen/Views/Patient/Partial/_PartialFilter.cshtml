@@ -65,7 +65,6 @@
     }
 </style>
 
-
 <form id="filterForm" asp-action="Filter" asp-controller="Patient" onsubmit="updateAndSubmit(event,'filterForm')">
     <input type="hidden" name="JSONdata" />
     <div class="card">
@@ -85,7 +84,7 @@
                     <h6 class="title">Degree</h6>
                 </a>
             </header>
-            <div class="filter-content collapse hide" id="degree">
+            <div class="filter-content collapse show" id="degree">
                 <div class="card-body">
                     <div class="checkbox">
                         <input type="checkbox" id="title-professor" checked="@myModel.IsProfessor">
@@ -122,7 +121,7 @@
                     <h6 class="title">Gender</h6>
                 </a>
             </header>
-            <div class="filter-content collapse hide" id="gender">
+            <div class="filter-content collapse show" id="gender">
                 <div class="card-body">
                     <div class="checkbox">
                         @{
@@ -150,7 +149,7 @@
                     <h6 class="title">Fees</h6>
                 </a>
             </header>
-            <div class="filter-content collapse hide" id="fees">
+            <div class="filter-content collapse show" id="fees">
                 <div class="card-body">
                     <div class="checkbox">
                         <input type="checkbox" id="title-fees-1" checked="@myModel.IsFeesLessThan100">
@@ -183,7 +182,7 @@
                     <h6 class="title">Opening Days</h6>
                 </a>
             </header>
-            <div class="filter-content collapse hide" id="openingDays">
+            <div class="filter-content collapse show" id="openingDays">
                 <div class="card-body">
                     <div class="checkbox">
                         @{

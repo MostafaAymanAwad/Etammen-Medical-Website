@@ -1,22 +1,21 @@
 ﻿@{
     Layout = null;
 }
-<div class="doctor-profile-image">
+
+<div class="doctor-card__image">
     <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENTf0767c/Profile/150/doctor-ahmed-abd-el-bary-urology_20190125212459768.jpg" alt="Doctor Ahmed Abdelbary">
 </div>
-<div class="doctor-profile-details">
-    <h2 class="doctor-name">Doctor: @Model.FirstName @Model.LastName</h2>
-    <h3 class="doctor-title">Professor of @Model.Speciality</h3>
-    <p class="doctor-specialties">
-        Specialized in
-        <a href="#">@Model.Speciality</a>
-
+<div class="doctor-card__details flex-fill">
+    <h2 class="doctor-card__name">Doctor: @Model.FirstName @Model.LastName</h2>
+    <h3 class="doctor-card__specialties">Professor of @Model.Speciality</h3>
+    <p class="doctor-card__specialties">
+        Specialized in @Model.Speciality
     </p>
-    <p class="doctor-rating">
+    <p class="doctor-card__ratings">
         Degree:
         <span class="rating-value">@Model.Degree</span>
     </p>
-    <p class="doctor-reviews">@Model.AboutTheDoctor</p>
+    <p class="doctor-card__description">@Model.AboutTheDoctor</p>
     <p class="doctor-reviews">@Model.Certificate</p>
     <p>Years of experience: @Model.YearsOfExperience</p>
 

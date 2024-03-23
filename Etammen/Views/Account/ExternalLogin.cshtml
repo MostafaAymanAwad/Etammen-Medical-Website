@@ -21,14 +21,14 @@
                         <div class="card mb-2">
                             <div class="card-body">
                                 <div class="bg-white mb-3">
-                                <p class="text-center text-blue header mb-0">welcome to Etammen, we are pleased to have you!</p>
-                                <p class="text-center text-blue header mb-0">since this is your First time to log in, just a couple of questions to finish your registeration.</p>
+                                <p class="text-center text-blue header mb-0">Welcome to Etammen, we are pleased to have you!</p>
+                                <p class="text-center text-blue header mb-0">Since this is your first time to log in, just a couple of questions to finish your registeration.</p>
                                 <form asp-action="ExternalLoginConfirmation" asp-controller="Account" method="post">
                                     <div asp-validation-summary="All" class="text-danger"></div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="UserName" class="control-label"></label>
+                                                <label asp-for="UserName" class="control-label">Username</label>
                                                 <input asp-for="UserName" class="form-control" />
                                                 <span asp-validation-for="UserName" class="text-danger"></span>
                                             </div>
@@ -44,7 +44,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label asp-for="StreetAddress" class="control-label"></label>
+                                                <label asp-for="StreetAddress" class="control-label">Street Address</label>
                                                 <input asp-for="StreetAddress" class="form-control" />
                                                 <span asp-validation-for="StreetAddress" class="text-danger"></span>
                                             </div>
@@ -53,7 +53,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="governorate" class="control-label"></label>
+                                                <label asp-for="governorate" class="control-label">Governorate</label>
                                                 <select asp-for="governorate" asp-items="Governerates" id="govList" class="form-control"></select>
                                                 <span asp-validation-for="governorate" class="text-danger"></span>
                                             </div>

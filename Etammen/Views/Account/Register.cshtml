@@ -3,7 +3,7 @@
 @section Head
 {
     <head>
-        <link rel="stylesheet" href="/assets/css/styles.min.css" />
+        <link rel="stylesheet" href="/assets/css/styles.min.css"/>
     </head>
 }
 
@@ -21,7 +21,7 @@
                         <div class="card mb-2">
                             <div class="card-body">
                                 <div class="bg-white mb-3">
-                                    <p class="text-center text-blue header mb-0">Connect With Facebook or Google</p>
+                                    <p class="text-center text-blue header mb-2">Connect With Facebook or Google</p>
                                     <partial name="_ExternalAuthinticationPartial" />
                                 </div>
                                 <form asp-action="Register" asp-controller="Account" method="post">
@@ -29,14 +29,14 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="FirstName" class="control-label"></label>
-                                                <input asp-for="FirstName" class="form-control" />
+                                                <label asp-for="FirstName" class="control-label">First Name</label>
+                                                <input asp-for="FirstName" class="form-control"/>
                                                 <span asp-validation-for="FirstName" class="text-danger"></span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="LastName" class="control-label"></label>
+                                                <label asp-for="LastName" class="control-label">Last Name</label>
                                                 <input asp-for="LastName" class="form-control" />
                                                 <span asp-validation-for="LastName" class="text-danger"></span>
                                             </div>
@@ -45,7 +45,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="UserName" class="control-label"></label>
+                                                <label asp-for="UserName" class="control-label">Username</label>
                                                 <input asp-for="UserName" class="form-control" />
                                                 <span asp-validation-for="UserName" class="text-danger"></span>
                                             </div>
@@ -53,7 +53,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label asp-for="Age" class="control-label"></label>
-                                                <input asp-for="Age" class="form-control" min="25" max="70" value="25" />
+                                                <input asp-for="Age" class="form-control" min="25" max="70" value="None"/>
                                                 <span asp-validation-for="Age" class="text-danger"></span>
                                             </div>
                                         </div>
@@ -68,7 +68,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="ConfirmPassword" class="control-label"></label>
+                                                <label asp-for="ConfirmPassword" class="control-label">Confirm Password</label>
                                                 <input asp-for="ConfirmPassword" class="form-control" />
                                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                                             </div>
@@ -84,7 +84,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="PhoneNumber" class="control-label"></label>
+                                                <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
                                                 <input asp-for="PhoneNumber" class="form-control" />
                                                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                             </div>
@@ -100,7 +100,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="StreetAddress" class="control-label"></label>
+                                                <label asp-for="StreetAddress" class="control-label">Street Address</label>
                                                 <input asp-for="StreetAddress" class="form-control"/>
                                                 <span asp-validation-for="StreetAddress" class="text-danger"></span>
                                             </div>
@@ -109,7 +109,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label asp-for="governorate" class="control-label"></label>
+                                                <label asp-for="governorate" class="control-label">Governorate</label>
                                                 <select asp-for="governorate" asp-items="Governerates" id="govList" class="form-control"></select>
                                                 <span asp-validation-for="governorate" class="text-danger"></span>
                                             </div>
@@ -129,12 +129,12 @@
                                     </div>
                                     <br />
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <p class="fs-3 mb-0 fw-bold">Already have an Account?</p>
-                                        <a class="fs-3 mb-0 fw-bold" asp-action="Login" asp-controller="Account">&nbsp Login</a>
+                                        <p class="fs-3 mb-0 fw-bold">Already have an Account?&nbsp</p>
+                                        <a class="fs-3 mb-0 fw-bold" asp-action="Login" asp-controller="Account">Login</a>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <p class="fs-3 mb-0 fw-bold">Are you a doctor ?</p>
-                                        <a class="fs-3 mb-0 fw-bold" asp-action="RegisterDoctor" asp-controller="Account">&nbsp Join Etammen for doctors</a>
+                                        <p class="fs-3 mb-0 fw-bold">Are you a doctor ?&nbsp</p>
+                                        <a class="fs-3 mb-0 fw-bold" asp-action="RegisterDoctor" asp-controller="Account">Join Etammen for doctors</a>
                                     </div>
                                 </form>
                             </div>
@@ -148,8 +148,11 @@
         <script>
             const govList = document.getElementById("govList");
             const cityList = document.getElementById("cityList");
-
             const cities = {};
+
+            if(govList.value == "ALL"){
+                cityList.setAttribute("disabled","true");
+            }
             @foreach(var pair in Model.GovCitiesDict)
             {
                 <text>
@@ -163,7 +166,13 @@
                 }
             }
             govList.addEventListener("change", function () {
-
+                if (govList.value == "ALL") {
+                    cityList.setAttribute("disabled", "true");
+                }
+                else {
+                    cityList.removeAttribute("disabled");
+                }
+                    
                 let selectedGovIndex = this.selectedIndex;
                 let selectGovName = this.options[selectedGovIndex].text;
                 let selectedGovCities = cities[selectGovName];
