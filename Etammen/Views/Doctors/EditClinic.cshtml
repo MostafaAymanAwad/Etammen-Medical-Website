@@ -2,7 +2,7 @@
 @model Etammen.ViewModels.ClinicViewModel
 
 @{
-    ViewData["Title"] = "EditClinic";
+    ViewData["Title"] = "Edit " + Model.Name;
 }
 @inject BusinessLogicLayer.Interfaces.IUnitOfWork _unitOfWork
 @{
@@ -19,15 +19,13 @@
     var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
     
 }
-<h1>CreateClinic</h1>
-
 <h4>Edit Clinic</h4>
 <hr />
-<div class="row" style="margin-left:5px">
+<div class="row">
     <div class="col-md-4">
         <form asp-action="EditClinic">
             <div class="form-group">
-                <label asp-for="DoctorId" class="control-label"></label>
+                <label asp-for="DoctorId" class="control-label">Doctor Name</label>
                 <select asp-for="DoctorId" class="form-control" asp-items="@doctorList"></select>
                 <input type="hidden" asp-for="Id"/>
             </div>

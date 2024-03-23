@@ -67,8 +67,7 @@
     <div id="topbar" class="d-flex align-items-center">
         <div class="container d-flex justify-content-between">
             <div class="contact-info d-flex align-items-center">
-                <i class="bi bi-envelope"></i> <a href="mailto:etammenwebsite@gmail.com">contact@example.com</a>
-                <i class="bi bi-phone"></i> +1 5589 55488 55
+                <i class="bi bi-envelope"></i> <a href="mailto:etammenwebsite@gmail.com">etammenwebsite@gmail.com</a>
             </div>
             <div class="d-none d-lg-flex social-links align-items-center ml-auto">
 
@@ -125,7 +124,7 @@
         </div>
     </header><!-- End Header --> 
     <!-- ======= Hero Section ======= -->
-    <main id="main" class="d-flex justify-content-center pt-5" style="flex:1">
+        <main id="main" class="d-flex justify-content-center pt-5 flex-grow-1">
         <section class="container">
             @RenderBody()
         </section>
@@ -136,25 +135,27 @@
             <div class="container">
                 <div class="row">
 
-                    <div class="col-lg-3 col-md-6 footer-contact">
+                    <div class="col-lg-4 col-md-4 footer-contact">
                         <h3>Etammen</h3>
                         <p>
-                            21 Hassan Dawood-Faisal <br>
-                            Giza<br>
-                            Egypt <br><br>
-                            <strong>Phone:</strong> +1023558316<br>
-                            <strong>Email:</strong> info@example.com<br>
+                            He who has health, has hope.<br />
+                            He who has hope, has everything.<br/>
+                            <strong>Email:</strong> etammenwebsite@example.com<br>
                         </p>
                     </div>
 
-                    <div class="col-lg-2 col-md-6 footer-links">
+                    <div class="col-lg-4 col-md-4 footer-links">
                         <h4>Useful Links</h4>
                         <ul>
                             <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
                             <li><i class="bx bx-chevron-right"></i> <a asp-controller="Account" asp-action="RegisterDoctor">Etammen For Doctors</a></li>
 
                         </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-4 footer-links">
+                        <h4>About us</h4>
+                        <p>Etammen was established in 2024 to act as a gateway between people and doctors.</p>
+                        <p>All Rights reserved &copy; Tigers Team &#64; ITI</p>
                     </div>
                 </div>
             </div>
@@ -205,5 +206,6 @@
 
     <script src="/assets/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("DTSection", required: false)
 </body>
 </html>

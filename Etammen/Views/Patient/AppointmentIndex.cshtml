@@ -18,8 +18,9 @@
         </button>
     </div>
 }
-
-<h1>Your Appointments</h1>
+<div>
+    <h1>Your Appointments</h1>
+</div>
 
 @if (Model.Count() > 0)
 {
@@ -48,6 +49,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.IsPaidOnline)
                 </th>
+                <th></th>
             </tr>
         </thead>
         <tbody>

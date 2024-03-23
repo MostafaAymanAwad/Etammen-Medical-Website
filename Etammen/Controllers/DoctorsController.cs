@@ -255,8 +255,10 @@ namespace Etammen.Controllers
             return RedirectToAction(nameof(ClinicIndex));
         }
 
-        public async Task<IActionResult> AppointmentIndex(int id = 1)
+        public async Task<IActionResult> AppointmentIndex()
         {
+            string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            int doctorId = _unitOfWork.Doctors.GetDoctorIdByUserId(applicationUserId);
             var includes = new Dictionary<Expression<Func<ClinicAppointment, object>>, List<Expression<Func<object, object>>>>()
             {
                  {
@@ -275,8 +277,8 @@ namespace Etammen.Controllers
                       }
                     },
             };
-            ViewBag.doctorId = id;
-            var appointment = await _unitOfWork.ClinicAppointments.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.Clinic.DoctorId == id, includes);
+            ViewBag.doctorId = doctorId;
+            var appointment = await _unitOfWork.ClinicAppointments.FindByWithTwoThenIncludes(a => a.IsDeleted == false && a.Clinic.DoctorId == doctorId, includes);
             var mappedappointmwnts = _mapper.Map<IEnumerable<ClinicAppointment>, IEnumerable<AppointmentViewModel>>(appointment);
             return View(mappedappointmwnts);
 

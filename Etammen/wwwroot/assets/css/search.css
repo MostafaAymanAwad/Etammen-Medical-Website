@@ -51,6 +51,7 @@ main {
     background-size: cover;
     background-position-y:-100px;
     display: block;
+    align-items:center;
 }
 
 /**
