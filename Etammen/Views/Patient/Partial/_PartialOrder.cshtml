@@ -19,10 +19,10 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" href="#">
                 <input type="radio" class="orderBy" value="1" id="order1" checked="@(myModel.Order == 1)" name="ordername" onchange="updateAndSubmit(event,'OrderForm')">
-                <label for="order">Top Rated</label>
+                <label for="order1">Top Rated</label>
             </a>
             <a class="dropdown-item" href="#">
-                <input type="radio" class="orderBy" value="2" id="order2" name="ordername" onchange="updateAndSubmit(event,'OrderForm')">
+                <input type="radio" class="orderBy" value="2" id="order2" name="ordername" checked="@(myModel.Order == 2)" onchange="updateAndSubmit(event,'OrderForm')">
                 <label for="order2">Price Low To High</label>
             </a>
             <a class="dropdown-item" href="#">

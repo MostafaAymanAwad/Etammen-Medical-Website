@@ -123,6 +123,7 @@ public class PatientController : Controller
         return await Pagination(jSONMainViewModelHolder);
     }
 
+
     [Route("searchedDoctors")]
     public async Task<IActionResult> Pagination(JSONMainViewModelHolder jSONMainViewModelHolder, int pageNumber = 1, int pageSize = 2)
     {
@@ -187,7 +188,7 @@ public class PatientController : Controller
 
         mainViewModel.FilteredOrderedDoctors = _unitOfWork.Doctors.OrderByOption(mainViewModel.Order,
             mainViewModel.FilteredOrderedDoctors);
-
+        jSONMainViewModelHolder.JSONdata = JsonSerializer.Serialize(mainViewModel);
         return await Pagination(jSONMainViewModelHolder);
     }
 
@@ -206,8 +207,13 @@ public class PatientController : Controller
 
                 var sumOfRates = _patientRepository.GetSumOfRates(doctorViewModel.DoctorId);
 
-                doctor.TotalRatings += 1;
-                decimal maxRating = 5M;
+
+                if (doctor.TotalRatings == null)
+                    doctor.TotalRatings = 1;
+                else
+                    doctor.TotalRatings += 1;
+                decimal maxRating = 5M; 
+
 
                 decimal calculatedRating = ((decimal)sumOfRates / (decimal)(doctor.TotalRatings * maxRating));
 
@@ -221,7 +227,7 @@ public class PatientController : Controller
                 return RedirectToAction("StatusCodeError", new { statusCode = 404 });
             }
         }
-        return View(doctorViewModel);
+        return RedirectToAction("Search","Patient");
     }
     [Route("doctorDetails/{id:int:min(1)}")]
     public async Task<IActionResult> Details(int id)
@@ -336,16 +342,39 @@ public class PatientController : Controller
         var clinic = await _unitOfWork.Clinics.FindBy(d => d.Id == id, includes);
         if (clinic == null)
         {
-            return RedirectToAction("StatusCodeError", new { statusCode = 404 });
-        }
-        var mappedClinic = _mapper.Map<Clinic, BookViewModel>(clinic);
-        mappedClinic.Clinic = clinic;
-        TempData["ClinicId"] = clinic.Id;
-        TempData["DoctorId"] = clinic.Doctor.Id;
+            string[] includes = { "Doctor", "ClinicAppointments" };
+            var clinic = await _unitOfWork.Clinics.FindBy(d => d.Id == id, includes);
+            if (clinic == null)
+            {
+                return RedirectToAction("StatusCodeError",new { statusCode = 404});
+            }
+            var mappedClinic = _mapper.Map<Clinic, BookViewModel>(clinic);
+            mappedClinic.Clinic = clinic;
+            TempData["ClinicId"] = clinic.Id;
+            TempData["DoctorId"] = clinic.Doctor.Id;
 
-        TimeSpan openingHour = clinic.OpeningHour.ToTimeSpan();
-        TimeSpan closingHour = clinic.ClosingHour.ToTimeSpan();
-        TimeSpan examinationDuration = clinic.ExmainationDuration.ToTimeSpan();
+            TimeSpan openingHour = clinic.OpeningHour.ToTimeSpan();
+            TimeSpan closingHour = clinic.ClosingHour.ToTimeSpan();
+            TimeSpan examinationDuration = clinic.ExmainationDuration.ToTimeSpan();
+                
+                
+            TimeSpan clinicDuration = closingHour - openingHour;
+            var appointmentlist = new List<TimeOnly?>();
+            int examinationPeriods = (int)(clinicDuration.TotalMinutes / examinationDuration.TotalMinutes);
+            ViewData[$"{clinic.Name}"] = examinationPeriods;
+
+
+            foreach (var appointment in clinic.ClinicAppointments)
+            {
+                if (appointment.ReservationPeriodNumber is not null && appointment.Date == DateOnly.FromDateTime(DateTime.Now) && appointment.IsDeleted == false)
+                {
+
+                    appointmentlist.Add(appointment.ReservationPeriodNumber);
+                }
+            }
+            mappedClinic.ClinicAppointmentDictionary.Add(clinic.Id, appointmentlist);
+            string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
 
 
         TimeSpan clinicDuration = closingHour - openingHour;
@@ -418,8 +447,12 @@ public class PatientController : Controller
 
             TempData["BookMessage"] = $"Appointment Was booked succssfully";
 
-            if (book.IsWantToPayOnline == true && book.ClinicId is null)
-                return RedirectToAction("CheckoutSession", "Payment", new { fees = book.HomeVisitFees, clinicName = "HomeVisit", appointmentId = appointmentId });
+                if (book.IsWantToPayOnline==true && book.ClinicId is null)
+                    return RedirectToAction("CheckoutSession","Payment", new {fees = book.HomeVisitFees, clinicName = "HomeVisit", appointmentId = appointmentId });
+                
+                else if (book.IsWantToPayOnline == true && book.ClinicId is not null)
+                    return RedirectToAction("CheckoutSession", "Payment", new { fees = book.ClinicFees, clinicName = book.ClinicName, appointmentId = appointmentId}); 
+
 
             else if (book.IsWantToPayOnline == true && book.ClinicId is not null)
                 return RedirectToAction("CheckoutSession", "Payment", new { fees = book.ClinicFees, clinicName = book.ClinicName, appointmentId = appointmentId });

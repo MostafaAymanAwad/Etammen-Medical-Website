@@ -13,6 +13,7 @@
     </head>
 }
 @{
+    ViewData["Title"] = "Doctor Registeration";
     SelectList specialitiesSL = new SelectList(Model.SpecialityList);
 }
 <body>
@@ -24,10 +25,6 @@
                     <div class="col-md-12 col-lg-12 col-xxl-6">
                         <div class="card mb-2">
                             <div class="card-body">
-                                <div class="mb-3">
-                                    <p class="text-center text-blue header mb-2">Connect With Facebook or Google</p>
-                                    <partial name="_ExternalAuthinticationPartial" />
-                                </div>
                                 <form asp-action="RegisterDoctor" asp-controller="Account" method="post" enctype="multipart/form-data">
                                     <div asp-validation-summary="All" class="text-danger"></div>
                                     <div class="row">

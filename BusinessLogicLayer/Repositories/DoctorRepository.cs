@@ -3,6 +3,7 @@ using BusinessLogicLayer.Interfaces;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Enums;
 using DataAccessLayerEF.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,7 +51,7 @@ namespace BusinessLogicLayer.Repositories
 				foreach (var clinic in queryDoctors[i].Clinics ?? [])
 				{
 					string name = clinic.Name;
-					name.ToLower().Trim().Replace(" ","");
+					name=name.ToLower().Trim().Replace(" ","");
 					if(name.Contains(clinicName))
 					{
 						contain = true;
@@ -69,10 +71,12 @@ namespace BusinessLogicLayer.Repositories
             List<Doctor> removed = new List<Doctor>();
             for (int i = 0; i < queryDoctors.Count; i++)
 			{
-				string firstName = queryDoctors[i].ApplicationUser.FirstName.ToLower();
-				string lastName = queryDoctors[i].ApplicationUser.LastName.ToLower();
-				string fullName=firstName+lastName;
-                if (fullName.Contains(doctorName)==false)
+				var doctorAppName = _context.Doctors
+					.Include(d => d.ApplicationUser)
+					.Where(d => d.Id == queryDoctors[i].Id)
+					.Select(d => d.ApplicationUser.FirstName + d.ApplicationUser.LastName)
+					.FirstOrDefault();
+                if (doctorAppName.ToLower().Contains(doctorName)==false)
                     removed.Add(queryDoctors[i]);
             }
             foreach (var doctor in removed)
@@ -190,18 +194,18 @@ namespace BusinessLogicLayer.Repositories
                 IsHaveFilters = true;
             }
 
-            //if (doctorFilterOptions.OpeningDays != null)
-            //{
-            //    var allEnumValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>().ToList();
-            //    var filteredDays = allEnumValues.Where(day => (doctorFilterOptions.OpeningDays & day) == day).ToList();
-            //    foreach (var day in filteredDays)
-            //    {
-            //        query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => (c.OpeningDays & day) == day)), d => d.ApplicationUserId);
-            //    }
-            //    IsHaveFilters = true;
-            //}
+			if (doctorFilterOptions.OpeningDays != null)
+			{
+				var allEnumValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>().ToList();
+				var filteredDays = allEnumValues.Where(day => (doctorFilterOptions.OpeningDays & day) == day).ToList();
+				foreach (var day in filteredDays)
+				{
+					query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => (c.OpeningDays & day) == day)), d => d.ApplicationUserId);
+				}
+				IsHaveFilters = true;
+			}
 
-			if(!IsHaveFilters)
+			if (!IsHaveFilters)
 				return doctors;
 
             return query.ToList();
@@ -216,7 +220,9 @@ namespace BusinessLogicLayer.Repositories
                 case 2:
                     return doctors.OrderBy(doctor => doctor.Clinics.Min(clinic => clinic.Fees)).ToList();
                 case 3:
-                    return doctors.OrderByDescending(doctor => doctor.Clinics.Max(clinic => clinic.Fees)).ToList();
+                    var query=doctors.OrderByDescending(doctor => doctor.Clinics.Max(clinic => clinic.Fees)).ToList();
+					Debug.WriteLine(query[0].Clinics);
+					return query;
 				default:
 					return doctors;
             }

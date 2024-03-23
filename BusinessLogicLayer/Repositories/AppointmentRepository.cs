@@ -18,7 +18,7 @@ namespace BusinessLogicLayer.Repositories
 
         public bool IsAppointmentsAvailable(int id)
         {
-            var IsAttend = _context.Appointments.Where(e => e.patientId == id).Select(e => e.IsAttended).FirstOrDefault();
+            var IsAttend = _context.Appointments.Where(e => e.patientId == id).Any(e => e.IsAttended == true);
             return IsAttend;
         }
     }

@@ -10,6 +10,7 @@
 
 .doctor-card__image {
     flex: 0 0 30%;
+    max-height:fit-content;
 }
 
     .doctor-card__image img {
