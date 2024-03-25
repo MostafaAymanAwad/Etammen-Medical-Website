@@ -83,7 +83,7 @@
   (https://www.linkedin.com/in/mostafa-foad/)
 
 #### Moaz Samy:
-  https://www.linkedin.com/in/moaz-samy/
+  (https://www.linkedin.com/in/moaz-samy/)
 
 #### Ahmed Fawzi: 
   (https://www.linkedin.com/in/ahmed-fawzi-136225269/)
