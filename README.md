@@ -80,7 +80,7 @@
   (https://www.linkedin.com/in/mostafa-ayman-/)
 
 #### Mostafa Foad: 
-  (https://www.linkedin.com/in/mostafa-foad-231936160/)
+  (https://www.linkedin.com/in/mostafa-foad/)
 
 #### Moaz Samy:
   https://www.linkedin.com/in/moaz-samy/
