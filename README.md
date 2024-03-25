@@ -86,7 +86,7 @@
   https://www.linkedin.com/in/moaz-samy/
 
 #### Ahmed Fawzi: 
-  (https://www.linkedin.com/in/ahmed-fawzi-136225269/)
+  (https://www.linkedin.com/in/ahmed-fawzi-elarabi/)
 
 ***
 ##### Website demo video on all linked in accounts.
