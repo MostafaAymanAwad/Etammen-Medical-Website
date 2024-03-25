@@ -1,10 +1,9 @@
-﻿
-@model Etammen.ViewModels.JSONMainViewModelHolder
+﻿@model Etammen.ViewModels.JSONMainViewModelHolder
 @using System.Text.Json;
 
 @{
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
-    SelectList specialitiesSL = new SelectList(myModel.Specialties);
+    SelectList specialitiesSL = new SelectList(myModel.Specialties, myModel.Specialty);
 
     SelectList Cities = null;
     SelectList Areas = new SelectList(new List<string> { "ALL" });
@@ -20,21 +19,23 @@
 
 <form id="Searchform" asp-action="Index" onsubmit="updateAndSubmit(event,'Searchform')">
     <input type="hidden" name="JSONdata"/>
-    <select asp-items="specialitiesSL" class="form-select" name="specialty"></select>
-    <label>City</label>
-    <select asp-items="Cities" id="cityselectlist" class="form-select" name="city"></select>
-    <label>Area</label>
-    <select id="areaselectlist" class="form-select" name="area" asp-items="Areas">
-    </select>
-    <label>Doctor Name</label>
-    <br />
-    <input type="text" value="" placeholder="EX: Ahmed Mostafa" name="doctorName" class="form-text" />
-    <br />
-    <label>Clinic Name</label>
-    <br />
-    <input type="text" value="" placeholder="EX: ElAml" name="clinicName" class="form-text" />
-    <br />
-    <input id="submitBtnSearch" type="submit" value="Search" class="btn btn-primary" />
+    <div class="d-flex flex-row">
+        <select asp-items="specialitiesSL" class="form-select" name="specialty">
+            <option disabled selected value="ALL">Select a speciality</option>
+        </select>
+
+        <select asp-items="Cities" id="cityselectlist" class="form-select" name="city">
+            <option disabled selected value="ALL">Select a city</option>
+        </select>
+
+        <select asp-items="Areas" id="areaselectlist" class="form-select" name="area">
+            <option value="ALL">All Areas</option>
+        </select>
+        <input class="p-2" type="text" value="@myModel.DoctorName" placeholder="Doctor Name" name="doctorName" class="form-text" />
+        <input class="p-2" type="text" value="@myModel.ClinicName" placeholder="Clinic Name" name="clinicName" class="form-text" />
+        <input id="hamada" type="submit" value="Search" class="btn btn-primary" />
+
+    </div>
 </form>
 
 

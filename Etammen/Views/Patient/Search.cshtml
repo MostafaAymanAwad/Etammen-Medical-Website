@@ -2,6 +2,7 @@
 @using System.Text.Json;
 
 @{
+    ViewData["Title"] = "Home";
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 
     SelectList Cities = null;
@@ -18,25 +19,30 @@
     SelectList specialitiesSL = new SelectList(myModel.Specialties);
     
 }
+<link rel="stylesheet" href="/assets/css/search.css"/>
+<div>
+    <form id="Searchform" asp-action="Index" onsubmit="updateAndSubmit(event)">
+        <input type="hidden" name="JSONdata" />
+        <div class="d-flex flex-row">
+            <select id="specialityselectlist" asp-items="specialitiesSL" class="form-select p-3" name="specialty">
+                <option disabled selected value="ALL">Select a speciality</option>
+            </select>
 
+            <select asp-items="Cities" id="cityselectlist" class="form-select p-3" name="city">
+                <option disabled selected value="ALL">Select a city</option>
+            </select>
 
-<form asp-action="Index" onsubmit="updateAndSubmit(event)">
-    <input type="hidden" name="JSONdata" />
-    <select asp-items="specialitiesSL" class="form-select" name="specialty" selected></select>
-    <label>City</label>
-    <select asp-items="Cities" id="cityselectlist" class="form-select" name="city"></select>
-    <label>Area</label>
-    <select id="areaselectlist" class="form-select" name="area" asp-items="Areas"></select>
-    <label>Doctor Name</label>
-    <br />
-    <input type="text" value="" placeholder="EX: Ahmed Mostafa" name="doctorName" class="form-text" />
-    <br />
-    <label>Clinic Name</label>
-    <br />
-    <input type="text" value="" placeholder="EX: ElAml" name="clinicName" class="form-text" />
-    <br />
-    <input id="submit" type="submit" value="submit" class="btn btn-primary" />
-</form>
+            <select asp-items="Areas" id="areaselectlist" class="form-select p-3" name="area">
+                <option value="ALL">All Areas</option>
+            </select>
+            <input class="p-2" type="text" value="" placeholder="Doctor Name" name="doctorName" class="form-text" />
+            <input class="p-2" type="text" value="" placeholder="Clinic Name" name="clinicName" class="form-text" />
+            <input id="hamada" type="submit" value="Search" class="btn btn-primary p-3" />
+
+        </div>
+    </form>
+</div>
+
 
 @section Scripts {
     <script>
@@ -55,21 +61,21 @@
             }
         }
 
-            function updateAndSubmit(event) {
-                
-                myModel.Specialty = document.querySelector("[name=specialty]").value;
-                myModel.City = document.querySelector("[name=city]").value;
-                myModel.Area = document.querySelector("[name=area]").value;
-                myModel.DoctorName = document.querySelector("[name=doctorName]").value;
-                myModel.ClinicName = document.querySelector("[name=clinicName]").value;
+        function updateAndSubmit(event) {
+            event.preventDefault();
+            myModel.Specialty = document.querySelector("#specialityselectlist").value;
+            myModel.City = document.querySelector("#cityselectlist").value;
+            myModel.Area = document.querySelector("#areaselectlist").value;
+            myModel.DoctorName = document.querySelector("[name=doctorName]").value;
+            myModel.ClinicName = document.querySelector("[name=clinicName]").value;
 
-                let json = JSON.stringify(myModel);
+            let json = JSON.stringify(myModel);
 
-                document.querySelector("[name=JSONdata]").value = json;
+            document.querySelector("[name=JSONdata]").value = json;
 
-                document.getElementById(formId).submit();
-            }
-            document.getElementById("cityselectlist").addEventListener("change", function () {
+            document.getElementById("Searchform").submit();
+        }
+        document.getElementById("cityselectlist").addEventListener("change", function () {
             let areaSelect = document.getElementById("areaselectlist");
             areaSelect.innerHTML = '';
             let selectedIndex = this.selectedIndex;
@@ -81,6 +87,8 @@
                 newOption.text = area;
                 areaSelect.appendChild(newOption);
             }
-        });
+    });
     </script>
+    <script src="/assets/js/choices.js"></script>
+    <script src="/assets/js/search.js"></script>
 }

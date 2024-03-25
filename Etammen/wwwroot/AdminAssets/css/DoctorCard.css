@@ -2,8 +2,7 @@
     display: flex;
     border: 1px solid #ccc;
     border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
+    overflow:hidden;
 }
 
 .doctor-profile-image img {

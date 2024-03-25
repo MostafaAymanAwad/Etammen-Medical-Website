@@ -1,0 +1,262 @@
+﻿@model BookViewModel
+@inject BusinessLogicLayer.Interfaces.IUnitOfWork _unitOfWork
+@inject DataAccessLayerEF.Context.EtammenDbContext _dbContext
+
+@{
+    string[] includes = { "Clinics", "DoctorReviews", "ApplicationUser" };
+    ViewData["Title"] = Model.ClinicName + "-" + "Booking";
+    int id = Model.Id;
+    var doctors = await _unitOfWork.Doctors.FindBy(d => d.Id == Model.DoctorId, includes);
+    var fullName = $"{doctors.ApplicationUser.FirstName} {doctors.ApplicationUser.LastName}";
+
+    var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
+}
+<style>
+    /* Styles for form container */
+    .form-container {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Styles for doctor card */
+    .doctor-card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h4, strong, .doctor-card__name {
+        color: rgb(0, 112, 205); /* Set the color of headings to blue */
+    }
+
+    /* Styles for image */
+    .doctor-card__image img {
+        border-radius: 50%; /* To make the image circular */
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        border: 2px solid #ccc;
+    }
+
+    /* Styles for labels */
+    label {
+        font-weight: bold;
+    }
+
+    /* Styles for checkboxes */
+    .checkbox {
+        margin-bottom: 10px;
+    }
+
+    /* Styles for buttons */
+    .btn-outline-primary {
+        background-color: transparent;
+        border-color: #007bff;
+        color: #007bff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+</style>
+
+<form asp-action="BookConfirmed" asp-controller="Patient" method="post">
+    <div class="specialty-list">
+
+        <input type="hidden" asp-for="ProfilePicture" value="@Model.ProfilePicture"/>
+        <input type="hidden" asp-for="patientId" value="@Model.patientId" />
+        <input type="hidden" asp-for="Date" value="@DateOnly.FromDateTime(DateTime.Now)" />
+        <input type="hidden" asp-for="IsAttended" value="@false" />
+        <input type="hidden" asp-for="DoctorId" value="@Model.DoctorId" />
+        <input type="hidden" asp-for="ClinicId" value="@Model.Clinic.Id" id="ClinicId" />
+        <input type="hidden" asp-for="ClinicName" value="@Model.Clinic.Name" />
+        <input type="hidden" asp-for="ISHomeAppointmentDeleted" value="@Model.ISHomeAppointmentDeleted" />
+        <input type="hidden" asp-for="HomeVisitFees" value="@Model.Doctor.HomeVisitFees"/>
+        <input type="hidden" asp-for="ClinicFees" value="@Model.ClinicFees"/>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="doctor-card row" style="height: fit-content;">
+                <div class="col-6">
+                    <div class="doctor-card__image mb-3">
+                        <img src="/DoctorImages/@Model.ProfilePicture" alt="Dr. @fullName">
+                    </div>
+                    <div class="specialty-list">
+                        <div class="checkbox" id="clinicnameandfees" >
+                            <div>
+                                <h4 style="display:inline; color:rgb(0, 112, 205);">Clinic Name:</h4>
+                                <Label asp-for="ClinicId"> @Model.Clinic.Name</label>  
+                            </div>
+                            <div>
+                                <label asp-for="ClinicFees"><strong>Clinic Fees:</strong> @String.Format("{0:N0}", @Model.Clinic.Fees)$</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label asp-for="ISHomeVisit" id="doctorvisithomelabel">Doctor Can Visit Home</label>
+                        <input asp-for="ISHomeVisit" value="@Model.ISHomeVisit" disabled id="doctorvisithome"/>
+                    </div>
+                    <div id="homeVisitFeesSection">
+                        <label asp-for="HomeVisitFees">Home Visit Fees</label>
+                        <label asp-for="HomeVisitFees">@String.Format("{0:N0}", @Model.HomeVisitFees)$</label>
+                    </div>
+                    <div id="homeRequestSection">
+                        <label asp-for="IsVisitHome">Request Appointment At Home: </label>
+                        <input type="checkbox" asp-for="IsVisitHome" id="homeVisit"/>
+                    </div>
+                    <div>
+                        <div>
+                            <label asp-for="IsWantToPayOnline">Pay Online:&nbsp;</label>
+                            <input asp-for="IsWantToPayOnline">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 row">
+                    <div class="doctor-card__details flex-fill justify-content-between">
+                        <h2 class="doctor-card__name">Dr. @fullName</h2>
+                        <p class="doctor-card__description"><strong>Experience Years</strong>: @Model.Doctor.YearsOfExperience years</p>
+                        <div>
+                            <h3 class="doctor-card__description" style="color:rgb(0, 112, 205);">Specializations :</h3>
+                            <p>@Model.Doctor.Degree in @Model.Doctor.Speciality</p>
+                        </div>
+
+                    </div>
+                    <div class="doctor-card__specialties row">
+
+                        <label id="reservationPhrase">Reservation times available for bookings today (@DateOnly.FromDateTime(DateTime.Now)) at the clinic :</label>
+
+                        @{
+                            int index = 0;
+                        }
+                        <div id="reservationDiv">
+                            @{
+                                for (int i = 0; i <= (int)ViewData[$"{Model.ClinicName}"]; i++)
+                                {
+                                    TimeSpan openingHour = Model.Clinic.OpeningHour.ToTimeSpan();
+                                    TimeSpan closingHour = Model.Clinic.ClosingHour.ToTimeSpan();
+                                    TimeSpan examinationDuration = Model.Clinic.ExmainationDuration.ToTimeSpan(); 
+
+                                    TimeSpan appointmentTime = openingHour + TimeSpan.FromMinutes(i * examinationDuration.TotalMinutes); 
+                                    DateTime appointmentDateTime = DateTime.Today.Add(appointmentTime);
+
+                                    TimeOnly appointmentSlot = TimeOnly.FromDateTime(appointmentDateTime);
+
+                                    var clinicId = Model.Clinic.Id;
+                                    List<TimeOnly?> list = Model.ClinicAppointmentDictionary[clinicId];
+
+                                    var isAppointmentSlotTaken = list.Contains(appointmentSlot);
+
+
+                                    <div class="checkbox reservation-slot clinic-@(Model.Clinic.Id)" id="reservation">
+                                        <label>
+                                        @if (isAppointmentSlotTaken)
+                                        {
+                                                <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" disabled />
+                                        }
+                                        else
+
+                                        {
+                                                <input type="radio" asp-for="ReservtionPeriodNumber" value="@appointmentSlot" />
+                                        }
+                                            <span id="ReservationPeriod">@appointmentSlot</span>
+                                        </label>
+                                    </div>
+                                }
+                                index++;
+                            }
+                        <span asp-validation-for="@Model.ReservtionPeriodNumber" class="text-danger" ></span>
+                        </div>
+                                
+
+                        <div>
+                            <input type="submit" value="Book" class="btn btn-outline-primary float-right" id="bookButton">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        // Add event listener to home visit checkbox
+        var homeVisit = document.getElementById("homeVisit");
+        homeVisit.addEventListener("change", function () {
+            // Toggle visibility of clinic checkboxes and reservation slots
+            var isChecked = !homeVisit.checked;
+            // clinicCheckboxes.forEach(function (checkbox) {
+            //     checkbox.closest('.checkbox').style.display = isChecked ? 'block' : 'none';
+            // });
+            var reservationSlots = document.querySelectorAll('.reservation-slot');
+            reservationSlots.forEach(function (slot) {
+                slot.style.display = isChecked ? 'block' : 'none';
+            });
+
+            // Update reservation phrase
+            var reservationPhrase = document.getElementById("reservationPhrase");
+            reservationPhrase.textContent = isChecked ? 'Reservation Time available for bookings today at the clinic' : 'Requesting Home Appointment';
+
+            
+            var clinicidValue = document.getElementById('ClinicId');
+            clinicidValue.value = isChecked ? "@Model.Clinic.Id" : "";
+
+            var clinicnameandfees = document.getElementById('clinicnameandfees');
+            clinicnameandfees.style.display = isChecked ? 'block' :'none';
+
+            var homeVisitFeesSection = document.getElementById('homeVisitFeesSection');
+            homeVisitFeesSection.style.display = isChecked ? 'block' :'none';
+
+            // Reset reservation period and clinic ID when home visit is unchecked
+            if (isChecked) {
+                var reservationPeriod = document.getElementById("ReservationPeriod");
+                reservationPeriod.value = "";
+
+                var clinicId = document.querySelector('input[name="ClinicId"]:checked');
+                if (clinicId) {
+                    clinicId.checked = false;
+                }
+            }
+        });
+
+        // Get the selected clinic ID and retrieve its corresponding name and fees
+        var doctorvisithomeinput = document.getElementById('doctorvisithome');
+        var doctorvisithomelabel = document.getElementById('doctorvisithomelabel');
+        var homeRequestSection = document.getElementById('homeRequestSection');
+        var reservationDiv = document.getElementById('reservationDiv');
+        var reservationPhrase = document.getElementById('reservationPhrase');
+        
+
+        if (!doctorvisithomeinput.checked) {
+            doctorvisithomelabel.textContent = "Doctor is not taking home visit requests";
+            doctorvisithomelabel.style.color = "red";
+            homeRequestSection.style.display = 'none';
+            doctorvisithomeinput.style.display = 'none';
+            
+            homeVisitFeesSection.style.display = 'none';
+            // doctorvisithomeinput.style.display = 'none';
+            // reservationDiv.style.display = 'none';
+            // reservationPhrase.style.display = 'none';
+           
+        }
+      
+        // Initially show/hide clinic checkboxes and reservation slots based on home visit checkbox state
+        var isChecked = homeVisit.checked;
+        clinicCheckboxes.forEach(function (checkbox) {
+            checkbox.closest('.checkbox').style.display = isChecked ? 'block' : 'none';
+        });
+        var reservationSlots = document.querySelectorAll('.reservation-slot');
+        reservationSlots.forEach(function (slot) {
+            slot.style.display = 'block';
+        });
+    });
+</script>
+

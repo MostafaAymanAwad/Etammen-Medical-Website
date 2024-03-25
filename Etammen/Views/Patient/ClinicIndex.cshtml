@@ -1,0 +1,69 @@
+﻿@model IEnumerable<ClinicViewModel>
+
+@if (TempData["BookMessage"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>Success!</strong> @TempData["BookMessage"]
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+        </button>
+    </div>
+}
+@{
+    var openingDaysValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>();
+    int doctorId = ViewBag.id;
+
+}
+@foreach (var clinic in Model)
+{
+
+    <div class="doctor-card" style="height:350px">
+        <div class="doctor-card__details">
+            <input type="hidden" asp-for="@clinic.Id" />
+            <h2 class="doctor-card__name">@clinic.Name Clinic</h2>
+            <p class="doctor-card__description">openinig at @clinic.OpeningHour</p>
+            <p class="doctor-card__description">closing at @clinic.ClosingHour</p>
+            <p class="doctor-card__description">Address @clinic.StreetAddress @clinic.City @clinic.governorate</p>
+            
+                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
+            </div>
+            <div class="doctor-card__specialties">
+                <h3 class="specialty-title">Opening Days </h3>
+            @foreach (var day in openingDaysValues)
+            {
+                <div class="checkbox">
+                    <label>
+                        @{
+                            bool isChecked = clinic.OpeningDays.HasFlag(day);
+                        }
+                        <input type="checkbox" name="OpeningDays" value="@day" disabled @(isChecked ? "checked" : "") /> @day
+                    </label>
+                </div>
+            }
+                <ul class="specialty-list">
+                    <li><p>Clinic Fees : @clinic.Fees</p></li>
+                    <li style="margin-left:250px;margin-bottom:1000px">
+                    <a asp-action="Book" asp-controller="Patient" asp-route-id="@clinic.Id" asp-route-DoctorId="@doctorId" class="btn btn-outline-primary">Book Appointment</a>
+
+                    </li>
+                </ul>
+            </div>
+            @*   <div class="doctor-card__location">
+        <span class="location">New Cairo: Fifth Settlement Medical Center</span>
+        <span class="waiting-time">Examination Duration: </span>
+        </div>
+        <div class="doctor-card__contact">
+        <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
+        </div>
+        <a href="tel:16676" class="hotline">Hotline: 16676 (Cost of regular call)</a>
+        *@
+        </div>
+    
+    <br />
+}
+<script>
+    function dismissAlert() {
+        var alert = document.getElementById('alertMessage');
+        alert.style.display = 'none';
+    }
+</script>
+

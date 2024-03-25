@@ -34,6 +34,6 @@ public class Clinic:BaseModel
     [Required]
     public OpeningDays OpeningDays { get; set; }
 
-    public virtual ICollection<Appointment>? Appointments { get; set; } = new HashSet<Appointment>();
+    public virtual ICollection<ClinicAppointment>? ClinicAppointments { get; set; } = new HashSet<ClinicAppointment>();
 }
 

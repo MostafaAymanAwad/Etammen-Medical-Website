@@ -1,0 +1,139 @@
+﻿@using Etammen.ViewModels
+
+@model IEnumerable<AppointmentViewModel>
+
+@if (TempData["BookMessage"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>@TempData["BookMessage"]</strong> 
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+        </button>
+    </div>
+}
+@if (TempData["MessageWasSent"] is not null)
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:50px" id="alertMessage">
+        <strong>@TempData["MessageWasSent"]</strong>
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close" onclick="dismissAlert()">
+        </button>
+    </div>
+}
+<div>
+    <h1>Your Appointments</h1>
+</div>
+
+@if (Model.Count() > 0)
+{
+    <table class="table table-hover table table-striped">
+
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.DoctorFirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Clinic)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReservationPeriodNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsAttended)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsAccepted)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsPaidOnline)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+
+                <tr>
+                    <input type="hidden" asp-for="@item.Id" />
+                    <td>
+                        @{
+                            if (item.ClinicId == 0)
+                            {
+                                <span>Dr.</span>  @Html.DisplayFor(modelItem => item.Doctor.ApplicationUser.FirstName) <span> </span> @Html.DisplayFor(model => item.Doctor.ApplicationUser.LastName)
+                            }
+                            else
+                            {
+                                <span>Dr.</span>  @Html.DisplayFor(modelItem => item.Clinic.Doctor.ApplicationUser.FirstName)  <span> </span>    @Html.DisplayFor(model => item.Clinic.Doctor.ApplicationUser.LastName)
+
+                            }
+                        }
+                    </td>
+                    <td>
+                        @{
+                            if (item.Clinic == null)
+                            {
+                                <span>Home Visit Appointment</span>
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.Clinic.Name)
+                            }
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @{
+                            if (item.ReservationPeriodNumber == null)
+                            {
+                                <span>Home Visit Appointment</span>
+                            }
+                            else
+                            {
+
+                                @Html.DisplayFor(modelItem => item.ReservationPeriodNumber)
+                            }
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsAttended)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsAccepted)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsPaidOnline)
+                    </td>
+                    <td>
+                        @{
+                            if (item.IsAccepted == true && item.IsAttended ==true)
+                            {
+                            }else{
+                               
+                                <a asp-action="CancelAppointment" asp-route-id="@item.Id" asp-route-ReservationPeriodNumber="@item.ReservationPeriodNumber" class="btn btn-outline-danger">Cancel appointment</a>
+                            }
+                            }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info alert-dismissible d-flex align-items-center fade show">
+        <i class="bi-info-circle-fill"></i>
+        <strong class="mx-2">You have no appointments</strong>
+    </div>
+}
+<script>
+    function dismissAlert() {
+        var alert = document.getElementById('alertMessage');
+        alert.style.display = 'none';
+    }
+</script>

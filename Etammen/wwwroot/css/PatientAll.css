@@ -1,16 +1,16 @@
 
 .doctor-card {
     display: flex;
-    max-width: 650px;
-    height: 300px;
     border: 1px solid #ddd;
     border-radius: 10px;
     overflow: hidden;
-    margin: auto;
+    margin-bottom:10px;
+    padding-left: 0px;
 }
 
 .doctor-card__image {
     flex: 0 0 30%;
+    max-height:fit-content;
 }
 
     .doctor-card__image img {
@@ -20,11 +20,10 @@
     }
 
 .doctor-card__details {
-    flex: 0 0 70%;
+    flex: 0 0 30%;
     padding: 20px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-direction: column;  
 }
 
 .doctor-card__name {

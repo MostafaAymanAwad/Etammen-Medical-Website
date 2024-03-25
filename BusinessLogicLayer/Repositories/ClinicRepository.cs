@@ -21,7 +21,7 @@ namespace BusinessLogicLayer.Repositories
         {
             var clinics = _context.Clinics
                                    .Where(e => e.DoctorId == id)
-                                   .Select(c => new Clinic { Name = c.Name, Address = c.Address, Fees = c.Fees })
+                                   .Select(c => new Clinic { Name = c.Name, Address = c.Address, Fees = c.Fees, Id = c.Id })
                                    .ToList();
             return clinics;
         }

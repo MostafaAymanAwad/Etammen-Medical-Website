@@ -1,0 +1,83 @@
+﻿@model Etammen.ViewModels.PatientViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "_Layout";
+}
+
+<h1>Edit</h1>
+
+<h4>Your Profile</h4>
+<hr />
+<form asp-action="Profile" asp-controller="Patient">
+    <div class="container-xl px-4 mt-9">
+        <hr class="mt-0 mb-4">
+        <div class="row">
+           
+            <div class="flex-fill">
+
+                <div class="card mb-4">
+                    <div class="card-header">Account Details</div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ApplicationUserId" />
+                        <div class="row gx-3 mb-3">
+
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="FirstName">First Name</label>
+                                <input class="form-control" asp-for="FirstName"  value="@Model.FirstName" readonly>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="LastName">Last Name</label>
+                                <input class="form-control" asp-for="LastName"  value="@Model.LastName" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="Address.StreetAddress"></label>
+                                <input class="form-control" asp-for="Address.StreetAddress" value="@Model.Address.StreetAddress" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="Address.City"></label>
+                                <input class="form-control" asp-for="Address.City" value="@Model.Address.City" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="Address.governorate"></label>
+                                <input class="form-control" asp-for="Address.governorate" value="@Model.Address.governorate" readonly>
+                            </div> <div class="col-md-6">
+                                <label class="small mb-1" asp-for="Email"></label>
+                                <input class="form-control" asp-for="Email" value="@Model.Email" readonly>
+                            </div> <div class="col-md-6">
+                                <label class="small mb-1" asp-for="UserName">Username</label>
+                                <input class="form-control" asp-for="UserName" value="@Model.UserName" readonly>
+                            </div> <div class="col-md-6">
+                                <label class="small mb-1" asp-for="PhoneNumber">Phone Number</label>
+                                <input class="form-control" asp-for="PhoneNumber" value="@Model.PhoneNumber" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" asp-for="Age"></label>
+                                <input class="form-control" asp-for="Age" placeholder="Enter your age" value="@Model.Age" readonly>
+                            </div>
+                        </div>
+                        <a asp-action="ProfileEdit" asp-route-id="@Model.Id" class="btn btn-primary float-right" style="width:100px">Edit</a>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

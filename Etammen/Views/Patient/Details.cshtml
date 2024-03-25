@@ -7,7 +7,8 @@
     var doctorReviews = new SelectList(await _unitOfWork.DoctorReviews.FindAllBy(e => e.DoctorId == Model.DoctorId), "Rate", "Comment");
 }
 @{
-    Layout = null;
+    ViewData["Title"] = "Dr. " + Model.FirstName + " " + Model.LastName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!DOCTYPE html>
@@ -20,228 +21,19 @@
     <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' rel='stylesheet'>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet'>
     <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-    <style>
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        /* Track */
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-        }
-
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-                background: #555;
-            }
-
-        html,
-        body {
-            height: 100%
-        }
-
-        body {
-            display: grid;
-            place-items: center;
-            font-family: 'Manrope', sans-serif;
-        }
-
-        .cross {
-            padding: 10px;
-            color: #d6312d;
-            cursor: pointer;
-            font-size: 23px;
-        }
-
-            .cross i {
-                margin-top: -5px;
-                cursor: pointer;
-            }
-
-        .comment-box {
-            padding: 5px
-        }
-
-        .comment-area textarea {
-            resize: none;
-            border: 1px solid #1977cc;
-        }
-
-        .form-control:focus {
-            color: #495057;
-            background-color: #fff;
-            border-color: #ffffff;
-            outline: 0;
-            box-shadow: 0 0 0 1px rgb(255, 0, 0) !important
-        }
-
-        .send {
-            color: #fff;
-            background-color: #1977cc;
-            border-color: #1977cc
-        }
-
-            .send:hover {
-                color: #fff;
-                background-color: #1977cc;
-                border-color: #1977cc;
-            }
-
-        .rating {
-            display: inline-flex;
-            margin-top: -10px;
-            flex-direction: row-reverse;
-        }
-
-            .rating > input {
-                display: none
-            }
-
-            .rating > label {
-                position: relative;
-                width: 28px;
-                font-size: 35px;
-                color: #1977cc;
-                cursor: pointer;
-            }
-
-                .rating > label::before {
-                    content: "\2605";
-                    position: absolute;
-                    opacity: 0
-                }
-
-                .rating > label:hover:before,
-                .rating > label:hover ~ label:before {
-                    opacity: 1 !important
-                }
-
-            .rating > input:checked ~ label:before {
-                opacity: 1
-            }
-
-            .rating:hover > input:checked ~ label:before {
-                opacity: 0.4
-            }
-
-        .doctor-card {
-            display: flex;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .doctor-card__image img {
-            width: 200px;
-            height: auto;
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-
-        .doctor-card__details {
-            padding: 20px;
-        }
-
-        .doctor-card__name {
-            margin: 0;
-            color: #333;
-        }
-
-        .doctor-card__description {
-            margin: 10px 0;
-            color: #666;
-        }
-
-        .doctor-card__ratings {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .rating-count {
-            margin-left: 10px;
-            color: #666;
-        }
-
-        .doctor-card__specialties {
-            margin-bottom: 10px;
-        }
-
-        .specialty-title {
-            margin: 0;
-            color: #333;
-        }
-
-        .specialty-list {
-            margin: 0;
-            padding-left: 20px;
-            color: #666;
-        }
-
-        .doctor-card__location {
-            margin-bottom: 10px;
-        }
-
-        .location,
-        .fees,
-        .waiting-time {
-            margin-right: 10px;
-            color: #666;
-        }
-
-        .doctor-card__contact .hotline {
-            color: #1977cc;
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .card-header {
-            background-color: #1977cc;
-            color: #fff;
-            border-bottom: none;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .card-title {
-            margin: 0;
-            color: #333;
-        }
-
-        .card-text {
-            margin: 10px 0;
-            color: #666;
-        }
-    </style>
 </head>
 <body>
 
     <div class="container mt-5">
-        <div class="Doctor-Clinic-Container" style="display: flex; justify-content: space-between;">
+        <div class="row" style="display: flex; justify-content: space-around;">
 
 
             <div class="doctor-card">
                 <div class="doctor-card__image">
-                    <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
+                    <img src="/DoctorImages/@Model.ProfilePicture" alt="Dr. @Model.FirstName @Model.LastName">
                 </div>
                 <div class="doctor-card__details">
-                    <h2 class="doctor-card__name">Dr: @Model.FirstName @Model.LastName</h2>
+                    <h2 class="doctor-card__name">Dr. @Model.FirstName @Model.LastName</h2>
                     <h2 class="doctor-card__name">@Model.Degree</h2>
                     <p class="doctor-card__description">@Model.AboutTheDoctor</p>
                     <div class="doctor-card__ratings">
@@ -257,7 +49,7 @@
                     <div class="doctor-card__specialties">
                         <h3 class="specialty-title">Specialized in: </h3>
                         <ul class="specialty-list">
-                            <li><a href="#">@Model.Speciality</a></li>
+                            <li>@Model.Speciality</li>
                         </ul>
                     </div>
                     <div class="doctor-card__location">
@@ -268,7 +60,7 @@
 
             </div>
 
-
+            <h1>My Clinics:</h1>
             <div class="Clinics">
                 @foreach (var clinic in Model.Clinics)
                 {
@@ -284,24 +76,13 @@
                                 <i class="fas fa-money-bill-alt"></i>
                                 Fees: @clinic.Fees
                             </p>
-                            <a asp-controller="Patient" asp-action="ClinicDetails" asp-route-id="@clinic.id" class="btn btn-primary">Details</a>
+                            <a asp-controller="Patient" asp-action="ClinicDetails" asp-route-id="@clinic.Id" class="btn btn-primary float-right">Details</a>
                         </div>
                     </div>
                 }
             </div>
-
         </div>
 
-        <div class="DoctorAbout">
-            <div class="card" style="max-width: 400px; margin-bottom:20px;">
-                <div class="card-header">
-                    About Dcotor
-                </div>
-                <div class="card-body">
-                    <p class="card-text">"@Model.AboutTheDoctor"</p>
-                </div>
-            </div>
-        </div>
 
         @if (Model.IsAttended == true && Model.IsReview == false)
         {
@@ -337,13 +118,13 @@
 
         }
 
-
+        <h3>Reviews: </h3>
         @foreach (var rate in doctorReviews)
         {
-            <div class="card" style="max-width: 400px; margin-bottom:20px;">
+            <div class="card" style="max-width: 400px; margin-top:20px;">
                 <div class="card-header">
-                    @* @Model.PatientFirstName @Model.PatientLastName *@
-                    Age: (@rate.Value)
+                    @Model.FirstName @Model.LastName
+
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">@rate.Value/5</h5>

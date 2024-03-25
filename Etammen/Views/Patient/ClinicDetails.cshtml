@@ -2,12 +2,8 @@
 @using Etammen.ViewModels
 @model ClinicDetailsMapViewModel
 @{
-    ViewData["Title"] = "ClinicDetails";
-    // Layout = "~/Views/Shared/_Layout.cshtml";
-
-
-    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
-    // Layout = null;
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link href="~/leaflet/leaflet.css" rel="stylesheet" />
@@ -15,10 +11,6 @@
 
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    body {
-        padding-top: 20px;
-    }
-
     .card {
         margin-bottom: 20px;
     }
@@ -36,7 +28,6 @@
         <div class="card-body">
             <h2 class="card-title">@Model.Name</h2>
             <p class="card-text mb-2">Doctor: @Model.DoctorFirstName @Model.DoctorLastName</p>
-            <p class="card-text mb-2">Doctor ID: @Model.DoctorId</p>
             <p class="card-text mb-3">Address: @Model.Address.governorate @Model.Address.City, @Model.Address.StreetAddress</p>
             <hr>
             <div class="row">
@@ -52,7 +43,7 @@
                             {
                                 <div>
                                     <label>
-                                        <input type="checkbox" name="OpeningDays" value="@day" checked /> @day
+                                        <input type="checkbox" name="OpeningDays" value="@day" checked disabled /> @day
                                     </label>
                                 </div>
                             }
@@ -64,7 +55,7 @@
                     <p class="card-text"><strong>Fees:</strong> $@Model.Fees</p>
 
                     <div class="text-md-end">
-                        <a asp-action="Index" class="btn btn-primary">Book Appointment</a>
+                        <a asp-action="Book" asp-controller="Patient" asp-route-id="@Model.Id" asp-route-doctorId="@Model.DoctorId" class="btn btn-primary">Book Appointment</a>
                     </div>
                 </div>
             </div>
@@ -93,7 +84,7 @@
     }).addTo(map);
 
 
-    var address = "@Model.Address.governorate, @Model.Address.City, dsvsdvfsdafsdfsdfsdf"; // Your address here
+    var address = "@Model.Address.governorate, @Model.Address.City, @Model.Address.StreetAddress"; // Your address here
 
 
     // Initialize the geocoder
@@ -112,6 +103,6 @@
             document.getElementById("map").style.display = "none";
         }
     });
-</script>>
+</script>
 
 

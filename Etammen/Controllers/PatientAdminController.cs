@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Etammen.Controllers
 {
+    [Route("PatientAdmin")]
+
     public class PatientAdminController : Controller
     {
         IUnitOfWork _unitOfWork;
@@ -17,12 +19,15 @@ namespace Etammen.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+        [Route("GetAllPatient")]
+
         public async Task<IActionResult> Index()
         {
             var patients = await _unitOfWork.Patients.FindAllBy(e => e.IsDeleted == false, new[] { "ApplicationUser" });
             var patientViewModels = _mapper.MapDoctorsToViewModel(patients);
             return View(patientViewModels);
         }
+        [Route("GetPatientDetails/{id:int:min(1)}")]
 
         // GET: PatientController/Details/5
         public async Task<IActionResult> Details(int id)
@@ -32,6 +37,7 @@ namespace Etammen.Controllers
             return View(patientViewModel);
         }
 
+        [Route("DeletePatient/{id:int:min(1)}")]
 
         public async Task<IActionResult> Delete(int id)
         {
@@ -43,6 +49,8 @@ namespace Etammen.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("DeletePatient/{id:int:min(1)}")]
+
         public async Task<IActionResult> Delete(GetOnePatientViewModel doctorViewModel)
         {
             try

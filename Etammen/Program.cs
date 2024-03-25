@@ -3,15 +3,12 @@ using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Models;
-
 using Etammen.MappingProfile;
-
 using Etammen.Mapping.ClinicForAdmin;
 using Etammen.Mapping.DoctorForAdmin;
 using Etammen.Mapping.PatientForAdmin;
 using Etammen.Mapping_Profiles;
 using Etammen.Settings;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -19,12 +16,23 @@ using Etammen.Mapping;
 using Etammen.Services.ServicesConfigurations;
 using Etammen.Services.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using BusinessLogicLayer.Services.SMS;
 using BusinessLogicLayer.Services.ServicesConfigurations;
 using Etammen.Helpers;
+using Serilog;
+using Serilog.Events;
+using Etammen.GlobalExceptionHandlingMiddleware;
+using System.Net;
+using BusinessLogicLayer.Services.SMS;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+//configuring SeriLog
+var loggerConfig = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(loggerConfig).CreateLogger();
+
+
+builder.Services.AddSerilog();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddJsonOptions(jsonOptions =>
@@ -71,10 +79,12 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(PatientProfile));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
     options.Cookie.Expiration = TimeSpan.FromDays(14);
+    options.LoginPath = "/Account/Login";
 });
 
 builder.Services.AddAuthentication().AddFacebook("facebook", options =>
@@ -110,6 +120,10 @@ builder.Services.AddTransient<DoctorRegisterationHelper>();
 builder.Services.AddTransient<AccountMapper>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddAutoMapper(M => M.AddProfile(new DoctorProfile()));
+
+builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+
 
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
@@ -129,19 +143,42 @@ builder.Services.AddScoped<ClinicDetailsForDoctorPageMapper>();
 builder.Services.AddScoped<ClinicDetailsMapViewModelMapper>();
 
 
-builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
-builder.Services.AddTransient<ISmsService, SmsService>();
 
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 }
+else
+{
+    app.UseDeveloperExceptionPage();
+}
+
+
 app.UseStaticFiles();
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.GetLevel = (httpContext, elapsed, ex) =>
+    {
+        int statusCode = httpContext.Response.StatusCode;
+        if (statusCode >= 200 && statusCode <= 399)
+        {
+            return LogEventLevel.Information;
+        }
+        else if (statusCode >= 400)
+        {
+            return LogEventLevel.Warning;
+        }
+        else
+        {
+            return LogEventLevel.Information;
+        }
+    };
+});
 
 app.UseRouting();
 
@@ -151,6 +188,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Patient}/{action=Search}/{id?}");
+    pattern: "{controller}/{action}/{id?}");
+
+app.UseStatusCodePagesWithRedirects("/StatusCodeError/{0}");
 
 app.Run();

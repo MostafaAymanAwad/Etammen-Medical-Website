@@ -1,0 +1,79 @@
+﻿@using Etammen.ViewModels
+@model AppointmentViewModel
+
+@{
+    ViewData["Title"] = "CancelAppointment";
+}
+
+<h1>CancelAppointment</h1>
+
+<h3>Are you sure you want to Cancel this appointment</h3>
+<div>
+    <h4>Appointment</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DoctorFirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                if (Model.ClinicId == 0)
+                {
+                    @Html.DisplayFor(modelItem => Model.Doctor.ApplicationUser.FirstName) @Html.DisplayFor(model => Model.Doctor.ApplicationUser.LastName)
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => Model.Clinic.Doctor.ApplicationUser.FirstName) @Html.DisplayFor(model => Model.Clinic.Doctor.ApplicationUser.LastName)
+
+                }
+            }
+         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        @{
+            if(Model.ClinicId !=0){
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ClinicName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ClinicName)
+                </dd>
+            }
+            else
+            {
+                
+            }
+        }
+       
+       
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsAttended)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsAttended)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsAccepted)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsAccepted)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsPaidOnline)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsPaidOnline)
+        </dd>
+    </dl>
+
+    <form asp-action="CancelAppointmentConfirmed">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ReservationPeriodNumber" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+    </form>
+</div>

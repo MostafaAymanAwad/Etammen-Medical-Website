@@ -1,36 +1,80 @@
 ﻿@model Etammen.ViewModels.JSONMainViewModelHolder
 @using System.Text.Json;
 @{
-
+    ViewData["Title"] = "Search results";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
+<style>
+        body{
+            background-color: rgb(226, 230, 234);
+        }
 
+        .pagination {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+        .pagination .page-item {
+            display: inline;
+        }
+        form#paginationForm{
+            margin-right:0;
+        }
+        .pagination .page-link {
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            margin-right: 5px;
+            text-decoration: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #f0f0f0;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        .pagination .page-item:not(.active) .page-link:hover {
+            background-color: #e9ecef;
+        }
+
+        .doctor-card:hover {
+            cursor: pointer;
+            background-color: darkgray;
+        }
+</style>
 <div>
     <partial name="Partial/_PartialSearch.cshtml" model="@Model" />
 </div>
-
-
-<div>
-    <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
-</div>
-
-
-<div>
-    <partial name="Partial/_PartialOrder.cshtml" model="@Model" />
-</div>
-
+<div class="container mt-3 p-2" id="cardContainer">
+    <div class="row mt-2">
+        <aside class="col-3">
+            <partial name="Partial/_PartialFilter.cshtml" model="@Model" />
+        </aside>
+        <div class="col-9">
+            <div class="d-flex justify-content-end mb-2 mr-5">
+                <span class="p-1">Order:</span>
+                <partial name="Partial/_PartialOrder.cshtml" model="@Model" />
+            </div>
 
 @for(int i = 0; i < myModel.CurrentPageDoctors.Count; i++)
 {
-    <div class="doctor-card">
+    <div class="doctor-card" onclick="RedirectToDetails(@myModel.CurrentPageDoctors[i].Id)">
         <div class="doctor-card__image">
-            <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
+            <img src="/DoctorImages/@myModel.CurrentPageDoctors[i].ProfilePicture" alt="Dr. @myModel.DoctorFullnames[i]">        
         </div>
-        <div class="doctor-card__details">
-        <a asp-controller="Patient" asp-action="Details" asp-route-id="@doctor.Id">Details</a>
-
-            <h2 class="doctor-card__name">Dr: @myModel.DoctorFullnames[i]</h2>
-            <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
+        <div class="doctor-card__details flex-fill">
+            <h2 class="doctor-card__name">Dr. @myModel.DoctorFullnames[i]</h2>
+            <p class="doctor-card__description">@myModel.CurrentPageDoctors[i].AboutTheDoctor</p>
             <div class="doctor-card__ratings">
                 <div class="star-rating">
                     <span class="filled-star"></span>
@@ -39,29 +83,25 @@
                     <span class="filled-star"></span>
                     <span class="half-filled-star"></span>
                 </div>
-                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
+                <span class="rating-count">Overall Rating: @myModel.CurrentPageDoctors[i].ActualRting</span>
             </div>
             <div class="doctor-card__specialties">
                 <h3 class="specialty-title">Specialized in: </h3>
                 <ul class="specialty-list">
-                    <li><a href="/en/doctor/gastroenterology-and-endoscopy/egypt">@myModel.CurrentPageDoctors[i].Speciality</a></li>
-                    <li><a href="/en/doctor/adult-hepatology/egypt">Adult Hepatology</a></li>
-                    <li><a href="/en/doctor/adult-gastroenterology-and-endoscopy/egypt">Adult Gastroenterology and Endoscopy</a></li>
+                    <li>@myModel.CurrentPageDoctors[i].Speciality</li>
                 </ul>
             </div>
-            <div class="doctor-card__location">
-                @{
-                    foreach (var clinic in @myModel.CurrentPageDoctors[i].Clinics)
-                    {
-                        <span class="clinic-name">@clinic.Name</span>
-                        <span class="clinic-fees">@clinic.Fees</span>
-                        <span class="clinic-city">@clinic.Address.City</span>
-                    }
+            <div class="d-flex flex-wrap">
+            @{
+                foreach (var clinic in @myModel.CurrentPageDoctors[i].Clinics)
+                {
+                    <div class="doctor-card__location col-6">
+                        <p class="clinic-name"><strong>Clinic</strong>: @clinic.Name</p>
+                        <p class="clinic-fees"><strong>Fees</strong>: @clinic.Fees</p>
+                        <p class="clinic-city"><strong>City</strong>: @clinic.Address.City</p>
+                    </div>
                 }
-
-            </div>
-            <div class="doctor-card__contact">
-                <a href="tel:16676" class="hotline">fuck you: 16676 (Cost of regular call)</a>
+            }
             </div>
         </div>
     </div>
@@ -81,6 +121,7 @@
         }
     </ul>
 </nav>
+
 
 
 

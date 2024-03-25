@@ -2,6 +2,7 @@
 using DataAccessLayerEF.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Etammen.CustomValidation;
 
 namespace Etammen.ViewModels
 {
@@ -28,19 +29,24 @@ namespace Etammen.ViewModels
 
         [Required, Column(TypeName = "money")]
         public decimal Fees { get; set; }
-        [Required]
+
+
+
+        [Required, DataType(DataType.Time),TimeRange(1, 0)]
         public TimeOnly ExmainationDuration { get; set; }
 
-        [Required]
+        [Required, DataType(DataType.Time)]
         public TimeOnly OpeningHour { get; set; }
 
-        [Required]
+        [Required, DataType(DataType.Time),ValidOpenCloseHours]
         public TimeOnly ClosingHour { get; set; }
+
+
 
         [Required]
         public OpeningDays OpeningDays { get; set; }
         public Doctor? Doctor { get; set; }
 
-        public virtual ICollection<Appointment>? Appointments { get; set; } = new HashSet<Appointment>();
+        public virtual ICollection<ClinicAppointment>? Appointments { get; set; } = new HashSet<ClinicAppointment>();
     }
 }

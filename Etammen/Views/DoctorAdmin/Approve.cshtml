@@ -1,102 +1,4 @@
-﻿@* @model IEnumerable<Etammen.ViewModels.Admin.Doctor.ApproveDoctorViewModel>
-
-@{
-    ViewData["Title"] = "Approve";
-    Layout = "~/Views/Dashboard/_AdminDashboard.cshtml";
-}
-
-<h1>Approve</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AboutTheDoctor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProfilePicture)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Certificate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Speciality)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Degree)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.YearsOfExperience)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HomeVisitFees)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsVisitHome)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AboutTheDoctor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProfilePicture)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Certificate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Speciality)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Degree)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.YearsOfExperience)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HomeVisitFees)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsVisitHome)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
- *@
-
-@model List<ApproveDoctorViewModel>
+﻿@model List<ApproveDoctorViewModel>
 
 @{
     ViewBag.Title = "Approve Doctors";
@@ -105,25 +7,34 @@
 
 <div class="container">
     <div class="row">
-        @foreach (var doctor in Model)
+        @if(Model.Count != 0)
         {
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <img class="card-img-top" src="/DoctorImages/@doctor.ProfilePicture" alt="Profile Picture">
-                    <div class="card-body">
-                        <h5 class="card-title">@doctor.FirstName @doctor.LastName</h5>
-                        <p class="card-text">@doctor.Speciality</p>
-                        <p class="card-text">@doctor.YearsOfExperience years of experience</p>
-                        <p class="card-text">@doctor.AboutTheDoctor</p>
-                        <img src="/DoctorImages/@doctor.Certificate" alt="Certificate" class="img-fluid mb-2">
-                        <div class="btn-group" role="group">
-                            <a asp-action="ApprovePost" asp-route-id="@doctor.Id" asp-route-isApproved="@true"
-                               class="btn btn-success">Approve</a>
-                            <a asp-action="ApprovePost" asp-route-id="@doctor.Id" asp-route-isApproved="@false"
-                               class="btn btn-danger">Decline</a>
+            @foreach (var doctor in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <img  src="/DoctorImages/@doctor.ProfilePicture" style="width:250px;height:300px" />
+                        <div class="card-body">
+                            <h5 class="card-title">@doctor.FirstName @doctor.LastName</h5>
+                            <p class="card-text">@doctor.Speciality</p>
+                            <p class="card-text">@doctor.YearsOfExperience years of experience</p>
+                            <p class="card-text">@doctor.AboutTheDoctor</p>
+                            <img src="/DoctorImages/@doctor.Certificate" alt="Certificate" class="img-fluid mb-2">
+                            <div class="btn-group" role="group">
+                                <a asp-action="ApprovePost" asp-route-id="@doctor.Id" asp-route-isApproved="@true"
+                                   class="btn btn-success">Approve</a>
+                                <a asp-action="ApprovePost" asp-route-id="@doctor.Id" asp-route-isApproved="@false"
+                                   class="btn btn-danger">Decline</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="tab-pane alert alert-primary fade show active" role="alert">
+                There are no doctors waiting for approve!
             </div>
         }
     </div>

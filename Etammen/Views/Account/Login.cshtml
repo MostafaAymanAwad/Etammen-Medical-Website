@@ -3,6 +3,9 @@
 {
     <link rel="stylesheet" href="/assets/css/styles.min.css" />
 }
+@{
+    ViewData["Title"] = "Login";
+}
 
 <body>
     <!--  Body Wrapper -->
@@ -54,12 +57,12 @@
                                     <br />
 
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <p class="fs-4 mb-0 fw-bold">Forgot password?</p>
-                                        <a class="fs-4 mb-0 fw-bold" asp-action="ForgotPassword" asp-controller="Account">&nbsp Reset password</a>
+                                        <p class="fs-4 mb-0 fw-bold">Forgot password?&nbsp</p>
+                                        <a class="fs-4 mb-0 fw-bold" asp-action="ForgotPassword" asp-controller="Account">Reset password</a>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <p class="fs-4 mb-0 fw-bold">New to Etammen?</p>
-                                        <a class="fs-4 mb-0 fw-bold" asp-action="Register" asp-controller="Account">&nbsp Join Etammen</a>
+                                        <p class="fs-4 mb-0 fw-bold">New to Etammen?&nbsp</p>
+                                        <a class="fs-4 mb-0 fw-bold" asp-action="Register" asp-controller="Account">Join Etammen</a>
                                     </div>
                                 </form>
                             </div>

@@ -11,12 +11,10 @@ using System.Security.Claims;
 namespace Etammen.Controllers;
 public class PaymentController : Controller
 {
-    public string SessionId { get; set; }
     private readonly StripeSettings _stripeConfiguration;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUnitOfWork _unitOfWork;
-    public string PaymentIntentId {  get; set; }
 
     public PaymentController(IOptions<StripeSettings> stripeConfiguration, IHttpContextAccessor httpContextAccessor,
         UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
@@ -26,11 +24,14 @@ public class PaymentController : Controller
         _userManager = userManager;
         _unitOfWork = unitOfWork;
     }
-    public IActionResult CheckoutSession(int fees, string clinicName, string appoitnmentId)
+    public IActionResult CheckoutSession(decimal fees, string clinicName, string appointmentId)
     {
         string currencyCode = "usd";
-        string successUrl = GetAbsoluteUrl($"Success/{clinicName}/{appoitnmentId}");
+        string successUrl = GetAbsoluteUrl($"Success");
         string cancelUrl = GetAbsoluteUrl("Cancel");
+        TempData["clinicName"] = clinicName;
+        TempData["appointmentId"] = appointmentId;
+
         Stripe.StripeConfiguration.ApiKey = _stripeConfiguration.Secretkey;
 
         var options = new SessionCreateOptions
@@ -46,7 +47,7 @@ public class PaymentController : Controller
                     PriceData = new SessionLineItemPriceDataOptions
                     {
                         Currency = currencyCode,
-                        UnitAmount = fees * 100,
+                        UnitAmount = Convert.ToInt32(fees) * 100,
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = clinicName
@@ -61,9 +62,7 @@ public class PaymentController : Controller
         };
         var service = new SessionService();
         var session = service.Create(options);
-        SessionId = session.Id;
-        PaymentIntentId = session.PaymentIntentId;
-
+        TempData["SessionId"] = session.Id;
         return Redirect(session.Url);
     }
     private string GetAbsoluteUrl(string actionName)
@@ -78,43 +77,65 @@ public class PaymentController : Controller
         return uriBuilder.Uri.ToString();
     }
 
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> RefundPayment(string paymentIntentId)
+    public async Task<IActionResult> RefundPayment(int appointmentId)
     {
-         
-         var refundOptions = new RefundCreateOptions
-         {
-             PaymentIntent = paymentIntentId
-         };
+        Stripe.StripeConfiguration.ApiKey = _stripeConfiguration.Secretkey;
 
-         var refundService = new RefundService();
-         var refund = await refundService.CreateAsync(refundOptions);
-         return View("PaymentRefunded");
+        string AppointmentPaymentIntent = string.Empty;
+
+        ClinicAppointment clinicAppointment = await _unitOfWork.ClinicAppointments.FindBy(p => p.Id == appointmentId);
+        HomeAppointment homeAppointment = await _unitOfWork.HomeAppointment.FindBy(p => p.Id == appointmentId);
+
+        if (clinicAppointment is not null)
+        {
+            AppointmentPaymentIntent = clinicAppointment.PaymentIntentId;
+        }
+        else
+        {
+            AppointmentPaymentIntent = homeAppointment.PaymentIntentId;
+        }
+        var refundOptions = new RefundCreateOptions
+        {
+            PaymentIntent = AppointmentPaymentIntent
+        };
+        var refundService = new RefundService();
+        var refund = await refundService.CreateAsync(refundOptions);
+        return View("PaymentRefunded");
     }
 
-    public async Task<IActionResult> Success(string clinicName, string appointmnetId)
+    public async Task<IActionResult> Success()
     {
-        //string currentUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        string clinicName = TempData["clinicName"].ToString();
+        int appointmentId = Convert.ToInt32(TempData["appointmentId"]);
 
-        //if(clinicName == "HomeVisit")
-        //{
-        //    HomeAppointment homeAppointment = _unitOfWork.HomeAppointments.FirstOrDefault(c => c.Id == appointmnetId);
-        //    homeAppointment.PaymentIntentId = PaymentIntentId;
-        //    homeAppointment.IsPaidOnline = true;
-        //    _unitOfWork.HomeAppointments.Update(homeAppointment);
-        //}
-        //else
-        //{
-        //    Appointment appointment = _unitOfWork.Appointments.FirstOrDefault(c => c.Id == appointmnetId);
-        //    appointment.PaymentIntentId = PaymentIntentId;
-        //    appointment.IsPaidOnline = true;
-        //    _unitOfWork.Appointments.Update(appointment);
-        //}
-        //return View("success");
-        throw new NotImplementedException();
+        string sessionId = TempData["SessionId"].ToString();
+        Session session = new SessionService().Get(sessionId);
+
+
+
+        string paymentIntentId = session.PaymentIntentId;
+
+        string currentUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (clinicName == "HomeVisit")
+        {
+            HomeAppointment homeAppointment = await _unitOfWork.HomeAppointment.FindBy(c => c.Id == appointmentId);
+            homeAppointment.PaymentIntentId = paymentIntentId;
+            homeAppointment.IsPaidOnline = true;
+            _unitOfWork.HomeAppointment.Update(homeAppointment);
+            await _unitOfWork.Commit();
+        }
+        else
+        {
+            ClinicAppointment appointment = await _unitOfWork.ClinicAppointments.FindBy(c => c.Id == appointmentId);
+            appointment.PaymentIntentId = paymentIntentId;
+            appointment.IsPaidOnline = true;
+            _unitOfWork.ClinicAppointments.Update(appointment);
+            await _unitOfWork.Commit();
+        }
+
+        return View("Success");
     }
-
 
     public IActionResult Cancel()
     {

@@ -1,0 +1,14 @@
+﻿@model int
+
+@{
+    ViewData["Title"] = "Deactivate account";
+}
+<div class="text-center">
+    <h3>
+        Do you Really Want To Deactivate Your Account?
+    </h3>
+    <p class="text-danger">All you clinics and appointments will be deleted!!</p>
+    <a asp-action="DeactivateAccountConfirmed" asp-controller="Doctors" asp-route-id="@Model" class="btn btn-outline-danger">Deactivate account</a>
+    <a asp-action="Profile" asp-controller="Doctors" class="btn btn-outline-primary">Cancel</a>
+    
+</div>
