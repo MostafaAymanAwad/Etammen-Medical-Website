@@ -125,96 +125,84 @@ namespace BusinessLogicLayer.Repositories
                 queryDoctors.Remove(doctor);
             return queryDoctors;
 		}
-
-        public List<Doctor> FilterByOptions(DoctorFilterOptions doctorFilterOptions, List<Doctor> doctors)
-        {
-			bool IsHaveFilters = false;
-
-            IEnumerable<Doctor>query= new List<Doctor>();
-
-			if (doctorFilterOptions.IsGP)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Degree == "General Practitioner (GP)").ToList(), d => d.ApplicationUserId);
-				IsHaveFilters = true;
-            }
-            if (doctorFilterOptions.IsProfessor)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Degree == "Professor").ToList(), d=>d.ApplicationUserId);
-                IsHaveFilters = true;
-            }
-
-            if (doctorFilterOptions.IsLecturer)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Degree == "Lecturer").ToList(), d=>d.ApplicationUserId);
-                IsHaveFilters = true;
-            }
-            if (doctorFilterOptions.IsSpecialist)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Degree == "Specialist").ToList(), d=>d.ApplicationUserId);
-                IsHaveFilters = true;
-            }
-
-            if (doctorFilterOptions.IsConsultant)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Degree == "Consultant").ToList(), d=>d.ApplicationUserId);
-                IsHaveFilters = true;
-            }
-
-            if (doctorFilterOptions.IsFeesLessThan100)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => c.Fees < 100)).ToList(), d=>d.ApplicationUserId);
-                IsHaveFilters = true;
-            }
-            if (doctorFilterOptions.IsFees100to200)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => c.Fees >= 100 && c.Fees < 200)).ToList(), d=>d.ApplicationUserId);
-                IsHaveFilters = true;
-            }
-            if (doctorFilterOptions.IsFees200to300)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => c.Fees >= 200 && c.Fees < 300)).ToList(), d=>d.ApplicationUserId);
-                IsHaveFilters = true;
-            }
-            if (doctorFilterOptions.IsFeesMoreThan300)
-			{
-                query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => c.Fees >= 300)).ToList(), d => d.ApplicationUserId);
-                IsHaveFilters = true;
-            }
-
-            if (doctorFilterOptions.Gender != null)
-			{
-				List<Doctor> doctorsToAdd = new List<Doctor>();
-				foreach (var doctor in doctors)
-				{
-					var doctorWithApplicationUser = _context.Doctors
-													.Include(d => d.ApplicationUser)
-													.FirstOrDefault(d => d.Id == doctor.Id);
-					if (doctorWithApplicationUser.ApplicationUser.Gender == doctorFilterOptions.Gender)
-					{
-						doctorsToAdd.Add(doctor);
-                    }
-				}
-				query = query.UnionBy((IEnumerable<Doctor>)doctorsToAdd, d => d.Id);
-                IsHaveFilters = true;
-            }
-
-			if (doctorFilterOptions.OpeningDays != null)
-			{
-				var allEnumValues = Enum.GetValues(typeof(OpeningDays)).Cast<OpeningDays>().ToList();
-				var filteredDays = allEnumValues.Where(day => (doctorFilterOptions.OpeningDays & day) == day).ToList();
-				foreach (var day in filteredDays)
-				{
-					query = query.UnionBy(doctors.Where(d => d.Clinics.Any(c => (c.OpeningDays & day) == day)), d => d.ApplicationUserId);
-				}
-				IsHaveFilters = true;
-			}
-
-			if (!IsHaveFilters)
-				return doctors;
-
-            return query.ToList();
-        }
 		
+		public List<Doctor> FilterByOptions(DoctorFilterOptions doctorFilterOptions, List<Doctor> doctors)
+        {
+			List<Doctor> temp = new List<Doctor>();
+			temp.AddRange(doctors);
+			bool[] isFilterCritrea = CheckCategories(doctorFilterOptions);
+			List<Doctor> removedDoctors= new List<Doctor>();
+			for(int i=0;i<doctors.Count; i++)
+			{
+				if (isFilterCritrea[0])
+				{
+					if (!IsDoctorMatchDegree(doctors[i],doctorFilterOptions))
+					{
+                        removedDoctors.Add(doctors[i]);
+						continue;
+                    }	
+                }
+				if (isFilterCritrea[1])
+				{
+					if(!IsDoctorMatchGender(doctors[i],doctorFilterOptions))
+                    {
+                        removedDoctors.Add(doctors[i]);
+                        continue;
+                    }
+                }
+				if (isFilterCritrea[2])
+				{
+                    if (!IsDoctorMatchFees(doctors[i], doctorFilterOptions))
+                    {
+                        removedDoctors.Add(doctors[i]);
+                        continue;
+                    }
+                }
+                if (doctorFilterOptions.OpeningDays != (OpeningDays)127)
+                {
+                    if (doctors[i].Clinics.Any(c => (c.OpeningDays & doctorFilterOptions.OpeningDays) > 0)) continue;
+                    removedDoctors.Add(doctors[i]);
+                }
+            }
+			for (int i = 0; i < removedDoctors.Count; i++)
+				temp.Remove(removedDoctors[i]);
+			return temp;
+        }
+        private bool[] CheckCategories(DoctorFilterOptions doctorFilterOptions)
+        {
+            bool[] arr = new bool[3];
+            arr[0] = doctorFilterOptions.IsLecturer || doctorFilterOptions.IsProfessor
+                || doctorFilterOptions.IsSpecialist || doctorFilterOptions.IsGP || doctorFilterOptions.IsConsultant;
+            arr[1] = doctorFilterOptions.Gender != null;
+            arr[2] = doctorFilterOptions.IsFees100to200 || doctorFilterOptions.IsFeesLessThan100
+                     || doctorFilterOptions.IsFees200to300 || doctorFilterOptions.IsFeesMoreThan300;
+            return arr;
+        }
+        private bool IsDoctorMatchDegree(Doctor doctor, DoctorFilterOptions doctorFilterOptions)
+        {
+            if (doctor.Degree == "Lecturer" && doctorFilterOptions.IsLecturer == false) return false;
+			if (doctor.Degree == "Professor" && doctorFilterOptions.IsProfessor == false) return false;
+            if (doctor.Degree == "Specialist" && doctorFilterOptions.IsSpecialist == false) return false;
+            if (doctor.Degree == "GP" && doctorFilterOptions.IsGP == false) return false;
+			return true;
+        }
+        private bool IsDoctorMatchGender(Doctor doctor, DoctorFilterOptions doctorFilterOptions)
+        {
+            var doctorWithApplicationUser = _context.Doctors
+                                                    .Include(d => d.ApplicationUser)
+                                                    .FirstOrDefault(d => d.Id == doctor.Id);
+            return doctorWithApplicationUser.ApplicationUser.Gender == doctorFilterOptions.Gender;
+        }
+        private bool IsDoctorMatchFees(Doctor doctor, DoctorFilterOptions doctorFilterOptions)
+        {
+            if (doctorFilterOptions.IsFeesLessThan100 && doctor.Clinics.Any(c => c.Fees < 100)) return true;
+            if (doctorFilterOptions.IsFees100to200 && doctor.Clinics.Any(c => c.Fees >= 100 && c.Fees < 200)) return true;
+            if (doctorFilterOptions.IsFees200to300 && doctor.Clinics.Any(c => c.Fees >= 200 && c.Fees < 300)) return true;
+            if (doctorFilterOptions.IsFeesMoreThan300 && doctor.Clinics.Any(c => c.Fees >= 300)) return true;
+			return false;
+        }
+
+
         public List<Doctor> OrderByOption(int orderByOption, List<Doctor> doctors)
         {
             switch(orderByOption)

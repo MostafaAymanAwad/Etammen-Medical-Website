@@ -17,7 +17,6 @@ namespace BusinessLogicLayer.Repositories
         }
         public bool IsReviewdBy(int doctorId, int patientId)
         {
-            // Assuming you have a database context named _context
             var existingReview = _context.DoctorReviews
                 .Any(r => r.DoctorId == doctorId && r.PatientId == patientId);
 

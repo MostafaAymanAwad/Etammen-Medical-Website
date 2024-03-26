@@ -127,10 +127,7 @@ builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twi
 
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
-builder.Services.AddScoped<IApplicationUser, ApplicationUserRepository>();
-builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-builder.Services.AddScoped<IDoctorReviewsRepository, DoctorReviewsRepository>();
+builder.Services.AddScoped<IDoctorDetailsRepository, DoctorDetailsRepository>();
  
 
 //Admin Services
@@ -138,9 +135,6 @@ builder.Services.AddScoped<DoctorsAdminMapper>();
 builder.Services.AddScoped<ClinicAdminMapper>();
 builder.Services.AddScoped<PatientForAdminMapper>();
 builder.Services.AddScoped<DoctorReviewMapping>();
-builder.Services.AddScoped<DoctorDetailsMapping>();
-builder.Services.AddScoped<ClinicDetailsForDoctorPageMapper>();
-builder.Services.AddScoped<ClinicDetailsMapViewModelMapper>();
 
 
 
