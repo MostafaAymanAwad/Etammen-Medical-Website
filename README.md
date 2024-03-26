@@ -31,7 +31,8 @@
 
 #### admin Dashboard:
 - admin approve doctors documents to be verified on the website
-- admin manage all website entities 
+- admin manage all website entities
+
 
 ***
 ### technical aspects:
@@ -42,6 +43,8 @@
 - external login provider support using google or facebook
 - doctor can de-activate his account to not appear on user's searches, also he can re-activate it at any time
 
+### structured Logging
+- all request, error status, exception are handled and logged in json file and also in database for higher severity exceptions and errors
 ## technologies and tools used :
 - c# 12
 - ASP.Net Core MVC
