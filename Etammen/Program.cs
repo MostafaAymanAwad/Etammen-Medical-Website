@@ -3,15 +3,12 @@ using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayerEF.Context;
 using DataAccessLayerEF.Models;
-
 using Etammen.MappingProfile;
-
 using Etammen.Mapping.ClinicForAdmin;
 using Etammen.Mapping.DoctorForAdmin;
 using Etammen.Mapping.PatientForAdmin;
 using Etammen.Mapping_Profiles;
 using Etammen.Settings;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -191,7 +188,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Patient}/{action=Search}/{id?}");
+    pattern: "{controller}/{action}/{id?}");
 
 app.UseStatusCodePagesWithRedirects("/StatusCodeError/{0}");
 

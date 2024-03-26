@@ -70,11 +70,11 @@
 {
     <div class="doctor-card" onclick="RedirectToDetails(@myModel.CurrentPageDoctors[i].Id)">
         <div class="doctor-card__image">
-            <img src="https://cdn-dr-images.vezeeta.com/Assets/Images/SelfServiceDoctors/ENT5bcb09ffafde1f6f/Profile/150/abdellatif--hamouda-internal-medicine_20220928163418459.jpg" alt="Dr. Abdellatif Hamouda">
+            <img src="/DoctorImages/@myModel.CurrentPageDoctors[i].ProfilePicture" alt="Dr. @myModel.DoctorFullnames[i]">        
         </div>
         <div class="doctor-card__details flex-fill">
-            <h2 class="doctor-card__name">Dr: @myModel.DoctorFullnames[i]</h2>
-            <p class="doctor-card__description">Senior Consultant of General Internal Medicine, Gastroenterology, Diabetes and Liver Diseases - Lille II University in France.</p>
+            <h2 class="doctor-card__name">Dr. @myModel.DoctorFullnames[i]</h2>
+            <p class="doctor-card__description">@myModel.CurrentPageDoctors[i].AboutTheDoctor</p>
             <div class="doctor-card__ratings">
                 <div class="star-rating">
                     <span class="filled-star"></span>
@@ -83,7 +83,7 @@
                     <span class="filled-star"></span>
                     <span class="half-filled-star"></span>
                 </div>
-                <span class="rating-count">Overall Rating: 4.5 (669 Visitors)</span>
+                <span class="rating-count">Overall Rating: @myModel.CurrentPageDoctors[i].ActualRting</span>
             </div>
             <div class="doctor-card__specialties">
                 <h3 class="specialty-title">Specialized in: </h3>
@@ -91,18 +91,17 @@
                     <li>@myModel.CurrentPageDoctors[i].Speciality</li>
                 </ul>
             </div>
-            <div class="doctor-card__location">
-                @{
-                    foreach (var clinic in @myModel.CurrentPageDoctors[i].Clinics)
-                    {
-                        <span class="clinic-name">@clinic.Name</span>
-                        <span class="clinic-fees">@clinic.Fees</span>
-                        <span class="clinic-city">@clinic.Address.City</span>
-                    }
+            <div class="d-flex flex-wrap">
+            @{
+                foreach (var clinic in @myModel.CurrentPageDoctors[i].Clinics)
+                {
+                    <div class="doctor-card__location col-6">
+                        <p class="clinic-name"><strong>Clinic</strong>: @clinic.Name</p>
+                        <p class="clinic-fees"><strong>Fees</strong>: @clinic.Fees</p>
+                        <p class="clinic-city"><strong>City</strong>: @clinic.Address.City</p>
+                    </div>
                 }
-            </div>
-            <div class="doctor-card__contact">
-                <a href="tel:16676" class="hotline">Contact me: 16676 (Cost of regular call)</a>
+            }
             </div>
         </div>
     </div>

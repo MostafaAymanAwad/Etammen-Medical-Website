@@ -11,6 +11,7 @@ using System.Numerics;
 
 namespace Etammen.Controllers
 {
+    [Route("doctorAdmin")]
     public class DoctorAdminController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -27,13 +28,14 @@ namespace Etammen.Controllers
             _userManager = applicationUser;
             _emailService = emailService;
         }
+        [Route("GetAllDoctors")]
         public async Task<IActionResult> Index()
         {
             var doctors = await _unitOfWork.Doctors.FindAllBy(e => e.IsDeleted == false, new[] { "ApplicationUser" });
             var doctorsViewModel = _doctorsMapper.MapDoctorsToViewModel(doctors);
             return View(doctorsViewModel);
         }
-
+        [Route("GetDoctorDetails/{id:int:min(1)}")]
         public async Task<IActionResult> Details(int id)
         {
             var doctor = await _unitOfWork.Doctors.FindBy(e => e.Id == id, new[] { "ApplicationUser" });
@@ -42,7 +44,7 @@ namespace Etammen.Controllers
             return View(doctorViewModel);
 
         }
-
+        [Route("DeleteDoctor/{id:int:min(1)}")]
 
         public async Task<IActionResult> Delete(int id)
         {
@@ -54,7 +56,8 @@ namespace Etammen.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(GetDoctorByIdViewModel doctorViewModel)
+        [Route("DeleteDoctor/{id:int:min(1)}")]
+        public async Task<IActionResult> Delete(int id,GetDoctorByIdViewModel doctorViewModel)
         {
             try
             {
@@ -73,6 +76,7 @@ namespace Etammen.Controllers
                 return View(doctorViewModel);
             }
         }
+        [Route("ApproveDoctor")]
         public async Task<IActionResult> Approve()
         {
             string[] includes = ["ApplicationUser"];
@@ -81,7 +85,7 @@ namespace Etammen.Controllers
                 _mapper.Map<IEnumerable<Doctor>, IEnumerable<ApproveDoctorViewModel>>(Doctors);
             return View(mappedDoctors);
         }
-
+        [Route("ApproveDoctor/{id:int}/{isApproved:bool}")]
         public async Task<IActionResult> ApprovePost(int id, bool isApproved)
         {
             Doctor doctor = await _unitOfWork.Doctors.FindBy((D) => D.Id == id && D.IsDeleted == false, ["ApplicationUser"]);
@@ -114,6 +118,7 @@ namespace Etammen.Controllers
             int rows = await _unitOfWork.Commit();
             return RedirectToAction(nameof(Approve));
         }
+
         private async Task SendStatusUpdateEmail(string email,string rejectionMailBody, string rejectionMailSubject)
         {
             await _emailService.SendEmailAsync(new Message(email, rejectionMailSubject, rejectionMailBody));
