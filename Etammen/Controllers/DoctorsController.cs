@@ -459,6 +459,7 @@ namespace Etammen.Controllers
             };
                 var appointment = await _unitOfWork.ClinicAppointments.FindByWithExpression(a => a.Id == id, includes);
                 appointment.IsAttended = true;
+                appointment.IsAccepted = true;
                 _unitOfWork.ClinicAppointments.Update(appointment);
                 var count = await _unitOfWork.Commit();
                 if (count > 0)
