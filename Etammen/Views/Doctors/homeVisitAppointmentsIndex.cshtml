@@ -89,10 +89,10 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.IsPaidOnline)
                         </td>
-                       
+
                         <td>
                             @{
-                                if (item.IsAccepted == false)
+                                if (item.IsAccepted == false && item.IsAttended == false)
                                 {
                                     <a asp-action="AcceptAppointment" asp-route-id="@item.Id" asp-route-ReservationPeriodNumber="@item.ReservationPeriodNumber" class="btn btn-outline-success">Accept</a>
                                 }
@@ -109,6 +109,10 @@
                         <td>
                             @{
                                 if (item.IsAttended == true && item.IsAccepted == true)
+                                {
+
+                                }
+                                else if (item.IsAttended == true)
                                 {
 
                                 }

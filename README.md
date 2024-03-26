@@ -45,6 +45,7 @@
 
 ### structured Logging
 - all request, error status, exception are handled and logged in json file and also in database for higher severity exceptions and errors
+
 ## technologies and tools used :
 - c# 12
 - ASP.Net Core MVC
