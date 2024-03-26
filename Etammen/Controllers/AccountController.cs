@@ -264,7 +264,7 @@ public class AccountController : Controller
             await _userManager.ResetAccessFailedCountAsync(userToLogIn);
 
             if (Role == "Admin")
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Home", "Admin");
 
             if (Role == "Doctor")
                 return RedirectToAction("AppointmentIndex", "Doctors");
