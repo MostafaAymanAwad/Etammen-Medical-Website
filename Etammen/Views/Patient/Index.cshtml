@@ -6,51 +6,54 @@
     var myModel = JsonSerializer.Deserialize<MainViewModel>(Model.JSONdata);
 }
 <style>
-        body{
-            background-color: rgb(226, 230, 234);
-        }
+    body {
+        background-color: rgb(226, 230, 234);
+    }
 
-        .pagination {
-            display: inline-block;
-            margin: 0;
-            padding: 0;
-        }
+    .pagination {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
+
         .pagination .page-item {
             display: inline;
         }
-        form#paginationForm{
-            margin-right:0;
-        }
-        .pagination .page-link {
-            color: #333;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 5px 10px;
-            margin-right: 5px;
-            text-decoration: none;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+
+    form#paginationForm {
+        margin-right: 0;
+    }
+
+    .pagination .page-link {
+        color: #333;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        margin-right: 5px;
+        text-decoration: none;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
 
         .pagination .page-link:hover {
             background-color: #f0f0f0;
         }
 
-        .pagination .page-item.active .page-link {
-            background-color: #007bff;
-            color: #fff;
-            border-color: #007bff;
-        }
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
 
-        .pagination .page-item:not(.active) .page-link:hover {
-            background-color: #e9ecef;
-        }
+    .pagination .page-item:not(.active) .page-link:hover {
+        background-color: #e9ecef;
+    }
 
-        .doctor-card:hover {
-            cursor: pointer;
-            background-color: darkgray;
-        }
+    .doctor-card:hover {
+        cursor: pointer;
+        background-color: darkgray;
+    }
 </style>
 <div>
     <partial name="Partial/_PartialSearch.cshtml" model="@Model" />
@@ -66,65 +69,65 @@
                 <partial name="Partial/_PartialOrder.cshtml" model="@Model" />
             </div>
 
-@for(int i = 0; i < myModel.CurrentPageDoctors.Count; i++)
-{
-    <div class="doctor-card" onclick="RedirectToDetails(@myModel.CurrentPageDoctors[i].Id)">
-        <div class="doctor-card__image">
-            <img src="/DoctorImages/@myModel.CurrentPageDoctors[i].ProfilePicture" alt="Dr. @myModel.DoctorFullnames[i]">        
-        </div>
-        <div class="doctor-card__details flex-fill">
-            <h2 class="doctor-card__name">Dr. @myModel.DoctorFullnames[i]</h2>
-            <p class="doctor-card__description">@myModel.CurrentPageDoctors[i].AboutTheDoctor</p>
-            <div class="doctor-card__ratings">
-                <div class="star-rating">
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="filled-star"></span>
-                    <span class="half-filled-star"></span>
-                </div>
-                <span class="rating-count">Overall Rating: @myModel.CurrentPageDoctors[i].ActualRting</span>
-            </div>
-            <div class="doctor-card__specialties">
-                <h3 class="specialty-title">Specialized in: </h3>
-                <ul class="specialty-list">
-                    <li>@myModel.CurrentPageDoctors[i].Speciality</li>
-                </ul>
-            </div>
-            <div class="d-flex flex-wrap">
-            @{
-                foreach (var clinic in @myModel.CurrentPageDoctors[i].Clinics)
-                {
-                    <div class="doctor-card__location col-6">
-                        <p class="clinic-name"><strong>Clinic</strong>: @clinic.Name</p>
-                        <p class="clinic-fees"><strong>Fees</strong>: @clinic.Fees</p>
-                        <p class="clinic-city"><strong>City</strong>: @clinic.Address.City</p>
+            @for (int i = 0; i < myModel.CurrentPageDoctors.Count; i++)
+            {
+                <div class="doctor-card" onclick="RedirectToDetails(@myModel.CurrentPageDoctors[i].Id)">
+                    <div class="doctor-card__image">
+                        <img src="/DoctorImages/@myModel.CurrentPageDoctors[i].ProfilePicture" alt="Dr. @myModel.DoctorFullnames[i]">
                     </div>
-                }
+                    <div class="doctor-card__details flex-fill">
+                        <h2 class="doctor-card__name">Dr. @myModel.DoctorFullnames[i]</h2>
+                        <p class="doctor-card__description">@myModel.CurrentPageDoctors[i].AboutTheDoctor</p>
+                        <div class="doctor-card__ratings">
+                            <div class="star-rating">
+                                <span class="filled-star"></span>
+                                <span class="filled-star"></span>
+                                <span class="filled-star"></span>
+                                <span class="filled-star"></span>
+                                <span class="half-filled-star"></span>
+                            </div>
+                            <span class="rating-count">Overall Rating: @myModel.CurrentPageDoctors[i].ActualRting</span>
+                        </div>
+                        <div class="doctor-card__specialties">
+                            <h3 class="specialty-title">Specialized in: </h3>
+                            <ul class="specialty-list">
+                                <li>@myModel.CurrentPageDoctors[i].Speciality</li>
+                            </ul>
+                        </div>
+                        <div class="d-flex flex-wrap">
+                            @{
+                                foreach (var clinic in @myModel.CurrentPageDoctors[i].Clinics)
+                                {
+                                    <div class="doctor-card__location col-6">
+                                        <p class="clinic-name"><strong>Clinic</strong>: @clinic.Name</p>
+                                        <p class="clinic-fees"><strong>Fees</strong>: @clinic.Fees</p>
+                                        <p class="clinic-city"><strong>City</strong>: @clinic.Address.City</p>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
             }
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <form asp-action="Pagination" id="paginationForm" onsubmit="updateAndSubmit(event,'paginationForm')">
+                                <input type="hidden" name="JSONdata" value="@Model.JSONdata" />
+                                <input type="hidden" name="pageNumber" value="@i" />
+                                <button type="submit" class="page-link">@i</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            </nav>
+
+
+
+
+            <div>
+                <partial name="Partial/_PartialScript.cshtml" model="@Model" />
             </div>
-        </div>
-    </div>
-}
-
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        @for (var i = 1; i <= ViewBag.TotalPages; i++)
-        {
-            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                <form asp-action="Pagination" id="paginationForm" onsubmit="updateAndSubmit(event,'paginationForm')">
-                    <input type="hidden" name="JSONdata" value="@Model.JSONdata" />
-                    <input type="hidden" name="pageNumber" value="@i" />
-                    <button type="submit" class="page-link">@i</button>
-                </form>
-            </li>
-        }
-    </ul>
-</nav>
-
-
-
-
-<div>
-    <partial name="Partial/_PartialScript.cshtml" model="@Model" />
-</div>

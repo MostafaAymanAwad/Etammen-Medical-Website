@@ -33,16 +33,10 @@ public class PatientController : Controller
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IPatientRepository _patientRepository;
-    private readonly IClinicRepository _clinicRepository;
-    private readonly IApplicationUser _applicationUser;
-    private readonly IAppointmentRepository _appointmentRepository;
-    private readonly IDoctorReviewsRepository _doctorReviewsRepository;
+    private readonly IDoctorDetailsRepository _doctorDetailsRepository;
     private readonly DoctorsAdminMapper _doctorsMapper;
     private readonly DoctorReviewMapping _doctorReviewMapper;
-    private readonly DoctorDetailsMapping _doctorDetailsMapping;
-    private readonly ClinicDetailsForDoctorPageMapper _clinicMapper;
     private readonly DoctorRegisterationHelper _doctorRegisterationHelper;
-    private readonly ClinicDetailsMapViewModelMapper _clinicMapMapper;
     private readonly ISmsService _smsService;
     List<AppointmentViewModel> totalAppointments;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -50,18 +44,12 @@ public class PatientController : Controller
     public PatientController(IUnitOfWork unitOfWork,
         DoctorsAdminMapper getAllDoctorsMapper,
         IPatientRepository patientRepository,
-        IDoctorReviewsRepository doctorReviewsRepository,
-        IAppointmentRepository appointmentRepository,
-        IApplicationUser applicationUser,
-        ClinicDetailsMapViewModelMapper clinicMapMapper,
         ISmsService smsService,
-        IClinicRepository clinicRepository,
         DoctorRegisterationHelper doctorRegisterationHelper,
         IMapper mapper,
-        ClinicDetailsForDoctorPageMapper clinicMapper,
-        DoctorDetailsMapping doctorDetailsMapping,
         DoctorReviewMapping doctorReviewMapper,
-        UserManager<ApplicationUser> userManager
+        UserManager<ApplicationUser> userManager,
+        IDoctorDetailsRepository doctorDetailsRepository
         )
     {
         _unitOfWork = unitOfWork;
@@ -70,16 +58,10 @@ public class PatientController : Controller
         _doctorRegisterationHelper = doctorRegisterationHelper;
         _mapper = mapper;
         _userManager = userManager;
-        _clinicMapper = clinicMapper;
-        _applicationUser = applicationUser;
-        _appointmentRepository = appointmentRepository;
-        _clinicRepository = clinicRepository;
-        _doctorDetailsMapping = doctorDetailsMapping;
         _doctorReviewMapper = doctorReviewMapper;
-        _doctorReviewsRepository = doctorReviewsRepository;
-        _clinicMapMapper = clinicMapMapper;
         _smsService = smsService;
         totalAppointments = new List<AppointmentViewModel>();
+        _doctorDetailsRepository = doctorDetailsRepository;
 
     }
     [HttpGet("")]
@@ -230,27 +212,24 @@ public class PatientController : Controller
         }
         return RedirectToAction("Search", "Patient");
     }
+   
     [Route("doctorDetails/{id:int:min(1)}")]
     public async Task<IActionResult> Details(int id)
     {
-        var doctor = await _patientRepository.GetDoctorDetails(id);
+        string applicationUserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        var doctorDetailsViewModel = _doctorDetailsMapping.MapToDoctorDetails(doctor);
-        doctorDetailsViewModel.PatientId = 5;
-        var clinicDetails = _clinicRepository.GetClinicsNames(id);
-        doctorDetailsViewModel.Clinics = _clinicMapper.MapToClinicDetailsInDoctorPageViewModel(clinicDetails);
-        doctorDetailsViewModel.FirstName = _applicationUser.FirstName(id);
-        doctorDetailsViewModel.LastName = _applicationUser.LastName(id);
-        doctorDetailsViewModel.IsAttended = _appointmentRepository.IsAppointmentsAvailable(5);
-        doctorDetailsViewModel.IsReview = _doctorReviewsRepository.IsReviewdBy(id, 5);
+
+        var patientId = _unitOfWork.Patients.GetPatientIdByUserId(applicationUserId);
+        var doctorDetailsViewModel = await _doctorDetailsRepository.GetDoctorDetailsViewModel(id, patientId);
+     
         return View(doctorDetailsViewModel);
     }
     [Route("ClinicDetails/{id:int:min(1)}")]
 
     public async Task<IActionResult> ClinicDetails(int id)
     {
-        var clinic = await _clinicRepository.GetClinics(id);
-        var clinicMapVm = _clinicMapMapper.ClinicMapper(clinic);
+        var clinic = await _doctorDetailsRepository.GetClinicsDetails(id);
+        var clinicMapVm = _doctorReviewMapper.ClinicMapper(clinic);
 
         return View(clinicMapVm);
     }
@@ -267,7 +246,6 @@ public class PatientController : Controller
         return View(mappedpatient);
     }
     [Route("AccountEdit/{id:int:min(1)}")]
-
     public async Task<IActionResult> ProfileEdit(int id)
     {
         string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
@@ -304,7 +282,6 @@ public class PatientController : Controller
                 if (result.Succeeded)
                 {
 
-                    //_unitOfWork.Doctors.Update(mappeddoctor);
                     string[] includes = { "ClinicAppointments", "DoctorReviews", "ApplicationUser" };
 
                     var existingPatient = await _unitOfWork.Patients.FindBy(d => d.Id == model.Id, includes);
