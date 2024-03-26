@@ -50,10 +50,10 @@
                     @Html.DisplayNameFor(model => model.ReservationPeriodNumber)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.IsAttended)
+                    @Html.DisplayNameFor(model => model.IsAccepted)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.IsAccepted)
+                    @Html.DisplayNameFor(model => model.IsAttended)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.IsPaidOnline)
@@ -79,17 +79,17 @@
                         @Html.DisplayFor(modelItem => item.ReservationPeriodNumber)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.IsAttended)
+                        @Html.DisplayFor(modelItem => item.IsAccepted)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.IsAccepted)
+                        @Html.DisplayFor(modelItem => item.IsAttended)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.IsPaidOnline)
                     </td>
                     <td>
                         @{
-                            if (item.IsAccepted == false)
+                            if (item.IsAccepted == false&&item.IsAttended == false)
                             {
                                 <a asp-action="AcceptAppointment" asp-route-id="@item.Id" asp-route-ReservationPeriodNumber="@item.ReservationPeriodNumber" class="btn btn-outline-success">Accept</a>
                             }
@@ -106,6 +106,10 @@
                     <td>
                         @{
                             if (item.IsAttended == true && item.IsAccepted == true)
+                            {
+
+                            }
+                            else if (item.IsAttended == true)
                             {
                                 
                             }
