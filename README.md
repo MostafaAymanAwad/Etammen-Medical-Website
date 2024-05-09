@@ -2,6 +2,9 @@
 ***
 ## a medical website to connect users and doctors.
 
+### video demo
+(https://www.linkedin.com/feed/update/urn:li:activity:7178314867257315330/?originTrackingId=kaIwu96qQXOfKJtmvDXTWQ%3D%3D) 
+
 ### a breif about the funcionality of the website from users and doctors perspectives:
 
 #### Etammen website is designed to help both users and doctors to communicate in an automated way to make it easier and time saving for user to book doctor appointments, and for doctor to reach out to help more people
@@ -92,6 +95,5 @@
   (https://www.linkedin.com/in/moaz-samy/)
 
 ***
-##### demo's video (https://www.linkedin.com/feed/update/urn:li:activity:7178314867257315330/?originTrackingId=kaIwu96qQXOfKJtmvDXTWQ%3D%3D) 
 
  
