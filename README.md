@@ -76,7 +76,9 @@
 ***
 
 ### Project Team On Linked-In: 
-
+#### Ahmed Fawzi: 
+  (https://www.linkedin.com/in/ahmed-fawzi-elarabi/)
+  
 #### Mohamed Ashraf:
   (https://www.linkedin.com/in/mohamed-ashraf-9961a022a/)
 
@@ -89,10 +91,7 @@
 #### Moaz Samy:
   (https://www.linkedin.com/in/moaz-samy/)
 
-#### Ahmed Fawzi: 
-  (https://www.linkedin.com/in/ahmed-fawzi-elarabi/)
-
 ***
-##### Website demo video on all linked in accounts.
+##### demo's video (https://www.linkedin.com/feed/update/urn:li:activity:7178314867257315330/?originTrackingId=kaIwu96qQXOfKJtmvDXTWQ%3D%3D) 
 
  
