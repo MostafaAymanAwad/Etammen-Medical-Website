@@ -2,6 +2,9 @@
 ***
 ## a medical website to connect users and doctors.
 
+### video demo
+(https://www.linkedin.com/feed/update/urn:li:activity:7178314867257315330/?originTrackingId=kaIwu96qQXOfKJtmvDXTWQ%3D%3D) 
+
 ### a breif about the funcionality of the website from users and doctors perspectives:
 
 #### Etammen website is designed to help both users and doctors to communicate in an automated way to make it easier and time saving for user to book doctor appointments, and for doctor to reach out to help more people
@@ -31,7 +34,8 @@
 
 #### admin Dashboard:
 - admin approve doctors documents to be verified on the website
-- admin manage all website entities 
+- admin manage all website entities
+
 
 ***
 ### technical aspects:
@@ -44,7 +48,6 @@
 
 ### structured Logging
 - all request, error status, exception are handled and logged in json file and also in database for higher severity exceptions and errors
-
 
 ## technologies and tools used :
 - c# 12
@@ -76,7 +79,9 @@
 ***
 
 ### Project Team On Linked-In: 
-
+#### Ahmed Fawzi: 
+  (https://www.linkedin.com/in/ahmed-fawzi-elarabi/)
+  
 #### Mohamed Ashraf:
   (https://www.linkedin.com/in/mohamed-ashraf-9961a022a/)
 
@@ -89,10 +94,6 @@
 #### Moaz Samy:
   (https://www.linkedin.com/in/moaz-samy/)
 
-#### Ahmed Fawzi: 
-  (https://www.linkedin.com/in/ahmed-fawzi-136225269/)
-
 ***
-##### Website demo video on all linked in accounts.
 
  
